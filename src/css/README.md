@@ -1,0 +1,1 @@
+This is the directory where all CSS files for the components will be housed.

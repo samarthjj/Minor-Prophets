@@ -1,0 +1,1 @@
+This is the directory where all React components (.jsx extension files) will be housed.
