@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 class Landing extends Component {
     render() {
         return (
-            <div>
+            <div class="text-center">
                 <h1>Minor Prophets</h1>
                 <h2>This is our landing page, aka the first page.</h2>
                 <Link to="/login"><button>Login</button></Link>
