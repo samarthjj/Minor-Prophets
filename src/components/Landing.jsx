@@ -9,7 +9,7 @@ class Landing extends Component {
                 <h2>This is our landing page, aka the first page.</h2>
                 <Link to="/login"><button>Login</button></Link>
                 <Link to="/signup"><button>Sign Up</button></Link>
-                <div class="langing-logo">
+                <div class="landing-logo">
                     <h3>This is where the game logo goes.</h3>
                 </div>
                 <input className="code" type="text" value="hGjU87Uj" disabled />
