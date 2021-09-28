@@ -1,0 +1,29 @@
+.apple {
+    background-color: red;
+}
+
+.dark {
+    background: #343232;
+}
+
+.text-light {
+    font-family: Russo One, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+
+    color: #FFFFFF;
+}
+
+.text-dark {
+    font-family: Russo One, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+
+    color: #000000;
+}
+
+.title {
+    font-size: 70px;
+    line-height: 84px;
+    /*text-align: center;*/
+}
