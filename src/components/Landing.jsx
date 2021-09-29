@@ -4,17 +4,31 @@ import {Link} from "react-router-dom";
 class Landing extends Component {
     render() {
         return (
-            <div>
-                <h1>Minor Prophets</h1>
-                <h2>This is our landing page, aka the first page.</h2>
-                <Link to="/login"><button>Login</button></Link>
-                <Link to="/signup"><button>Sign Up</button></Link>
-                <div class="landing-logo">
-                    <h3>This is where the game logo goes.</h3>
+            <div class="text-center">
+                <h1 class="title text-light">Minor Prophets</h1>
+
+                <div class="landing-logo mb-5">
+                    <h3 class="text-dark">This is where the game logo goes.</h3>
                 </div>
-                <input className="code" type="text" value="hGjU87Uj" disabled />
-                <Link to="/TBD"><button>Join Game</button></Link>
-                <Link to="/TBD"><button>Start New Game</button></Link>
+
+                {/* Bootstrap Spacing: https://getbootstrap.com/docs/5.1/utilities/spacing/*/}
+                {/*Centering content w/ mx-auto (automatic X centering)*/}
+                {/*mb-3 == margin bottom by 3*/}
+
+                <div class="container-sm">
+                    <form className="form-group">
+                        <div className="form-floating mb-3 mx-auto w-50">
+                            <input type="text" className="form-control input-small" id="name" placeholder="Name"/>
+                            <label htmlFor="name" class="text-dark">Enter Name Here</label>
+                        </div>
+
+                        <div className="form-floating mb-3 mx-5">
+                            <Link to="/creategame"><button className="btn btn-lg btn-success text-dark" type="submit">Submit</button></Link>
+                        </div>
+
+                    </form>
+                </div>
+
             </div>
         );
     }
