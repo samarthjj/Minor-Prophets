@@ -1,13 +1,11 @@
-.apple {
-    background-color: red;
-}
+@import url('http://fonts.cdnfonts.com/css/russo-one');
 
 .dark {
     background: #343232;
 }
 
 .text-light {
-    font-family: Russo One, sans-serif;
+    font-family: 'Russo One', sans-serif;
     font-style: normal;
     font-weight: normal;
 
@@ -15,7 +13,7 @@
 }
 
 .text-dark {
-    font-family: Russo One, sans-serif;
+    font-family: 'Russo One', sans-serif;
     font-style: normal;
     font-weight: normal;
 
