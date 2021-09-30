@@ -1,13 +1,9 @@
-.apple {
-    background-color: red;
-}
-
 .dark {
     background: #343232;
 }
 
 .text-light {
-    font-family: Russo One, sans-serif;
+    font-family: 'RussoOne-Regular', 'Russo One', sans-serif;
     font-style: normal;
     font-weight: normal;
 
@@ -15,7 +11,7 @@
 }
 
 .text-dark {
-    font-family: Russo One, sans-serif;
+    font-family: 'RussoOne-Regular', 'Russo One', sans-serif;
     font-style: normal;
     font-weight: normal;
 
