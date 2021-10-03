@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// Injecting PostGres into the code to see if it works.
+
 /* This seems to render the "App.js" function inside the HTML 'root' element*/
 ReactDOM.render(
   <React.StrictMode>
