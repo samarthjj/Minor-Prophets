@@ -8,3 +8,8 @@ module.exports = function(app) {
     app.use(createProxyMiddleware('/api/**', { target: 'http://localhost:5000' }));
     app.use(createProxyMiddleware('/otherApi/**', { target: 'http://localhost:5000' }));
 };
+
+// https://www.npmjs.com/package/http-proxy-middleware
+// This package stopped the issue that Heroku was picking up with "invalid header host."
+// I believe it was because Heroku/Production environment doesn't like the "proxy" header in the 'package.json'
+// and throws errors when it's there. So, this solution is used to take care of the proxy issues.
