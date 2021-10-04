@@ -29,8 +29,8 @@ function Database() {
             .then(res => res.json())
             .then(
                 (result) => {
-                    setItems(result.items); // Was missing '.items' to get the JS Array portion of the JSON string!
-                },
+                    setItems(result.users); // Was missing '.items' to get the JS Array portion of the JSON string!
+                },                          // .<insert> is the key from the JSON data we want.
             )
     }, []);
 
@@ -40,8 +40,8 @@ function Database() {
             <h2 className="text-light">Database Entries:</h2>
             <ul>
                 {items.map(item => (
-                    <li key={item.id} className="text-light">
-                        {item.name} {item.price}
+                    <li className="text-light">
+                        {item.username} : {item.name}
                     </li>
                 ))}
             </ul>
@@ -55,3 +55,5 @@ function Database() {
 }
 
 export default Database;
+
+// <li key={item.id} className="text-light"></li>

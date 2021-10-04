@@ -1,0 +1,9 @@
+# Can't have the PostgreSQL env variables in Git or in the Docker Container (hosted on Heroku) ??
+
+# */.env*
+# .env?
+# */.flaskenv*
+# .flaskenv?
+
+# Not being used at the moment
+# OH - this isn't necessary because when Heroku builds, it will be using the Git repo, and if .env isn't included (with the local info), it will use it's own!
