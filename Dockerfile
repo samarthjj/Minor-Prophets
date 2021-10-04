@@ -9,8 +9,6 @@ RUN apt-get install -y python3-pip # -y says yes to the prompt
 # install supervisor (manages the running applications)
 RUN apt-get install -y supervisor
 
-RUN npm install http-proxy-middleware --save
-
 WORKDIR /root
 
 ENV HOME /root
