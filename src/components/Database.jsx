@@ -16,7 +16,7 @@ function Database() {
     const [currentTime, setCurrentTime] = useState(0); // Explained in the 'blog.miguelgrinberg' link
 
     useEffect(() => {
-        fetch('/time').then(res => res.json()).then(data => {
+        fetch('/api/time').then(res => res.json()).then(data => {
             setCurrentTime(data.time);
         });
     }, []);
@@ -25,7 +25,7 @@ function Database() {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        fetch("/db")
+        fetch("/api/db")
             .then(res => res.json())
             .then(
                 (result) => {

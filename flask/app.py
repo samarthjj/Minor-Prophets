@@ -6,11 +6,11 @@ import json
 
 app = Flask(__name__)
 
-@app.route('/time')
+@app.route('/api/time')
 def get_current_time():
     return {'time': time.time()}
 
-@app.route('/db')
+@app.route('/api/db')
 def test_database():
     import psycopg2
     # todo <Add Database Functionality>
