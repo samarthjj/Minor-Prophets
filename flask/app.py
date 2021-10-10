@@ -18,16 +18,8 @@ def attempt_signup():
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     username = request.form.get('username')
     password = request.form.get('password')
-    # signup_data = request.get_json()
     output = {"token": "test1234"}
-    # output = "test1234"
-    if username == "":
-        output = "None"
     return json.dumps(output)
-    # return None
-    # return json.dumps(output['token'])
-    # return json.dumps("test123")
-    # return "test123"
 
 @app.route('/api/db')
 def test_database():

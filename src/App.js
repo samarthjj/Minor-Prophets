@@ -1,7 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
-import React, {useState} from "react";
-import {BrowserRouter as Router, Switch, Route, BrowserRouter} from "react-router-dom";
+import React from "react";
+import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import Landing from "./components/Landing";
 import NotFound from './components/NotFound';
 import CreateGame from "./components/CreateGame";
@@ -29,30 +29,8 @@ function App() {
 
             </Router> )
     }
-    console.log(1, token)
 
     return (
-        // <div className="wrapper">
-        //   <BrowserRouter>
-        //     <Switch>
-        //         <Route path="/creategame">
-        //             <CreateGame />
-        //         </Route>
-        //         <Route path="/signup">
-        //             <SignUp />
-        //         </Route>
-        //         <Route path="/gamesetup">
-        //             <GameSetup />
-        //         </Route>
-        //         <Route path="/TBD">
-        //             <NotFound />
-        //         </Route>
-        //         <Route path="/database_test">
-        //             <Database />
-        //         </Route>
-        //     </Switch>
-        //   </BrowserRouter>
-        // </div>
         <Router>
             <Switch>
                 <Route exact path="/" component={Landing} />
@@ -66,19 +44,6 @@ function App() {
                 <Route exact path="/TBD" component={NotFound} />
             </Switch>
          </Router>
-        // <Router>
-        //     <Switch>
-        //         <Route exact path="/" component={Landing} />
-        //         <Route exact path="/login" component={Login} />
-        //         <Route exact path="/signup" component={SignUp} />
-        //         <Route exact path="/creategame" component={CreateGame} />
-        //         <Route exact path="/gamesetup" component={GameSetup} />
-        //         <Route exact path="/database_test" component={Database} />
-        //         <Route exact path="/login" component={NotFound} />
-        //         <Route exact path="/signup" component={NotFound} />
-        //         <Route exact path="/TBD" component={NotFound} />
-        //     </Switch>
-        //  </Router>
     );
 }
 
