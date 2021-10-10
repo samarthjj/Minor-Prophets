@@ -18,6 +18,7 @@ COPY . .
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN pip3 install -r requirements.txt
+RUN npm install react-router-dom
 
 RUN yarn install
 

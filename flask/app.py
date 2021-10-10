@@ -1,18 +1,36 @@
 # https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project
 import time
-from flask import Flask
+from flask import Flask, request
 import os
 import json
+import psycopg2
+# from flask_cors import CORS
 
 app = Flask(__name__)
+# CORS(app)
 
 @app.route('/api/time')
 def get_current_time():
     return {'time': time.time()}
 
+@app.route('/api/login', methods=['POST'])
+def attempt_signup():
+    # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
+    username = request.form.get('username')
+    password = request.form.get('password')
+    # signup_data = request.get_json()
+    output = {"token": "test1234"}
+    # output = "test1234"
+    if username == "":
+        output = "None"
+    return json.dumps(output)
+    # return None
+    # return json.dumps(output['token'])
+    # return json.dumps("test123")
+    # return "test123"
+
 @app.route('/api/db')
 def test_database():
-    import psycopg2
     # todo <Add Database Functionality>
 
     # Now, add functionality so that every time this route is called (by React), we'll add an entry to a database
