@@ -55,6 +55,8 @@ function Login({setToken}) {
         }
     }
 
+    //From tutorial: //https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
+    // Calls post request (above) to pass through the username and password input.
     const handleSignUpSubmit = async e => {
         e.preventDefault();
         // console.log(username, password, repeatPassword)
@@ -82,6 +84,7 @@ function Login({setToken}) {
             <div class="landing-logo mb-5">
                 <h3 class="text-dark">This is where the game logo goes.</h3>
                 <h3 className="text-light">Please login or sign up below.</h3>
+                <h6 className="text-light" >Note: You will not be redirected if you use invalid login credentials or attempt to sign up with a username that is already in use.</h6>
             </div>
 
             {/* Bootstrap Spacing: https://getbootstrap.com/docs/5.1/utilities/spacing/*/}

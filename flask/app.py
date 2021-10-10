@@ -1,6 +1,7 @@
 # https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project
 import time
 
+import werkzeug
 from flask import Flask, request
 import os
 import json
@@ -19,7 +20,7 @@ def attempt_login():
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     username_login = request.json['username']
     password_login = request.json['password']
-    print(request.json)
+    # print(request.json)
 
     valid_login = False
 
@@ -40,29 +41,39 @@ def attempt_login():
     # How to check for values in a row
     # https://www.tutorialspoint.com/best-way-to-test-if-a-row-exists-in-a-mysql-table
     # How to check for both username AND password: https://www.postgresql.org/docs/9.1/tutorial-select.html
-    cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s AND password=%s)",
-                              (username_login, password_login,))
-    #True/False value if login information is valid
-    valid_account = cur.fetchall()[0][0]
-    print("Valid?", valid_account)
+    cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s)", (username_login,))
 
+    #True/False value if login information is valid
+    valid_username = cur.fetchall()[0][0]
+    # print("Valid?", valid_username)
+
+    valid_account = False
+    # If the username is valid, fetch the password stored for that account and compare to the input
+    if valid_username:
+        cur.execute("SELECT * from accounts WHERE username=%s", (username_login,))
+        password = cur.fetchall()[0][2]
+        # Check if password matches database:https://werkzeug.palletsprojects.com/en/2.0.x/utils/
+        valid_account = werkzeug.security.check_password_hash(password, password_login)
+
+    # If the account is valid, update the user's token in the database
     if valid_account:
         valid_login = True
         # How to update values in table: https://www.postgresqltutorial.com/postgresql-update/
         cur.execute("UPDATE accounts SET token = %s WHERE username = %s", (token, username_login))
 
-    cur.execute("SELECT * FROM accounts;")
-
-    data = cur.fetchall()
+    # cur.execute("SELECT * FROM accounts;")
+    #
+    # data = cur.fetchall()
 
     conn.commit()
 
     cur.close()
     conn.close()
 
-    users = [{"token": i[0], "username": i[1], "password": i[2]} for i in
-             data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    print(users)
+    # For debugging:
+    # users = [{"token": i[0], "username": i[1], "password": i[2]} for i in
+    #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
+    # print(users)
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     # Return token to be stored in session storage by setToken
@@ -81,7 +92,7 @@ def attempt_signup():
     username_signup = request.json['username']
     password_signup = request.json['password']
     password_repeat_signup = request.json['repeatPassword']
-    print(request.json)
+    # print(request.json)
 
     valid_signup = False
 
@@ -100,28 +111,31 @@ def attempt_signup():
     cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s)", (username_signup,))
     # True/False value if username is not yet taken
     invalid_username = cur.fetchall()[0][0]
-    print("Invalid username?", invalid_username)
-    print("Passwords match?", password_signup == password_repeat_signup)
+    # print("Invalid username?", invalid_username)
+    # print("Passwords match?", password_signup == password_repeat_signup)
 
     # If the username is valid and the passwords match, then create user account.
     if not invalid_username and password_signup == password_repeat_signup:
         valid_signup = True
-        #Hash and salt password:
+        #Hash and salt password:https://werkzeug.palletsprojects.com/en/2.0.x/utils/
+        hashed_password = werkzeug.security.generate_password_hash(password_signup, method='pbkdf2:sha256', salt_length=16)
+
         #Create account in table
-        cur.execute("INSERT INTO accounts (token, username, password) VALUES (%s, %s, %s)", (token, username_signup, password_signup))
+        cur.execute("INSERT INTO accounts (token, username, password) VALUES (%s, %s, %s)", (token, username_signup, hashed_password))
 
-    cur.execute("SELECT * FROM accounts;")
+    # cur.execute("SELECT * FROM accounts;")
 
-    data = cur.fetchall()
+    # data = cur.fetchall()
 
     conn.commit()
 
     cur.close()
     conn.close()
 
-    users = [{"token": i[0], "username": i[1], "password": i[2]} for i in
-             data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    print(users)
+    # For debugging:
+    # users = [{"token": i[0], "username": i[1], "password": i[2]} for i in
+    #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
+    # print(users)
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     # Return token to be stored in session storage by setToken

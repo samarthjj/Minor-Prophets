@@ -1,10 +1,29 @@
 import React, {Component} from "react";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
+
+const handleLogout = async e => {
+        // Clear user session storage (delete token)
+        sessionStorage.clear()
+        // Force refresh to fully log out: https://upmostly.com/tutorials/how-to-refresh-a-page-or-component-in-react
+        window.location.reload(true);
+    }
 
 class CreateGame extends Component {
+
     render() {
         return (
             <div class="text-center">
+
+                {/*Logout Button*/}
+                    <div className="row mb-3">
+                        <div className="col-8">
+
+                        </div>
+                        <div className="col-2">
+                            <button onClick={handleLogout} class="btn btn-success btn-md text-dark mb-3">Logout</button>
+                        </div>
+                    </div>
+
                 <h1 className="title text-light">Minor Prophets</h1>
 
                 <div className="landing-logo mb-5">
