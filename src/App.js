@@ -18,7 +18,7 @@ import './css/Landing.css';
 
 function App() {
     //From tutorial: //https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
-    // const [token, setToken] = useState(0);
+    //
     const {token, setToken} = useToken();
 
     //From tutorial: //https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
