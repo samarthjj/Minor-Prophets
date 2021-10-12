@@ -9,6 +9,8 @@ import psycopg2
 app = Flask(__name__)
 # CORS(app)
 
+
+
 @app.route('/api/time')
 def get_current_time():
     return {'time': time.time()}
@@ -20,6 +22,15 @@ def attempt_signup():
     password = request.form.get('password')
     output = {"token": "test1234"}
     return json.dumps(output)
+
+
+@app.route('/startGame')
+def generate_questions():
+
+
+@app.route('/questionRequest')
+def grab_question():
+
 
 @app.route('/api/db')
 def test_database():
