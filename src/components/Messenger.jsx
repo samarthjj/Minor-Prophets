@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import io from "socket.io-client";
 
-let api = "http://localhost:5000";
+let api = "https://minor-prophets.herokuapp.com:5000";
 let socket = io.connect(api, { transport: ["websocket"] });
 
 const Messenger = () => {
