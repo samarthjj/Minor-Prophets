@@ -12,17 +12,23 @@ class CreateGame extends Component {
 
     render() {
         return (
-            <div class="text-center">
+            <div class="container-sm text-center">
 
-                {/*Logout Button*/}
-                    <div className="row mb-3">
-                        <div className="col-8">
+                <div className="row mb-3">
 
-                        </div>
-                        <div className="col-2">
-                            <button onClick={handleLogout} class="btn btn-success btn-md text-dark mb-3">Logout</button>
-                        </div>
+                    {/*Profile Button*/}
+                    <div className="col-2">
+                        <Link to="/profile"><button className="btn btn-success btn-md text-dark mb-3">Profile</button></Link>
                     </div>
+                    <div className="col-8">
+
+                    </div>
+
+                    {/*Logout Button*/}
+                    <div className="col-2">
+                        <button onClick={handleLogout} class="btn btn-success btn-md text-dark mb-3">Logout</button>
+                    </div>
+                </div>
 
                 <h1 className="title text-light">Minor Prophets</h1>
 
