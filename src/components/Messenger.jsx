@@ -16,6 +16,7 @@ const Messenger = () => {
   };
 
   const onClick = () => {
+    console.log(msg);
     socket.emit("message", message);
     setMessage("");
   };
