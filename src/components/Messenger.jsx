@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import io from "socket.io-client";
 
-let api = "http://0.0.0.0:5000";
+let api = "https://0.0.0.0:5000";
 let socket = io.connect(api, {transports: ["websocket"]}, {secure: true});
 
 const Messenger = () => {
