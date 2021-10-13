@@ -3,12 +3,14 @@ import time
 
 import werkzeug
 from flask import Flask, request
+from flask_socketio import SocketIO, emit
 import os
 import json
 import psycopg2
 import uuid
 
 app = Flask(__name__)
+socket_server = SocketIO(app, cors_allowed_origins="*")
 
 @app.route('/api/time')
 def get_current_time():
@@ -167,7 +169,8 @@ def test_database():
     cur = conn.cursor()
 
     cur.execute("CREATE TABLE IF NOT EXISTS users (username varchar, name varchar);")
-    cur.execute("INSERT INTO users (username, name) VALUES (%s, %s)", ("jmcaskie", "Josh")) # Wow - don't forget Python syntax when working in a non-python IDE... 30 min debug for missing a ')'
+    cur.execute("INSERT INTO users (username, name) VALUES (%s, %s)", ("jmcaskie", "Josh"))
+    # Wow - don't forget Python syntax when working in a non-python IDE... 30 min debug for missing a ')'
 
     cur.execute("SELECT * FROM users;")
 
@@ -194,3 +197,13 @@ def test_database():
 #                { "id": 2, "name": "Peaches", "price": "$5" }
 #              ]
 #         }
+
+
+@socket_server.on('message')
+def broadcast_message(msg):
+    emit("message", msg, broadcast=True)
+    return
+
+
+if __name__ == '__main__':
+    socket_server.run(app)
