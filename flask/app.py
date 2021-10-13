@@ -12,9 +12,11 @@ import uuid
 app = Flask(__name__)
 socket_server = SocketIO(app, cors_allowed_origins="*")
 
+
 @app.route('/api/time')
 def get_current_time():
     return {'time': time.time()}
+
 
 @app.route('/api/login', methods=['POST'])
 def attempt_login():
@@ -32,6 +34,7 @@ def attempt_login():
     token = str(uuid.uuid4())
 
     db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
+
     conn = psycopg2.connect(db_config)
     cur = conn.cursor()
 
@@ -86,6 +89,7 @@ def attempt_login():
         # If the login information is invalid, return INVALID token to signal not to setToken
         invalid_token = {"token": "INVALID"}
         return json.dumps(invalid_token)
+
 
 @app.route('/api/signup', methods=['POST'])
 def attempt_signup():
@@ -148,6 +152,7 @@ def attempt_signup():
         # If the sign up username is invalid (already taken), return INVALID token to signal not to setToken
         invalid_token = {"token": "INVALID"}
         return json.dumps(invalid_token)
+
 
 @app.route('/api/db')
 def test_database():
