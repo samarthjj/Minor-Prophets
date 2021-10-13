@@ -9,6 +9,7 @@ const Messenger = () => {
   const [message, setMessage] = useState("");
 
   socket.on("message", msg => {
+    console.log(msg);
     setMessages([...messages, msg])});
 
   const onChange = (event) => {
@@ -16,7 +17,6 @@ const Messenger = () => {
   };
 
   const onClick = () => {
-    console.log(msg);
     socket.emit("message", message);
     setMessage("");
   };
