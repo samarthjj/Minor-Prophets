@@ -12,6 +12,7 @@ import uuid
 app = Flask(__name__)
 socket_server = SocketIO(app, cors_allowed_origins="*")
 
+
 @app.route('/api/time')
 def get_current_time():
     return {'time': time.time()}
@@ -31,7 +32,9 @@ def attempt_login():
     # (token is generated here so it can be stored in database if user is valid)
     token = str(uuid.uuid4())
 
-    db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
+    # db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
+    db_config = "postgres://prvmvcknmksjsr:74da54a983b74369f03944aff039c072dfbba8f67444e596094744c180f0506a@ec2-34-194-123-31.compute-1.amazonaws.com:5432/dc5gd5qmeuuhtd"
+
     conn = psycopg2.connect(db_config)
     cur = conn.cursor()
 
@@ -161,7 +164,7 @@ def test_database():
     # https://www.twilio.com/blog/environment-variables-python --> Source
     db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
 
-    print(db_config)
+    # print(db_config)
 
     # https://www.psycopg.org/docs/usage.html --> Great PostgreSQL Source
 
@@ -184,7 +187,7 @@ def test_database():
 #     print(json.dumps(data))
 
     users = [{"username" : i[0], "name" : i[1]} for i in data] # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    print(users)
+    # print(users)
 
 #     for row in data:
 #         print(row)
@@ -201,9 +204,10 @@ def test_database():
 
 @socket_server.on('message')
 def broadcast_message(msg):
+    print("MESSAGE = "+msg)
     emit("message", msg, broadcast=True)
-    return
 
 
 if __name__ == '__main__':
-    socket_server.run(app)
+    socket_server.run(app, port=5000, host='0.0.0.0')
+

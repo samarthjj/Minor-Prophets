@@ -1,5 +1,5 @@
-import React, {Component, useEffect, useState} from "react";
-import {Link, Redirect} from "react-router-dom";
+import React, {useState} from "react";
+import {Redirect} from "react-router-dom";
 import PropTypes from "prop-types";
 
 //From tutorial: //https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications

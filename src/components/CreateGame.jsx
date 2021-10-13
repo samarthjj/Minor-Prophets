@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 const handleLogout = async e => {
         // Clear user session storage (delete token)
@@ -12,7 +12,7 @@ class CreateGame extends Component {
 
     render() {
         return (
-            <div class="text-center">
+            <div className="text-center">
 
                 {/*Logout Button*/}
                     <div className="row mb-3">
@@ -51,17 +51,6 @@ class CreateGame extends Component {
 
                     </form>
                 </div>
-
-                {/*<h1 class="title text-light">Minor Prophets</h1>*/}
-                {/*<h2>This is our landing page, aka the first page.</h2>*/}
-                {/*<Link to="/login"><button class="text-dark">Login</button></Link>*/}
-                {/*<Link to="/signup"><button class="text-dark">Sign Up</button></Link>*/}
-                {/*<div class="landing-logo">*/}
-                {/*    <h3>This is where the game logo goes.</h3>*/}
-                {/*</div>*/}
-                {/*<input className="code" type="text" value="hGjU87Uj" disabled />*/}
-                {/*<Link to="/TBD"><button>Join Game</button></Link>*/}
-                {/*<Link to="/TBD"><button>Start New Game</button></Link>*/}
             </div>
         );
     }

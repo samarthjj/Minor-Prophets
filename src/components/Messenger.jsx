@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import io from "socket.io-client";
 
-let api = "http://localhost:5000";
-let socket = io.connect(api, { transport: ["websocket"] });
+let api = "http://0.0.0.0:5000";
+let socket = io.connect(api, {transports: ["websocket"]}, {secure: true});
 
 const Messenger = () => {
   const [messages, setMessages] = useState([]);
@@ -16,22 +16,19 @@ const Messenger = () => {
   };
 
   const onClick = () => {
+      console.log(message);
     socket.emit("message", message);
     setMessage("");
   };
 
   return (
     <div className="App">
-      <h1 className="text-light">Messages</h1>
-      <div className="text-light">
+        <h1 className="text-light">Messages</h1>
+        <div className="text-light">
         {messages.map(msg => (<p>{msg}</p>))}
-      </div>
-      <p>
-        <input type="text" onChange={onChange} value={message} />
-      </p>
-      <p>
-        <input type="button" onClick={onClick} value="Send"/>
-      </p>
+    </div>
+    <input type="text" onChange={onChange} value={message} />
+    <input type="button" onClick={onClick} value="Send"/>
     </div>
   );
 };

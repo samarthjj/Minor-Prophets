@@ -2,14 +2,12 @@
 import './App.css';
 import React from "react";
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
-import Landing from "./components/Landing";
 import NotFound from './components/NotFound';
 import CreateGame from "./components/CreateGame";
 import GameSetup from "./components/GameSetup";
 import Database from "./components/Database";
 import Messenger from './components/Messenger';
 import Login from "./components/Login";
-import SignUp from "./components/SignUp";
 import useToken from "./useToken";
 
 

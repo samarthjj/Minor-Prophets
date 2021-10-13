@@ -1,5 +1,4 @@
-import React, {Component} from "react";
-import {Link} from "react-router-dom";
+import React from "react";
 
 // https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project
 // Followed guide on how to add a Flask backend
