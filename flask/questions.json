@@ -1,107 +1,107 @@
 {
   "MONTERO": {
     "Artist": "Lil Nas X",
-    "Tracklist": {
-      "MONTERO (Call Me By Your Name)": 1021683456,
-      "DEAD RIGHT NOW": 18190088,
-      "INDUSTRY BABY (feat. Jack Harlow)": 512529635,
-      "THATS WHAT I WANT": 96323795,
-      "THE ART OF REALIZATION": 24627,
-      "SCOOP (feat. Doja Cat)": 26328407,
-      "ONE OF ME (feat. Elton John)": 14901996,
-      "LOST IN THE CITADEL": 15482038,
-      "DOLLA SIGN SLIME (feat. Megan Thee Stallion)": 20259200,
-      "TALES OF DOMINICA": 18146214,
-      "SUN GOES DOWN": 86283851,
-      "VOID": 10997904,
-      "DONT WANT IT": 14877876,
-      "LIFE AFTER SALEM": 10067129,
-      "AM I DREAMING (feat. Miley Cyrus": 15325032
-    },
+    "Tracklist": [
+      {"MONTERO (Call Me By Your Name)": 1021683456},
+      {"DEAD RIGHT NOW": 18190088},
+      {"INDUSTRY BABY (feat. Jack Harlow)": 512529635},
+      {"THATS WHAT I WANT": 96323795},
+      {"THE ART OF REALIZATION": 24627},
+      {"SCOOP (feat. Doja Cat)": 26328407},
+      {"ONE OF ME (feat. Elton John)": 14901996},
+      {"LOST IN THE CITADEL": 15482038},
+      {"DOLLA SIGN SLIME (feat. Megan Thee Stallion)": 20259200},
+      {"TALES OF DOMINICA": 18146214},
+      {"SUN GOES DOWN": 86283851},
+      {"VOID": 10997904},
+      {"DONT WANT IT": 14877876},
+      {"LIFE AFTER SALEM": 10067129},
+      {"AM I DREAMING (feat. Miley Cyrus": 15325032}
+    ],
     "Album Art": "montero.jpg",
     "Release Date": 2021
   },
   "SOUR": {
     "Artist": "Olivia Rodrigo",
-    "Tracklist": {
-      "brutal": 228526490,
-      "traitor": 420331238,
-      "drivers license": 1110189317,
-      "1 step forward, 3 steps back": 149228996,
-      "deja vu": 590990654,
-      "good 4 u": 956313782,
-      "enough for you": 169433460,
-      "happier": 322364460,
-      "jealousy, jelousy": 244179667,
-      "favorite crime": 287200838,
-      "hope ur ok": 121951101
-    },
+    "Tracklist": [
+      {"brutal": 228526490},
+      {"traitor": 420331238},
+      {"drivers license": 1110189317},
+      {"1 step forward, 3 steps back": 149228996},
+      {"deja vu": 590990654},
+      {"good 4 u": 956313782},
+      {"enough for you": 169433460},
+      {"happier": 322364460},
+      {"jealousy, jealousy": 244179667},
+      {"favorite crime": 287200838},
+      {"hope ur ok": 121951101}
+    ],
     "Album Art": "sour.png",
     "Release Date": 2021
   },
   "Planet Her": {
     "Artist": "Doja Cat",
-    "Tracklist": {
-      "Woman": 283668701,
-      "Naked": 36907960,
-      "Payday (feat. Young Thug)": 30141196,
-      "Get Into It (Yuh)": 129394897,
-      "Need to Know": 337762330,
-      "I Don't Do Drugs (feat. Ariana Grande)":
-      60614795,
-      "Love To Dream": 29070956,
-      "You Right": 163253318,
-      "Been Like This": 35040580,
-      "Options (feat. JID)": 31276762,
-      "Ain't Shit": 178566873,
-      "Imagine": 21654083,
-      "Alone": 21996448,
-      "Kiss Me More (feat. SZA)": 773413643
-    },
+    "Tracklist": [
+      {"Woman": 283668701},
+      {"Naked": 36907960},
+      {"Payday (feat. Young Thug)": 30141196},
+      {"Get Into It (Yuh)": 129394897},
+      {"Need to Know": 337762330},
+      {"I Don't Do Drugs (feat. Ariana Grande)":
+      60614795},
+      {"Love To Dream": 29070956},
+      {"You Right": 163253318},
+      {"Been Like This": 35040580},
+      {"Options (feat. JID)": 31276762},
+      {"Ain't Shit": 178566873},
+      {"Imagine": 21654083},
+      {"Alone": 21996448},
+      {"Kiss Me More (feat. SZA)": 773413643}
+    ],
     "Album Art": "planet her.jpeg",
     "Release Date": 2021
   },
   "After Hours": {
     "Artist": "The Weeknd",
-    "Tracklist": {
-      "Alone Again": 96596692,
-      "Too Late": 98651055,
-      "Hardest To Love": 106768401,
-      "Scared To Live": 99239832,
-      "Snowchild": 88080578,
-      "Escape From LA": 93115290,
-      "Heartless": 463116390,
-      "Faith": 94726781,
-      "Blinding Lights": 2563659690,
-      "In Your Eyes": 589358457,
-      "Save Your Tears": 770351285,
-      "Repeat After Me (Interlude)": 62340903,
-      "After Hours": 344652938,
-      "Until I Bleed Out": 58436023
-    },
+    "Tracklist": [
+      {"Alone Again": 96596692},
+      {"Too Late": 98651055},
+      {"Hardest To Love": 106768401},
+      {"Scared To Live": 99239832},
+      {"Snowchild": 88080578},
+      {"Escape From LA": 93115290},
+      {"Heartless": 463116390},
+      {"Faith": 94726781},
+      {"Blinding Lights": 2563659690},
+      {"In Your Eyes": 589358457},
+      {"Save Your Tears": 770351285},
+      {"Repeat After Me (Interlude)": 62340903},
+      {"After Hours": 344652938},
+      {"Until I Bleed Out": 58436023}
+    ],
     "Album Art": "after hours.png",
     "Release Date": 2020
   },
   "Happier Than Ever": {
     "Artist": "Billie Eilish",
-    "Tracklist": {
-      "Getting Old": 41784256,
-      "I Didn't Change My Number": 39883977,
-      "Billie Bossa Nova": 43983987,
-      "my future": 259346153,
-      "Oxytocin": 45700490,
-      "GOLDWING": 28287957,
-      "Lost Cause": 132263484,
-      "Halley's Comet": 35444188,
-      "Not My Responsibility": 20494706,
-      "OverHeated": 23596834,
-      "Everybody Dies": 22809630,
-      "Your Power": 201291625,
-      "NDA": 102346063,
-      "Therefore I Am": 491284735,
-      "Happier Than Ever": 265502263,
-      "Male Fantasy": 32182568
-    },
+    "Tracklist": [
+      {"Getting Old": 41784256},
+      {"I Didn't Change My Number": 39883977},
+      {"Billie Bossa Nova": 43983987},
+      {"my future": 259346153},
+      {"Oxytocin": 45700490},
+      {"GOLDWING": 28287957},
+      {"Lost Cause": 132263484},
+      {"Halley's Comet": 35444188},
+      {"Not My Responsibility": 20494706},
+      {"OverHeated": 23596834},
+      {"Everybody Dies": 22809630},
+      {"Your Power": 201291625},
+      {"NDA": 102346063},
+      {"Therefore I Am": 491284735},
+      {"Happier Than Ever": 265502263},
+      {"Male Fantasy": 32182568}
+    ],
     "Album Art": "happier than ever.jpeg",
     "Release Date": 2021
   },
@@ -110,7 +110,7 @@
 
     "Artist": "Joyner Lucas",
 
-    "Tracklist": {"When I Grow Up - Intro": 1397891, "Evolution": 5355308, "On This Way (feat. The Game & Ilya)": 3782467, "Zim Zimma": 25755172, "Tattle Tales - Skit": 1500446, "Snitch": 15862667, "Str8 Like Dat": 5462287, "Fall Slowly (feat. Ashanti) - Extended Version": 3431178, "The Problem": 4012735, "Legend (feat. Rick Ross)": 3265066, "Father's Day - Skit": 1050711, "Like a River (feat. Elijah James)": 4201074},
+    "Tracklist": [{"When I Grow Up - Intro": 1397891}, {"Evolution": 5355308}, {"On This Way (feat. The Game & Ilya)": 3782467}, {"Zim Zimma": 25755172}, {"Tattle Tales - Skit": 1500446}, {"Snitch": 15862667}, {"Str8 Like Dat": 5462287}, {"Fall Slowly (feat. Ashanti) - Extended Version": 3431178}, {"The Problem": 4012735}, {"Legend (feat. Rick Ross)": 3265066}, {"Father's Day - Skit": 1050711}, {"Like a River (feat. Elijah James)": 4201074}],
 
     "Album Art": "evolution.png",
 
@@ -119,21 +119,21 @@
 
   "Future Nostalgia": {
     "Artist": "Dua Lipa",
-    "Tracklist": {
-      "Future Nostalgia": 114550875,
-      "Don't Start Now": 1658122443,
-      "Cool": 98105757,
-      "Physical": 575389263,
-      "Levitating": 339042855,
-      "Pretty Please": 123192598,
-      "Hallucinate": 202452789,
-      "Love Again": 219044767,
-      "Break My Heart": 755110921,
-      "Good In Bed": 76255639,
-      "Boys Will Be Boys": 68197381,
-      "Levitating (feat. DaBaby)": 1008522621,
-      "Fever": 189911093
-    },
+    "Tracklist": [
+      {"Future Nostalgia": 114550875},
+      {"Don't Start Now": 1658122443},
+      {"Cool": 98105757},
+      {"Physical": 575389263},
+      {"Levitating": 339042855},
+      {"Pretty Please": 123192598},
+      {"Hallucinate": 202452789},
+      {"Love Again": 219044767},
+      {"Break My Heart": 755110921},
+      {"Good In Bed": 76255639},
+      {"Boys Will Be Boys": 68197381},
+      {"Levitating (feat. DaBaby)": 1008522621},
+      {"Fever": 189911093}
+    ],
     "Album Art": "future nostalgia.jpg",
     "Release Date": 2020
   },
@@ -142,7 +142,7 @@
 
     "Artist": "WILLOW",
 
-    "Tracklist": {"t r a n s p a r e n t s o u l feat. Travis Barker": 131329714, "F**K You": 1420299, "Gaslight feat. Travis Barker": 3125851, "don't SAVE ME": 2115899, "naïve": 3522532, "Lipstick": 5855047, "Come Home feat. Ayla Tesler-Mabe": 2851204, "4ever": 2625933, "XTRA feat. Tierra Whack": 2064421, "G R O W (WILLOW & Avril Lavigne feat. Travis Barker": 5192021, "¡BREAKOUT! feat. Cherry Glazerr": 1351587},
+    "Tracklist": [{"t r a n s p a r e n t s o u l feat. Travis Barker": 131329714}, {"F**K You": 1420299}, {"Gaslight feat. Travis Barker": 3125851}, {"don't SAVE ME": 2115899}, {"naïve": 3522532}, {"Lipstick": 5855047}, {"Come Home feat. Ayla Tesler-Mabe": 2851204}, {"4ever": 2625933}, {"XTRA feat. Tierra Whack": 2064421}, {"G R O W (WILLOW & Avril Lavigne feat. Travis Barker": 5192021}, {"¡BREAKOUT! feat. Cherry Glazerr": 1351587}],
 
     "Album Art": "lately i feel everything.jpg",
     "Release Date": 2021
