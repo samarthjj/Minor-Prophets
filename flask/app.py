@@ -1,6 +1,6 @@
 # https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project
 import time
-
+import app
 import werkzeug
 from flask import Flask, request
 from flask_socketio import SocketIO, emit
@@ -158,19 +158,20 @@ def attempt_signup():
         return json.dumps(invalid_token)
 
 
-@app.route('/api/startGame', methods=['POST'])
+@app.route('/api/startGame')
 def gen_questions():
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
+    '''
     request_data = request.get_json)()
 
     rounds = None
     if 'rounds' in request_data:
         rounds = request_data['rounds']
-
+        '''
     f = open("questions.json")
-    g.questions = code.generate_questions(json.loads(f.read(), rounds)
+    g.questions = code.generate_questions(json.loads(f.read(), 3)
     f.close()
-    return {"": ""}
+    return json.dumps(g.questions)
 
 @app.route('/api/questionRequest')
 def grab_question():

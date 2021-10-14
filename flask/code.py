@@ -5,7 +5,8 @@ from datetime import date
 
 def generate_questions(albumData, rounds):
 
-    allQuestions = [generate_artist_questions(albumData), generate_release_date_questions(albumData), generate_top_track_questions(albumData)]
+    allQuestions = generate_artist_questions(albumData) + generate_release_date_questions(albumData) + generate_top_track_questions(albumData)
+
     roundsPerGame = 3
     questions = []
     for i in range(rounds*roundsPerGame):

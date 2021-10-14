@@ -1,7 +1,19 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 
+
 class GameSetup extends Component {
+
+    function gen_questions() {
+        return fetch("/api/login", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(data => data.json())
+    }
+
     render() {
         return (
             <div class="text-center">
@@ -17,7 +29,7 @@ class GameSetup extends Component {
                             <Link to="/creategame"><button class="btn btn-success btn-md text-dark mb-3">Cancel</button></Link>
                         </div>
                         <div className="col-2">
-                            <Link to="/question"><button className="btn btn-primary btn-md text-dark mb-3">Start Game</button></Link>
+                            <Link to="/question"><button onClick={gen_questions} className="btn btn-primary btn-md text-dark mb-3">Start Game</button></Link>
                         </div>
                     </div>
 
