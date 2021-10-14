@@ -4,12 +4,13 @@ from flask import Flask, request
 import os
 import json
 import psycopg2
+import code
 # from flask_cors import CORS
 
 app = Flask(__name__)
 # CORS(app)
 
-
+from flask import g
 
 @app.route('/api/time')
 def get_current_time():
@@ -24,12 +25,25 @@ def attempt_signup():
     return json.dumps(output)
 
 
-@app.route('/startGame')
-def generate_questions():
+@app.route('/api/startGame', methods=['POST'])
+def gen_questions():
+    # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
+    request_data = request.get_json)()
 
+    rounds = None
+    if 'rounds' in request_data:
+        rounds = request_data['rounds']
 
-@app.route('/questionRequest')
+    f = open("questions.json")
+    g.questions = code.generate_questions(json.loads(f.read(), rounds)
+    f.close()
+    return {"": ""}
+
+@app.route('/api/questionRequest')
 def grab_question():
+    question = random.choice(g.questions)
+    g.questions.remove(question)
+    return question
 
 
 @app.route('/api/db')
