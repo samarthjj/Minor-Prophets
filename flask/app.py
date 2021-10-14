@@ -38,11 +38,11 @@ def attempt_login():
     conn = psycopg2.connect(db_config)
     cur = conn.cursor()
 
-    # https://www.postgresql.org/docs/8.2/sql-droptable.html
+    # https://www.postgresql.org/docs/8.2/sql-droptable.html, https://www.postgresql.org/docs/8.1/sql-delete.html
     # Delete all accounts [TESTING PURPOSES ONLY- REMOVE ONCE FUNCTIONALITY IS COMPLETE]
-    # cur.execute("DROP TABLE accounts;")
+    # cur.execute("DROP TABLE accounts")
 
-    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, username varchar, password varchar);")
+    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, username varchar, password varchar, games_won varchar, total_points varchar, ratio varchar, fav_genre varchar);")
     # How to check for values in a row
     # https://www.tutorialspoint.com/best-way-to-test-if-a-row-exists-in-a-mysql-table
     # How to check for both username AND password: https://www.postgresql.org/docs/9.1/tutorial-select.html
@@ -76,7 +76,7 @@ def attempt_login():
     conn.close()
 
     # For debugging:
-    users = [{"token": i[0], "username": i[1], "password": i[2]} for i in
+    users = [{"token": i[0], "username": i[1], "password": i[2], "Games Won:": i[3], "Total Points:":i[4], "Win Ratio:":i[5], "Favorite Genre:":i[6]} for i in
              data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
     print(users)
 
@@ -113,7 +113,7 @@ def attempt_signup():
 
     # How to check for values in a row
     # https://www.tutorialspoint.com/best-way-to-test-if-a-row-exists-in-a-mysql-table
-    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, username varchar, password varchar);")
+    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, username varchar, password varchar, games_won varchar, total_points varchar, ratio varchar, fav_genre varchar);")
     cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s)", (username_signup,))
     # True/False value if username is not yet taken
     invalid_username = cur.fetchall()[0][0]
@@ -127,21 +127,21 @@ def attempt_signup():
         hashed_password = werkzeug.security.generate_password_hash(password_signup, method='pbkdf2:sha256', salt_length=16)
 
         #Create account in table
-        cur.execute("INSERT INTO accounts (token, username, password) VALUES (%s, %s, %s)", (token, username_signup, hashed_password))
+        cur.execute("INSERT INTO accounts (token, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s)", (token, username_signup, hashed_password, "0", "0", "0", "Rap"))
 
     cur.execute("SELECT * FROM accounts;")
 
-    # data = cur.fetchall()
-    #
-    # conn.commit()
+    data = cur.fetchall()
+
+    conn.commit()
 
     cur.close()
     conn.close()
 
     # For debugging:
-    # users = [{"token": i[0], "username": i[1], "password": i[2]} for i in
-    #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    # print(users)
+    users = [{"token": i[0], "username": i[1], "password": i[2], "Games Won:": i[3], "Total Points:":i[4], "Win Ratio:":i[5], "Favorite Genre:":i[6]} for i in
+             data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
+    print(users)
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     # Return token to be stored in session storage by setToken
