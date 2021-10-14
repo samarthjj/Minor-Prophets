@@ -18,7 +18,6 @@ import './css/Landing.css';
 
 function App() {
     //From tutorial: //https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
-    // const [token, setToken] = useState(0);
     const {token, setToken} = useToken();
 
     //From tutorial: //https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
@@ -33,9 +32,10 @@ function App() {
     return (
         <Router>
             <Switch>
-                <Route exact path="/" component={Landing} />
-                <Route exact path="/login" component={Login} />
-                <Route exact path="/signup" component={SignUp} />
+                <Route exact path="/" component={CreateGame} />
+                {/*SignUp page is no longer in use. Login page is not accessible and only appears when a user is not logged in.*/}
+                {/*<Route exact path="/login" component={Login} />*/}
+                {/*<Route exact path="/signup" component={SignUp} />*/}
                 <Route exact path="/creategame" component={CreateGame} />
                 <Route exact path="/gamesetup" component={GameSetup} />
                 <Route exact path="/database_test" component={Database} />
