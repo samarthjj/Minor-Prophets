@@ -1,3 +1,5 @@
 flask
+Flask-SocketIO
+eventlet
 python-dotenv
 psycopg2
