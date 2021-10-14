@@ -7,9 +7,14 @@ import NotFound from './components/NotFound';
 import CreateGame from "./components/CreateGame";
 import GameSetup from "./components/GameSetup";
 import Database from "./components/Database";
+import Messenger from './components/Messenger';
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import useToken from "./useToken";
+import Profile from "./components/Profile";
+import Question from "./components/Question";
+import Answer from "./components/Answer";
+import Gameover from "./components/Gameover";
 
 
 // To add more CSS files to the page, do "import '.css'"
@@ -36,12 +41,18 @@ function App() {
                 {/*SignUp page is no longer in use. Login page is not accessible and only appears when a user is not logged in.*/}
                 {/*<Route exact path="/login" component={Login} />*/}
                 {/*<Route exact path="/signup" component={SignUp} />*/}
+
                 <Route exact path="/creategame" component={CreateGame} />
                 <Route exact path="/gamesetup" component={GameSetup} />
+
+                <Route exact path="/profile" component={Profile}/>
+                <Route exact path="/question" component={Question}/>
+                <Route exact path="/answer" component={Answer}/>
+                <Route exact path="/gameover" component={Gameover}/>
+
                 <Route exact path="/database_test" component={Database} />
-                <Route exact path="/login" component={NotFound} />
-                <Route exact path="/signup" component={NotFound} />
                 <Route exact path="/TBD" component={NotFound} />
+                <Route exact path="/messenger" component={Messenger} />
             </Switch>
          </Router>
     );

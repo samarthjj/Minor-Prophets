@@ -3,16 +3,20 @@ import time
 
 import werkzeug
 from flask import Flask, request
+from flask_socketio import SocketIO, emit
 import os
 import json
 import psycopg2
 import uuid
 
 app = Flask(__name__)
+socket_server = SocketIO(app, cors_allowed_origins="*")
+
 
 @app.route('/api/time')
 def get_current_time():
     return {'time': time.time()}
+
 
 @app.route('/api/login', methods=['POST'])
 def attempt_login():
@@ -30,6 +34,7 @@ def attempt_login():
     token = str(uuid.uuid4())
 
     db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
+
     conn = psycopg2.connect(db_config)
     cur = conn.cursor()
 
@@ -84,6 +89,7 @@ def attempt_login():
         # If the login information is invalid, return INVALID token to signal not to setToken
         invalid_token = {"token": "INVALID"}
         return json.dumps(invalid_token)
+
 
 @app.route('/api/signup', methods=['POST'])
 def attempt_signup():
@@ -147,6 +153,7 @@ def attempt_signup():
         invalid_token = {"token": "INVALID"}
         return json.dumps(invalid_token)
 
+
 @app.route('/api/db')
 def test_database():
     # todo <Add Database Functionality>
@@ -167,7 +174,8 @@ def test_database():
     cur = conn.cursor()
 
     cur.execute("CREATE TABLE IF NOT EXISTS users (username varchar, name varchar);")
-    cur.execute("INSERT INTO users (username, name) VALUES (%s, %s)", ("jmcaskie", "Josh")) # Wow - don't forget Python syntax when working in a non-python IDE... 30 min debug for missing a ')'
+    cur.execute("INSERT INTO users (username, name) VALUES (%s, %s)", ("jmcaskie", "Josh"))
+    # Wow - don't forget Python syntax when working in a non-python IDE... 30 min debug for missing a ')'
 
     cur.execute("SELECT * FROM users;")
 
@@ -194,3 +202,13 @@ def test_database():
 #                { "id": 2, "name": "Peaches", "price": "$5" }
 #              ]
 #         }
+
+
+@socket_server.on('message')
+def broadcast_message(msg):
+    emit("message", msg, broadcast=True)
+    return
+
+
+if __name__ == '__main__':
+    socket_server.run(app)

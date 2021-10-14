@@ -12,11 +12,12 @@
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.0.1",
-    "yarn": "^1.22.11"
+    "yarn": "^1.22.11",
+    "socket.io-client": "2.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-flask": "cd flask && flask run --no-debugger",
+    "start-flask": "cd flask && python3 app.py",
     "start-api": "cd flask && venv/Scripts/activate --no-debugger && flask run",
     "start-api-mac": "cd flask && . venv/Scripts/activate --no-debugger && flask run",
     "start-both": "react-scripts start && cd flask && venv/Scripts/activate --no-debugger && flask run",
