@@ -2,8 +2,8 @@ import React, {Component} from "react";
 import {Link, Redirect} from "react-router-dom";
 
 const handleLogout = async e => {
-        // Clear user session storage (delete token)
-        sessionStorage.clear()
+        // Clear user cookie: https://newbedev.com/javascript-how-to-clear-cookies-in-javascript-code-example
+        document.cookie = document.cookie + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
         // Force refresh to fully log out: https://upmostly.com/tutorials/how-to-refresh-a-page-or-component-in-react
         window.location.reload(true);
     }
