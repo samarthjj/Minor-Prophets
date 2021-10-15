@@ -20,6 +20,7 @@ def get_current_time():
 
 @app.route('/api/stats')
 def stats():
+    # How to get json arguments: https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     token = request.args.get('token')
     return json.dumps(data_request.get_stats(token))
     # return json.dumps(1)

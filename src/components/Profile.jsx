@@ -1,9 +1,10 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 
-//Axios: https://www.npmjs.com/package/axios
+//From Axios tutorial: https://www.npmjs.com/package/axios
 const axios = require('axios').default;
 
+//From Axios tutorial: https://www.npmjs.com/package/axios
 function get_profile()
 {
     axios.get('/api/stats', {
