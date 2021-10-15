@@ -8,6 +8,7 @@ import os
 import json
 import psycopg2
 import uuid
+import data_request
 
 app = Flask(__name__)
 socket_server = SocketIO(app, cors_allowed_origins="*")
@@ -17,6 +18,11 @@ socket_server = SocketIO(app, cors_allowed_origins="*")
 def get_current_time():
     return {'time': time.time()}
 
+@app.route('/api/stats')
+def stats():
+    token = request.args.get('token')
+    return json.dumps(data_request.get_stats(token))
+    # return json.dumps(1)
 
 @app.route('/api/login', methods=['POST'])
 def attempt_login():

@@ -1,8 +1,24 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 
+//Axios: https://www.npmjs.com/package/axios
+const axios = require('axios').default;
+
+function get_profile()
+{
+    axios.get('/api/stats', {
+        params: {
+            token: document.cookie.split("=")[1]
+        }
+    })
+        .then(function (response) {
+            console.log(response);
+        })
+}
+
 class Profile extends Component {
     render() {
+        get_profile()
         return (
             <div class="container-sm text-center">
 
