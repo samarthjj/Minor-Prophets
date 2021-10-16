@@ -72,9 +72,9 @@ def attempt_login():
         # How to update values in table: https://www.postgresqltutorial.com/postgresql-update/
         cur.execute("UPDATE accounts SET token = %s WHERE username = %s", (token, username_login))
 
-    cur.execute("SELECT * FROM accounts;")
-
-    data = cur.fetchall()
+    # cur.execute("SELECT * FROM accounts;")
+    #
+    # data = cur.fetchall()
 
     conn.commit()
 
@@ -82,9 +82,9 @@ def attempt_login():
     conn.close()
 
     # For debugging:
-    users = [{"token": i[0], "username": i[1], "password": i[2], "Games Won:": i[3], "Total Points:":i[4], "Win Ratio:":i[5], "Favorite Genre:":i[6]} for i in
-             data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    print(users)
+    # users = [{"token": i[0], "username": i[1], "password": i[2], "Games Won:": i[3], "Total Points:":i[4], "Win Ratio:":i[5], "Favorite Genre:":i[6]} for i in
+    #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
+    # print(users)
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     # Return token to be stored in session storage by setToken
@@ -135,9 +135,9 @@ def attempt_signup():
         #Create account in table
         cur.execute("INSERT INTO accounts (token, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s)", (token, username_signup, hashed_password, "0", "0", "0", "Rock"))
 
-    cur.execute("SELECT * FROM accounts;")
-
-    data = cur.fetchall()
+    # cur.execute("SELECT * FROM accounts;")
+    #
+    # data = cur.fetchall()
 
     conn.commit()
 
@@ -145,9 +145,9 @@ def attempt_signup():
     conn.close()
 
     # For debugging:
-    users = [{"token": i[0], "username": i[1], "password": i[2], "Games Won:": i[3], "Total Points:":i[4], "Win Ratio:":i[5], "Favorite Genre:":i[6]} for i in
-             data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    print(users)
+    # users = [{"token": i[0], "username": i[1], "password": i[2], "Games Won:": i[3], "Total Points:":i[4], "Win Ratio:":i[5], "Favorite Genre:":i[6]} for i in
+    #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
+    # print(users)
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     # Return token to be stored in session storage by setToken
