@@ -42,7 +42,7 @@ def get_stats(token):
 
     data = data[0]
 
-    profile = {"Games Won:": data[3], "Total Points:": data[4], "Win Ratio:": data[5], "Favorite Genre:": data[6]}
+    profile = {"GamesWon": data[3], "TotalPoints": data[4], "WinRatio": data[5], "FavoriteGenre": data[6]}
 
     # print(profile)
 

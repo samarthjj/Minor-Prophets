@@ -134,7 +134,7 @@ def attempt_signup():
         hashed_password = werkzeug.security.generate_password_hash(password_signup, method='pbkdf2:sha256', salt_length=16)
 
         #Create account in table
-        cur.execute("INSERT INTO accounts (token, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s)", (token, username_signup, hashed_password, "0", "0", "0", "Rap"))
+        cur.execute("INSERT INTO accounts (token, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s)", (token, username_signup, hashed_password, "0", "0", "0", "Rock"))
 
     cur.execute("SELECT * FROM accounts;")
 

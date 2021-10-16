@@ -5,6 +5,7 @@ import {Link} from "react-router-dom";
 const axios = require('axios').default;
 
 //From Axios tutorial: https://www.npmjs.com/package/axios
+//Gets profile information for logged in user
 function get_profile()
 {
     axios.get('/api/stats', {
@@ -13,7 +14,11 @@ function get_profile()
         }
     })
         .then(function (response) {
-            console.log(response);
+            // Update each of the elements with the correct information
+            document.getElementById("GamesWon").innerHTML = response.data.GamesWon
+            document.getElementById("TotalPoints").innerHTML = response.data.TotalPoints
+            document.getElementById("Ratio").innerHTML = response.data.WinRatio
+            document.getElementById("Genre").innerHTML = response.data.FavoriteGenre
         })
 }
 
@@ -44,13 +49,25 @@ class Profile extends Component {
                         <h3 className="text-light">Games won: </h3>
                     </div>
                     <div className="col-3">
+                        <h3 className="text-light" id = "GamesWon"> </h3>
+                    </div>
+                    <div className="col-3">
                         <h3 className="text-light">Total points earned: </h3>
+                    </div>
+                    <div className="col-3">
+                        <h3 className="text-light" id = "TotalPoints"> </h3>
                     </div>
                     <div className="col-3">
                         <h3 className="text-light">Win/loss ratio: </h3>
                     </div>
                     <div className="col-3">
+                        <h3 className="text-light" id = "Ratio"> </h3>
+                    </div>
+                    <div className="col-3">
                         <h3 className="text-light">Favorite genre: </h3>
+                    </div>
+                    <div className="col-3">
+                        <h3 className="text-light" id = "Genre"> </h3>
                     </div>
                 </div>
 
