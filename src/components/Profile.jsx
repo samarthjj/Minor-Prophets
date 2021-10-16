@@ -15,6 +15,7 @@ function get_profile()
     })
         .then(function (response) {
             // Update each of the elements with the correct information
+            // Updating HTML: https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
             document.getElementById("GamesWon").innerHTML = response.data.GamesWon
             document.getElementById("TotalPoints").innerHTML = response.data.TotalPoints
             document.getElementById("Ratio").innerHTML = response.data.WinRatio
