@@ -1,0 +1,38 @@
+# USAGE: 
+    # sudo chmod 755 runprog - makes script executable!
+    # ./runprog <arg>
+# ARG VALUE:
+    # Please provide only one argument
+        # 0 = run only react
+        # 1 = run only flask
+        # 2 = run both
+        # Else do nothing print error.
+# EXAMPLE USAGE:
+    # ./runprog 0 
+
+
+#!/bin/bash
+
+NOCOLOR='\033[0m'
+RED='\033[0;31m'
+
+if [ $# -gt 1 ]; then
+    echo -e "${RED}Please enter only one argument!${NOCOLOR}"
+    exit
+elif [ $# -lt 1 ]; then
+    echo -e "${RED}Please provide at least one argument!${NOCOLOR}"
+    exit
+fi 
+
+arg=$1
+
+if [ $arg -eq 0 ]; then
+    yarn start
+elif [ $arg -eq 1 ]; then
+    yarn start-flask
+elif [ $arg -eq 2 ]; then
+    yarn start &
+    yarn start-flask
+else
+    echo -e "${RED}Wrong argument provided!${NOCOLOR}"
+fi

@@ -7,7 +7,7 @@ RUN apt-get install python3
 RUN apt-get install -y python3-pip # -y says yes to the prompt
 
 # install supervisor (manages the running applications)
-RUN apt-get install -y supervisor
+# RUN apt-get install -y supervisor
 
 WORKDIR /root
 
@@ -15,18 +15,21 @@ ENV HOME /root
 
 # add app
 COPY . .
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN pip3 install -r requirements.txt
-RUN npm install react-router-dom
+# RUN npm install react-router-dom
 
 RUN yarn install
 
 EXPOSE 3000
+EXPOSE 5000
+
+RUN chmod 755 runprog
 
 # start app
-CMD ["/usr/bin/supervisord"]
-# CMD "cd flask && flask run"
+CMD ./runprog 2
+# CMD ["/usr/bin/supervisord"]
 
 # https://advancedweb.hu/supervisor-with-docker-lessons-learned/
 # https://docs.docker.com/config/containers/multi-service_container/

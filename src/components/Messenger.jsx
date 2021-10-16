@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import io from "socket.io-client";
+import { socket } from '../socket'
 
-let api = "http://localhost:5000";
-let socket = io.connect(api, { transport: ["websocket"] });
 
 const Messenger = () => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
 
   socket.on("message", msg => {
+    console.log(msg);
     setMessages([...messages, msg])});
 
   const onChange = (event) => {

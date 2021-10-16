@@ -211,4 +211,4 @@ def broadcast_message(msg):
 
 
 if __name__ == '__main__':
-    socket_server.run(app)
+    socket_server.run(app, host="0.0.0.0", port=os.environ['PORT'] if 'PORT' in os.environ else 5000)
