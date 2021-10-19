@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 
 class GameSetup extends Component {
-
+ /*
     function gen_questions() {
         return fetch("/api/login", {
             method: 'GET',
@@ -13,6 +13,7 @@ class GameSetup extends Component {
         })
             .then(data => data.json())
     }
+    */
 
     render() {
         return (
@@ -29,7 +30,7 @@ class GameSetup extends Component {
                             <Link to="/creategame"><button class="btn btn-success btn-md text-dark mb-3">Cancel</button></Link>
                         </div>
                         <div className="col-2">
-                            <Link to="/question"><button onClick={gen_questions} className="btn btn-primary btn-md text-dark mb-3">Start Game</button></Link>
+                            <Link to="/question"><button className="btn btn-primary btn-md text-dark mb-3">Start Game</button></Link>
                         </div>
                     </div>
 

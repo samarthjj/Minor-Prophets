@@ -179,7 +179,6 @@ def grab_question():
     g.questions.remove(question)
     return question
 
-
 @app.route('/api/db')
 def test_database():
     # todo <Add Database Functionality>

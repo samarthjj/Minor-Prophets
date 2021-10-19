@@ -1,32 +1,35 @@
 import json
 import random
+import math
 from datetime import date
 
 
 def generate_questions(albumData, rounds):
 
-    allQuestions = generate_artist_questions(albumData) + generate_release_date_questions(albumData) + generate_top_track_questions(albumData)
+    questionsPerRound = 3
+    numberOfCategories = 3
 
-    roundsPerGame = 3
-    questions = []
-    for i in range(rounds*roundsPerGame):
-        choice = random.choice(allQuestions)
-        allQuestions.remove(choice)
-        questions.append(choice)
+    numberOfQuestionsPerCategory = math.ceil((rounds * questionsPerRound) / numberOfCategories)
+
+    questions = generate_artist_questions(albumData, numberOfQuestionsPerCategory) + generate_release_date_questions(albumData, numberOfQuestionsPerCategory) + generate_top_track_questions(albumData, numberOfQuestionsPerCategory)
 
     return questions
 
-def generate_artist_questions(albumData):
+
+def generate_artist_questions(albumData, numberOfQuestions):
 
     questions = []
 
-    if len(albumData) >= 4:
 
-        for album in albumData.keys():
+    if len(albumData['Albums']) >= 4:
 
-            artists = [albumData[album]["Artist"] for album in albumData.keys()]
+        albums = albumChooser(numberOfQuestions, albumData, False)
 
-            answer = albumData[album]['Artist']
+        for album in albums:
+
+            artists = [eachAlbum['Artist'] for eachAlbum in albumData['Albums']]
+
+            answer = album['Artist']
             artists.remove(answer)
 
             choices = [answer]
@@ -37,20 +40,22 @@ def generate_artist_questions(albumData):
 
             random.shuffle(choices)
 
-            questions.append({"question": "Which artist released " + album + "?", "choices": choices, "answer": answer, "album art": albumData[album]['Album Art']})
+            questions.append({"question": "Which artist released " + album['Name'] + "?", "choices": choices, "answer": answer, "album art": album['Album Art']})
 
     return questions
 
 
-def generate_release_date_questions(albumData):
+def generate_release_date_questions(albumData, numberOfQuestions):
 
     questions = []
 
-    if len(albumData) >= 4:
+    if len(albumData['Albums']) >= 4:
 
-        for album in albumData.keys():
+        albums = albumChooser(numberOfQuestions, albumData, False)
 
-            answer = albumData[album]['Release Date']
+        for album in albums:
+
+            answer = album['Release Date']
 
             choices = [answer]
             lowerBound, upperBound = bounds(answer)
@@ -67,34 +72,40 @@ def generate_release_date_questions(albumData):
 
             random.shuffle(choices)
 
-            questions.append({"question": "What year was " + album + " by " + albumData[album]['Artist'] + " released?", "choices": choices, "answer": answer, "album art": albumData[album]['Album Art']})
+            questions.append({"question": "What year was " + album['Name'] + " by " + album['Artist'] + " released?", "choices": choices, "answer": answer, "album art": album['Album Art']})
 
     return questions
 
 
-def generate_top_track_questions(albumData):
+def generate_top_track_questions(albumData, numberOfQuestions):
 
     questions = []
 
-    if len(albumData) >= 4:
+    if len(albumData['Albums']) >= 4:
 
-        for album in albumData.keys():
+        albums = albumChooser(numberOfQuestions, albumData, True)
 
-            tracklistSortedByPlays = sorted(albumData[album]["Tracklist"], key=sortByPlays, reverse=True)
-            answer = tracklistSortedByPlays[0]
-            tracklistSortedByPlays.remove(answer)
-            choices = [list(answer.keys())[0]]
+        for album in albums:
+
+            top3Songs = findTopThree(album)
+
+            answer = top3Songs[0][0]
+            top3Songs.pop(0)
+            choices = [answer]
 
             for i in range(1,3):
-                choice = tracklistSortedByPlays[0]
-                choices.append(list(choice.keys())[0])
-                tracklistSortedByPlays.remove(choice)
+                choice = top3Songs[0][0]
+                choices.append(choice)
+                top3Songs.pop(0)
 
-            choices.append(list(random.choice(tracklistSortedByPlays).keys())[0])
+            possibleTracks = getTracks(album['Tracklist'], choices)
+
+            choices.append(random.choice(possibleTracks))
 
             random.shuffle(choices)
 
-            questions.append({"question": "Which track has the most plays?", "choices": choices, "answer": list(answer.keys())[0], "album art": albumData[album]['Album Art']})
+            questions.append({"question": "Which track has the most plays?", "choices": choices, "answer": answer, "album art": album['Album Art']})
+
 
     return questions
 
@@ -112,5 +123,54 @@ def bounds(answer):
     return lower, upper
 
 
-def sortByPlays(track):
-    return list(track.values())[0]
+
+def albumChooser(numberOfQuestions, albumData, isTracks):
+
+    possibleAlbums = albumData['Albums'].copy()
+    albums = []
+    count = 0
+    while count < numberOfQuestions:
+        album = random.choice(possibleAlbums)
+        if isTracks:
+            if len(album['Tracklist']) >= 4:
+                albums.append(album)
+                possibleAlbums.remove(album)
+                count += 1
+        else:
+            albums.append(album)
+            possibleAlbums.remove(album)
+            count += 1
+
+    return albums
+
+
+def getTracks(tracks, choices):
+
+    possibleTracks = []
+    for track in tracks.keys():
+        if track not in choices:
+            possibleTracks.append(track)
+
+    return possibleTracks
+
+
+def findTopThree(album):
+
+    top3 = []
+    for key in album['Tracklist'].keys():
+        top3.append((key, album['Tracklist'][key]))
+
+    top3 = sorted(top3, key=sortByPlays, reverse=True)
+
+    return top3[0:3]
+
+
+def sortByPlays(tup):
+    return tup[1]
+
+
+f = open("questions.json")
+questions = generate_questions(json.loads(f.read()), 4)
+
+print(questions)
+f.close()
