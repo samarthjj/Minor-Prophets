@@ -1,7 +1,26 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+import axios from "axios";
 
 class Question extends Component {
+
+    constructor() {
+        super();
+
+        // https://www.npmjs.com/package/axios
+        axios.get('/api/questionRequest')
+            .then(function (response) {
+                // put in div
+            })
+            .catch(function (error) {
+                console.log("questionRequest failed");
+            })
+    }
+
+    componentDidMount() {
+
+    }
+
     render() {
         return (
             <div class="container-sm text-center">

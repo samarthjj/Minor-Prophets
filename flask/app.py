@@ -161,15 +161,14 @@ def attempt_signup():
 @app.route('/api/startGame')
 def gen_questions():
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    '''
-    request_data = request.get_json)()
+    request_data = request.get_json()
 
     rounds = None
     if 'rounds' in request_data:
         rounds = request_data['rounds']
-        '''
+
     f = open("questions.json")
-    g.questions = code.generate_questions(json.loads(f.read(), 3)
+    g.questions = code.generate_questions(json.loads(f.read(), rounds))
     f.close()
     return json.dumps(g.questions)
 

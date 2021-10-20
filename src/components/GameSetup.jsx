@@ -1,21 +1,34 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+import axios from "axios";
 
 
 class GameSetup extends Component {
- /*
-    function gen_questions() {
-        return fetch("/api/login", {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+
+    constructor() {
+        super();
+
+        //https://axios-http.com/docs/post_example
+        axios.post('/api/startGame', {
+            rounds: 5
         })
-            .then(data => data.json())
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log("startGame failed");
+            });
+
+        //https://www.positronx.io/react-radio-button-tutorial-with-example/
+        this.onChangeValue = this.onChangeValue.bind(this);
     }
-    */
+
+    onChangeValue = (e) => {
+        return axios.post('/api/startGame');
+    }
 
     render() {
+
         return (
             <div class="text-center">
 
@@ -47,21 +60,22 @@ class GameSetup extends Component {
 
                             <div className="row">
 
-                                {/*https://getbootstrap.com/docs/5.0/components/button-group/*/}
-                                <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                    <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off"/>
+                                {/*https://getbootstrap.com/docs/5.0/components/button-group/
+                                https://www.pluralsight.com/guides/how-to-use-radio-buttons-in-reactjs*/}
+                                <div onChange={this.onChangeValue}>
+                                    <input type="radio" className="btn-check" name="btnradio" value="1" id="btnradio1" autoComplete="off"/>
                                         <label className="btn btn-success text-dark" htmlFor="btnradio1">1</label>
 
-                                    <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off"/>
+                                    <input type="radio" className="btn-check" name="btnradio" value="2" id="btnradio2" autoComplete="off"/>
                                         <label className="btn btn-success text-dark" htmlFor="btnradio2">2</label>
 
-                                    <input type="radio" className="btn-check" name="btnradio" id="btnradio3" autoComplete="off"/>
+                                    <input type="radio" className="btn-check" name="btnradio" value="3" id="btnradio3" autoComplete="off"/>
                                         <label className="btn btn-success text-dark" htmlFor="btnradio3">3</label>
 
-                                    <input type="radio" className="btn-check" name="btnradio" id="btnradio4" autoComplete="off"/>
+                                    <input type="radio" className="btn-check" name="btnradio" value="4" id="btnradio4" autoComplete="off"/>
                                     <label className="btn btn-success text-dark" htmlFor="btnradio4">4</label>
 
-                                    <input type="radio" className="btn-check" name="btnradio" id="btnradio5" autoComplete="off"/>
+                                    <input type="radio" className="btn-check" name="btnradio" value="5" id="btnradio5" autoComplete="off"/>
                                     <label className="btn btn-success text-dark" htmlFor="btnradio5">5</label>
                                 </div>
 
