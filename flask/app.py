@@ -8,21 +8,13 @@ import os
 import json
 import psycopg2
 import uuid
-import data_request
 
 app = Flask(__name__)
 socket_server = SocketIO(app, cors_allowed_origins="*")
 
-
 @app.route('/api/time')
 def get_current_time():
     return {'time': time.time()}
-
-@app.route('/api/stats')
-def stats():
-    # How to get json arguments: https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    token = request.args.get('token')
-    return json.dumps(data_request.get_stats(token))
 
 @app.route('/api/login', methods=['POST'])
 def attempt_login():
@@ -40,15 +32,14 @@ def attempt_login():
     token = str(uuid.uuid4())
 
     db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
-
     conn = psycopg2.connect(db_config)
     cur = conn.cursor()
 
-    # https://www.postgresql.org/docs/8.2/sql-droptable.html, https://www.postgresql.org/docs/8.1/sql-delete.html
+    # https://www.postgresql.org/docs/8.2/sql-droptable.html
     # Delete all accounts [TESTING PURPOSES ONLY- REMOVE ONCE FUNCTIONALITY IS COMPLETE]
-    # cur.execute("DROP TABLE accounts")
+    # cur.execute("DROP TABLE accounts;")
 
-    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, username varchar, password varchar, games_won varchar, total_points varchar, ratio varchar, fav_genre varchar);")
+    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, username varchar, password varchar);")
     # How to check for values in a row
     # https://www.tutorialspoint.com/best-way-to-test-if-a-row-exists-in-a-mysql-table
     # How to check for both username AND password: https://www.postgresql.org/docs/9.1/tutorial-select.html
@@ -82,7 +73,7 @@ def attempt_login():
     conn.close()
 
     # For debugging:
-    # users = [{"token": i[0], "username": i[1], "password": i[2], "Games Won:": i[3], "Total Points:":i[4], "Win Ratio:":i[5], "Favorite Genre:":i[6]} for i in
+    # users = [{"token": i[0], "username": i[1], "password": i[2]} for i in
     #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
     # print(users)
 
@@ -95,7 +86,6 @@ def attempt_login():
         # If the login information is invalid, return INVALID token to signal not to setToken
         invalid_token = {"token": "INVALID"}
         return json.dumps(invalid_token)
-
 
 @app.route('/api/signup', methods=['POST'])
 def attempt_signup():
@@ -119,7 +109,7 @@ def attempt_signup():
 
     # How to check for values in a row
     # https://www.tutorialspoint.com/best-way-to-test-if-a-row-exists-in-a-mysql-table
-    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, username varchar, password varchar, games_won varchar, total_points varchar, ratio varchar, fav_genre varchar);")
+    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, username varchar, password varchar);")
     cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s)", (username_signup,))
     # True/False value if username is not yet taken
     invalid_username = cur.fetchall()[0][0]
@@ -133,10 +123,10 @@ def attempt_signup():
         hashed_password = werkzeug.security.generate_password_hash(password_signup, method='pbkdf2:sha256', salt_length=16)
 
         #Create account in table
-        cur.execute("INSERT INTO accounts (token, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s)", (token, username_signup, hashed_password, "0", "0", "0", "Rock"))
+        cur.execute("INSERT INTO accounts (token, username, password) VALUES (%s, %s, %s)", (token, username_signup, hashed_password))
 
     # cur.execute("SELECT * FROM accounts;")
-    #
+
     # data = cur.fetchall()
 
     conn.commit()
@@ -145,7 +135,7 @@ def attempt_signup():
     conn.close()
 
     # For debugging:
-    # users = [{"token": i[0], "username": i[1], "password": i[2], "Games Won:": i[3], "Total Points:":i[4], "Win Ratio:":i[5], "Favorite Genre:":i[6]} for i in
+    # users = [{"token": i[0], "username": i[1], "password": i[2]} for i in
     #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
     # print(users)
 
@@ -158,7 +148,6 @@ def attempt_signup():
         # If the sign up username is invalid (already taken), return INVALID token to signal not to setToken
         invalid_token = {"token": "INVALID"}
         return json.dumps(invalid_token)
-
 
 @app.route('/api/db')
 def test_database():
