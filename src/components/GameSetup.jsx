@@ -35,7 +35,7 @@ class GameSetup extends Component {
                             <Link to="/question"><button className="btn btn-primary btn-md text-dark mb-3">Start Game</button></Link>
                         </div>
                         <div className="col-2">
-                            <button className="btn btn-lg btn-success text-dark" onClick = {get_questions}>Click Here</button>
+                            <button className="btn btn-lg btn-success text-dark" onClick = {get_questions}>Click Here To Generate Questions</button>
                         </div>
                     </div>
 
