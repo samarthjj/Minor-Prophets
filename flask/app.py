@@ -11,13 +11,11 @@ import code
 import uuid
 import data_request
 import random
-import sys
+import csv
 #import spotify_utils
 
 app = Flask(__name__)
 socket_server = SocketIO(app, cors_allowed_origins="*")
-
-questions = []
 
 @app.route('/api/time')
 def get_current_time():
@@ -168,26 +166,29 @@ def attempt_signup():
 @app.route('/api/startGame')
 def gen_questions():
 
-    # print("entered", flush=True)
     print("entered")
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     rounds = request.args.get('rounds')
 
-
     # spotify_utils.grabAlbumYear()
     f = open("questions.json")
-    # questions = appcode.generate_questions(json.loads(f.read(), rounds))
+    questions = random.shuffle(appcode.generate_questions(json.loads(f.read()), int(rounds)))
     f.close()
+
+    with open('store.json', 'w') as j:
+        json.dump(questions, j)
+
     return json.dumps(questions)
 
 @app.route('/api/questionRequest')
 def grab_question():
-    # question = random.choice(questions)
-    # questions.remove(question)
-    # currentQuestion = question
-    # return {"question": question['question'], "choices": question["choices"]}
-    return {"question": "test", "choices": ["1", "2", "3", "4"]}
+    print("enter 2")
+    f = open("store.json")
+    question = json.loads(f.read())
+    print(question)
+    return json.dumps(question)
+
 
 @app.route('/api/db')
 def test_database():

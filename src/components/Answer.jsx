@@ -1,8 +1,25 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+import {default as axios} from "axios";
+
+
+function get_answer()
+{
+    axios.get('/api/answerRequest', {
+        params: {
+
+        }
+    })
+        .then(function (response) {
+            //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+            console.log("yoot")
+            document.getElementById("answer").innerHTML = response.data.question["answer"]
+        })
+}
 
 class Answer extends Component {
     render() {
+        get_answer()
         return (
             <div class="container-sm text-center">
 
@@ -25,7 +42,7 @@ class Answer extends Component {
                 {/*Answer and Countdown*/}
                 <div className="row mb-3">
                     <div className="col">
-                        <button className="btn btn-danger btn-md text-dark mb-3" disabled>The Answer Was: 2018</button>
+                        <h3 className="text-light" id = "answer"> </h3>
                     </div>
                     <div className="col">
                         <button className="btn btn-primary btn-md text-dark mb-3" disabled>10 seconds</button>
