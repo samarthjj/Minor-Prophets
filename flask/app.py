@@ -7,7 +7,6 @@ from flask_socketio import SocketIO, emit
 import os
 import json
 import psycopg2
-import code
 import uuid
 import data_request
 import random
@@ -16,6 +15,7 @@ import csv
 
 app = Flask(__name__)
 socket_server = SocketIO(app, cors_allowed_origins="*")
+
 
 @app.route('/api/time')
 def get_current_time():

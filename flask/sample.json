@@ -1,0 +1,43 @@
+{
+ "Albums": [
+    
+    {"Name": "<name of album goes here> (String)",
+    "Artist": "<name of artist goes here> (String)",
+    "Tracklist": {
+    "<name of first track goes here> (String)": "<first song's number of plays> (Integer)",
+    "<name of second track goes here> (String)": "<second song's number of plays> (Integer)",
+    "<name of third track goes here> (String)": "<third song's number of plays> (Integer)"
+    },
+    "Album Art": "<link? to album art goes here> (String?)",
+    "Release Date": "<release date goes here> (Integer)"
+    },
+
+    {"Name": "<name of album goes here> (String)",
+    "Artist": "<name of artist goes here> (String)",
+    "Tracklist": {
+    "<name of first track goes here> (String)": "<first song's number of plays> (Integer)",
+    "<name of second track goes here> (String)": "<second song's number of plays> (Integer)",
+    "<name of third track goes here> (String)": "<third song's number of plays> (Integer)"
+    },
+    "Album Art": "<link? to album art goes here> (String?)",
+    "Release Date": "<release date goes here> (Integer)"
+    }
+  ],
+
+ "Singles": [
+
+    {"Name":"<name of single goes here> (String)",
+    "Artist": "<name of artist goes here> (String)",
+    "Plays": "<number of plays goes here> (Integer)",
+    "Album Art": "<link? to album art goes here> (String?)",
+    "Release Date": "<release date goes here> (Integer)"
+    },
+
+    {"Name":"<name of single goes here> (String)",
+    "Artist": "<name of artist goes here> (String)",
+    "Plays": "<number of plays goes here> (Integer)",
+    "Album Art": "<link? to album art goes here> (String?)",
+    "Release Date": "<release date goes here> (Integer)"
+    }
+ ]
+}
