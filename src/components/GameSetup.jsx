@@ -19,6 +19,20 @@ class GameSetup extends Component {
                         <div className="col-2">
                             <Link to="/question"><button className="btn btn-primary btn-md text-dark mb-3">Start Game</button></Link>
                         </div>
+                        <div className="col-2">
+                            <button className="btn btn-lg btn-success text-dark"
+                                    onClick = {async () => {
+                                        const rounds = "5"
+                                        const response = fetch("/api/startGame", {
+                                            method: "POST",
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(rounds)
+                                        })
+                                        console.log(response)
+                                    }}>Click Here</button>
+                        </div>
                     </div>
 
                     {/*Code Header and Number of Rounds Selector*/}

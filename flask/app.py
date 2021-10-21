@@ -1,18 +1,23 @@
 # https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project
 import time
-
+import appcode
 import werkzeug
 from flask import Flask, request
 from flask_socketio import SocketIO, emit
 import os
 import json
 import psycopg2
+import code
 import uuid
 import data_request
+import random
+import sys
+#import spotify_utils
 
 app = Flask(__name__)
 socket_server = SocketIO(app, cors_allowed_origins="*")
 
+questions = []
 
 @app.route('/api/time')
 def get_current_time():
@@ -159,6 +164,28 @@ def attempt_signup():
         invalid_token = {"token": "INVALID"}
         return json.dumps(invalid_token)
 
+
+@app.route('/api/startGame')
+def gen_questions():
+
+    print("entered", flush=True)
+
+    # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
+    request_data = request.get_json()
+
+
+    # spotify_utils.grabAlbumYear()
+    f = open("questions.json")
+    questions = code.generate_questions(json.loads(f.read(), rounds))
+    f.close()
+    return json.dumps(questions)
+
+@app.route('/api/questionRequest')
+def grab_question():
+    question = random.choice(questions)
+    questions.remove(question)
+    currentQuestion = question
+    return {"question": question['question'], "choices": question["choices"]}
 
 @app.route('/api/db')
 def test_database():

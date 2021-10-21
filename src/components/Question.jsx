@@ -1,8 +1,24 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+import {default as axios} from "axios";
+
+function get_question()
+{
+    axios.get('/api/questionRequest', {
+    })
+        .then(function (response) {
+            //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+            document.getElementById("question").innerHTML = response.data.question["question"]
+            document.getElementById("choice1").innerHTML = response.data.question["choices"][0]
+            document.getElementById("choice2").innerHTML = response.data.question["choices"][1]
+            document.getElementById("choice3").innerHTML = response.data.question["choices"][2]
+            document.getElementById("choice4").innerHTML = response.data.question["choices"][3]
+        })
+}
 
 class Question extends Component {
     render() {
+        get_question()
         return (
             <div class="container-sm text-center">
 
@@ -21,8 +37,8 @@ class Question extends Component {
 
                 {/*Question + Timer*/}
                 <div className="row mb-3">
-                    <div className="col">
-                        <button className="btn btn-danger btn-md text-dark mb-3" disabled>What year did Post Malone release Beerbongs & Bentleys?</button>
+                    <div className="col-3">
+                        <h3 className="text-light" id = "question"> </h3>
                     </div>
                     <div className="col">
                         <button className="btn btn-primary btn-md text-dark mb-3" disabled>30 seconds</button>
@@ -34,24 +50,18 @@ class Question extends Component {
                     <div className="col">
                         <div className="row mb-3">
                             <div className="col">
-                                <input type="radio" className="btn-check mb-3" name="options" id="option1"
-                                       autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option1">2007</label>
+                                <h3 className="text-light" id = "choice1"> </h3>
                             </div>
                             <div className="col">
-                                <input type="radio" className="btn-check btn-lg mb-3" name="options" id="option2"
-                                       autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option2">2014</label>
+                                <h3 className="text-light" id = "choice2"> </h3>
                             </div>
                         </div>
                         <div className="row mb-3">
                             <div className="col">
-                                <input type="radio" className="btn-check" name="options" id="option3" autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option3">2018</label>
+                                <h3 className="text-light" id = "choice3"> </h3>
                             </div>
                             <div className="col">
-                                <input type="radio" className="btn-check" name="options" id="option4" autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option4">2020</label>
+                                <h3 className="text-light" id = "choice4"> </h3>
                             </div>
                         </div>
                     </div>
