@@ -14,10 +14,10 @@ class GameSetup extends Component {
 
                         </div>
                         <div className="col-2">
-                            <Link to="/TBD"><button class="btn btn-success btn-md text-dark mb-3">Cancel</button></Link>
+                            <Link to="/creategame"><button class="btn btn-success btn-md text-dark mb-3">Cancel</button></Link>
                         </div>
                         <div className="col-2">
-                            <Link to="/TBD"><button className="btn btn-primary btn-md text-dark mb-3">Start Game</button></Link>
+                            <Link to="/question"><button className="btn btn-primary btn-md text-dark mb-3">Start Game</button></Link>
                         </div>
                     </div>
 
@@ -85,9 +85,8 @@ class GameSetup extends Component {
                                     </tr>
                                 </tbody>
                             </table>
-
-
                         </div>
+
                         <div className="col-9">
                             <div class="row">
                                 <h2 className="text-light">Select Genre</h2>
@@ -128,8 +127,6 @@ class GameSetup extends Component {
                                     <input type="radio" className="btn-check" name="options" id="option8" autoComplete="off"/>
                                     <label className="btn btn-primary" htmlFor="option8">Electronic</label>
                                 </div>
-
-
                             </div>
 
                         </div>
