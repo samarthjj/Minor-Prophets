@@ -23,12 +23,6 @@ def grabTrackYear(track_name, artist_name, type='track', limit=30):
         found_artist_name = choice["artists"][0]["name"]
         if found_artist_name.upper() == goal:
             release_date = choice["album"]["release_date"]
-        """
-        for artist in choice["artists"]:
-            found_artist_name = artist["name"]
-            if found_artist_name.upper() == goal:
-                release_date = choice["album"]["release_date"]
-        """
 
     if len(release_date) < 4:
         print(f"SONG NOT FOUND in {limit} SEARCHES")
@@ -37,5 +31,47 @@ def grabTrackYear(track_name, artist_name, type='track', limit=30):
     release_year = release_date[0:4]
     return release_year
 
+#Duplicate code here
+def grabAlbumYear(album_name, artist_name, type='album', limit=1):
+    results = sp.search(q=album_name, type=type, limit=limit)
+    # Initialized to "" so that we can update the year when the correct track is found
+    release_date = ""
+    goal = artist_name.upper()
+    for choice in results["albums"]["items"]:
+        found_artist_name = choice["artists"][0]["name"]
+        if found_artist_name.upper() == goal:
+            release_date = choice["release_date"]
 
-#Testing
+    if len(release_date) < 4:
+        print(f"ALBUM NOT FOUND in {limit} SEARCHES")
+        print(release_date)
+        return
+
+    release_year = release_date[0:4]
+    return release_year
+
+#Duplicate code here
+def grabTrackArt(track_name, artist_name, type='track', limit=30):
+    results = sp.search(q=track_name, type=type, limit=limit)
+    # Largest image pixel-wise from Spotify
+    track_art = ""
+    goal = artist_name.upper()
+    for choice in results["tracks"]["items"]:
+        found_artist_name = choice["artists"][0]["name"]
+        if found_artist_name.upper() == goal:
+            track_art = choice["album"]["images"][0]["url"]
+
+    return track_art
+
+#Duplicate code here
+def grabAlbumArt(album_name, artist_name, type='album', limit=1):
+    results = sp.search(q=album_name, type=type, limit=limit)
+    # Largest image pixel-wise from Spotify
+    album_art = ""
+    goal = artist_name.upper()
+    for choice in results["albums"]["items"]:
+        found_artist_name = choice["artists"][0]["name"]
+        if found_artist_name.upper() == goal:
+            album_art = choice["images"][0]["url"]
+
+    return album_art
