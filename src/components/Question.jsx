@@ -5,14 +5,18 @@ import {default as axios} from "axios";
 function get_question()
 {
     axios.get('/api/questionRequest', {
+        params: {
+
+        }
     })
         .then(function (response) {
             //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
-            document.getElementById("question").innerHTML = response.data.question["question"]
-            document.getElementById("choice1").innerHTML = response.data.question["choices"][0]
-            document.getElementById("choice2").innerHTML = response.data.question["choices"][1]
-            document.getElementById("choice3").innerHTML = response.data.question["choices"][2]
-            document.getElementById("choice4").innerHTML = response.data.question["choices"][3]
+            console.log("received")
+            // document.getElementById("question").innerHTML = response.data.question["question"]
+            // document.getElementById("choice1").innerHTML = response.data.question["choices"][0]
+            // document.getElementById("choice2").innerHTML = response.data.question["choices"][1]
+            // document.getElementById("choice3").innerHTML = response.data.question["choices"][2]
+            // document.getElementById("choice4").innerHTML = response.data.question["choices"][3]
         })
 }
 

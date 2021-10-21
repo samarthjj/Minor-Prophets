@@ -168,24 +168,26 @@ def attempt_signup():
 @app.route('/api/startGame')
 def gen_questions():
 
-    print("entered", flush=True)
+    # print("entered", flush=True)
+    print("entered")
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    request_data = request.get_json()
+    rounds = request.args.get('rounds')
 
 
     # spotify_utils.grabAlbumYear()
     f = open("questions.json")
-    questions = code.generate_questions(json.loads(f.read(), rounds))
+    # questions = appcode.generate_questions(json.loads(f.read(), rounds))
     f.close()
     return json.dumps(questions)
 
 @app.route('/api/questionRequest')
 def grab_question():
-    question = random.choice(questions)
-    questions.remove(question)
-    currentQuestion = question
-    return {"question": question['question'], "choices": question["choices"]}
+    # question = random.choice(questions)
+    # questions.remove(question)
+    # currentQuestion = question
+    # return {"question": question['question'], "choices": question["choices"]}
+    return {"question": "test", "choices": ["1", "2", "3", "4"]}
 
 @app.route('/api/db')
 def test_database():
