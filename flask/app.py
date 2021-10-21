@@ -173,8 +173,10 @@ def gen_questions():
 
     # spotify_utils.grabAlbumYear()
     f = open("questions.json")
-    questions = random.shuffle(appcode.generate_questions(json.loads(f.read()), int(rounds)))
+    questions = appcode.generate_questions(json.loads(f.read()), int(rounds))
     f.close()
+
+    random.shuffle(questions)
 
     with open('store.json', 'w') as j:
         json.dump(questions, j)
@@ -185,9 +187,21 @@ def gen_questions():
 def grab_question():
     print("enter 2")
     f = open("store.json")
-    question = json.loads(f.read())
-    print(question)
+    questions = json.loads(f.read())
+    question = random.choice(questions)
+
+    with open('temp_question_storage.json', 'w') as j:
+        json.dump(question, j)
+
     return json.dumps(question)
+
+@app.route('/api/answerRequest')
+def grab_answer():
+
+    with open("temp_question_storage.json", 'r') as f:
+        question = json.loads(f.read())
+
+    return question
 
 
 @app.route('/api/db')

@@ -15,9 +15,25 @@ def generate_questions(albumData, rounds):
 
     return questions
 
- '''
- def generate_questions(rounds)
+'''
+def generate_questions(rounds):
 
+    questionsPerRound = 3
+    numberOfCategories = 3
+
+    numberOfQuestionsPerCategory = math.ceil((rounds * questionsPerRound) / numberOfCategories)
+
+    albums = ['MONTERO', 'SOUR', 'Planet Her', 'After Hours', 'Happier Than Ever', 'Evolution', 'Future Nostalgia', 'lately I feel EVERYTHING']
+    artists = ['Lil Nas X', 'Olivia Rodrigo', 'Doja Cat', 'The Weekend', 'Billie Eilish', 'Joyner Lucas', 'Dua Lipa', 'WILLOW']
+    info = {'Albums': []}
+    for i in range(len(albums)):
+        release_date = grabAlbumYear(album[i], artist_name[i], type='album', limit=30)
+        info['Albums'].append({'Name': albums[i], 'Artist': artists[i], 'Release Date': release_date})
+
+    questions = generate_artist_questions(info, numberOfQuestionsPerCategory) + generate_release_date_questions(info, numberOfQuestionsPerCategory)
+
+    return questions
+'''
 
 
 def generate_artist_questions(albumData, numberOfQuestions):

@@ -12,8 +12,8 @@ function get_answer()
     })
         .then(function (response) {
             //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
-            console.log("yoot")
-            document.getElementById("answer").innerHTML = response.data.question["answer"]
+            // console.log("yoot")
+            document.getElementById("answer").innerHTML = "The Answer Was: " + response.data["answer"];
         })
 }
 
@@ -42,7 +42,7 @@ class Answer extends Component {
                 {/*Answer and Countdown*/}
                 <div className="row mb-3">
                     <div className="col">
-                        <h3 className="text-light" id = "answer"> </h3>
+                        <button className="btn btn-danger btn-lg text-dark mb-3" id="answer" disabled></button>
                     </div>
                     <div className="col">
                         <button className="btn btn-primary btn-md text-dark mb-3" disabled>10 seconds</button>

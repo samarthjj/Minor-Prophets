@@ -11,12 +11,12 @@ function get_question()
     })
         .then(function (response) {
             //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
-            console.log("yeet")
-            //document.getElementById("question").innerHTML = response.data.question["question"]
-            // document.getElementById("choice1").innerHTML = response.data.question["choices"][0]
-            // document.getElementById("choice2").innerHTML = response.data.question["choices"][1]
-            // document.getElementById("choice3").innerHTML = response.data.question["choices"][2]
-            // document.getElementById("choice4").innerHTML = response.data.question["choices"][3]
+            console.log(response)
+            document.getElementById("question").innerHTML = response.data["question"];
+            document.getElementById("choice1").innerHTML = response.data["choices"][0]; //This gets the answer choices correctly
+            document.getElementById("choice2").innerHTML = response.data["choices"][1];
+            document.getElementById("choice3").innerHTML = response.data["choices"][2];
+            document.getElementById("choice4").innerHTML = response.data["choices"][3];
         })
 }
 
@@ -41,8 +41,8 @@ class Question extends Component {
 
                 {/*Question + Timer*/}
                 <div className="row mb-3">
-                    <div className="col-3">
-                        <h3 className="text-light" id = "question"> </h3>
+                    <div className="col">
+                        <button className="btn btn-danger btn-lg text-dark mb-3" id="question" disabled></button>
                     </div>
                     <div className="col">
                         <button className="btn btn-primary btn-md text-dark mb-3" disabled>30 seconds</button>
@@ -54,18 +54,24 @@ class Question extends Component {
                     <div className="col">
                         <div className="row mb-3">
                             <div className="col">
-                                <h3 className="text-light" id = "choice1"> </h3>
+                                <input type="radio" className="btn-check mb-3" name="options" id="option1"
+                                       autoComplete="off"/>
+                                <label className="btn btn-primary" htmlFor="option1" id="choice1"></label>
                             </div>
                             <div className="col">
-                                <h3 className="text-light" id = "choice2"> </h3>
+                                <input type="radio" className="btn-check btn-lg mb-3" name="options" id="option2"
+                                       autoComplete="off"/>
+                                <label className="btn btn-primary" htmlFor="option2" id="choice2"></label>
                             </div>
                         </div>
                         <div className="row mb-3">
                             <div className="col">
-                                <h3 className="text-light" id = "choice3"> </h3>
+                                <input type="radio" className="btn-check" name="options" id="option3" autoComplete="off"/>
+                                <label className="btn btn-primary" htmlFor="option3" id="choice3"></label>
                             </div>
                             <div className="col">
-                                <h3 className="text-light" id = "choice4"> </h3>
+                                <input type="radio" className="btn-check" name="options" id="option4" autoComplete="off"/>
+                                <label className="btn btn-primary" htmlFor="option4" id="choice4"></label>
                             </div>
                         </div>
                     </div>
