@@ -1,12 +1,23 @@
 import React, {Component} from "react";
 import {Link, Redirect} from "react-router-dom";
+import {default as axios} from "axios";
 
 const handleLogout = async e => {
         // Clear user cookie: https://newbedev.com/javascript-how-to-clear-cookies-in-javascript-code-example
+        logout()
         document.cookie = document.cookie + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
         // Force refresh to fully log out: https://upmostly.com/tutorials/how-to-refresh-a-page-or-component-in-react
         window.location.reload(true);
     }
+
+function logout()
+{
+    axios.get('/api/logout', {
+        params: {
+            token: document.cookie.split("=")[1]
+        }
+    })
+}
 
 class CreateGame extends Component {
 

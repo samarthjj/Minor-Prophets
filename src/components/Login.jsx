@@ -40,18 +40,16 @@ function Login({setToken}) {
     // Calls post request (above) to pass through the username and password input.
     const handleLoginSubmit = async e => {
         e.preventDefault();
-        // console.log(username, password)
         // If any fields are left blank, do not submit
-        if (username === 0 || password === 0){
+        if (username === 0 || password === 0) {
             return
         }
         const token = await LoginUser({
           username,
           password
         });
-        if (token.token !== "INVALID") {
+        if (token.token !== undefined) {
             setToken(token);
-            // console.log(JSON.stringify(token))
         }
     }
 
@@ -59,9 +57,11 @@ function Login({setToken}) {
     // Calls post request (above) to pass through the username and password input.
     const handleSignUpSubmit = async e => {
         e.preventDefault();
-        // console.log(username, password, repeatPassword)
         // If any fields are left blank, do not submit
         if (username === 0 || password === 0 || repeatPassword === 0){
+            return
+        }
+        if (username.length > 16) {
             return
         }
         const token = await SignupUser({
@@ -69,9 +69,8 @@ function Login({setToken}) {
           password,
             repeatPassword
         });
-        if (token.token !== "INVALID") {
+        if (token.token !== undefined) {
             setToken(token);
-            // console.log(JSON.stringify(token))
         }
     }
 
@@ -85,6 +84,7 @@ function Login({setToken}) {
                 <h3 class="text-dark">This is where the game logo goes.</h3>
                 <h3 className="text-light">Please login or sign up below.</h3>
                 <h6 className="text-light" >Note: You will not be redirected if you use invalid login credentials or attempt to sign up with a username that is already in use.</h6>
+                <h6 className="text-light">Usernames must be no more than 16 characters.</h6>
             </div>
 
             {/* Bootstrap Spacing: https://getbootstrap.com/docs/5.1/utilities/spacing/*/}
