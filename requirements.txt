@@ -4,4 +4,3 @@ eventlet
 python-dotenv
 psycopg2
 spotipy
-password-strength

@@ -13,7 +13,6 @@ import uuid
 import data_request
 import random
 import csv
-# from password_strength import PasswordPolicy
 #import spotify_utils
 from verify_session import verify_valid_session
 from logout import invalidate_session
@@ -181,9 +180,9 @@ def attempt_signup():
         #Create account in table
         cur.execute("INSERT INTO accounts (token, valid_session, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (token, True, username_signup, hashed_password, "0", "0", "0", "Rock"))
 
-    cur.execute("SELECT * FROM accounts;")
-
-    data = cur.fetchall()
+    # cur.execute("SELECT * FROM accounts;")
+    #
+    # data = cur.fetchall()
 
     conn.commit()
 
@@ -191,9 +190,9 @@ def attempt_signup():
     conn.close()
 
     # For debugging:
-    users = [{"token": i[0], "valid session": i[1], "username": i[2], "password": i[3], "Games Won:": i[4], "Total Points:":i[5], "Win Ratio:":i[6], "Favorite Genre:":i[7]} for i in
-             data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    print(users)
+    # users = [{"token": i[0], "valid session": i[1], "username": i[2], "password": i[3], "Games Won:": i[4], "Total Points:":i[5], "Win Ratio:":i[6], "Favorite Genre:":i[7]} for i in
+    #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
+    # print(users)
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     # Return token to be stored in session storage by setToken
