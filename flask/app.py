@@ -204,10 +204,19 @@ def test_database():
 #         }
 
 
+@socket_server.on('connect')
+def connect_handler():
+    emit('connect', "User Connected", broadcast=True)
+
+
 @socket_server.on('message')
 def broadcast_message(msg):
-    emit("message", msg, broadcast=True)
-    return
+    emit('message', msg, broadcast=True)
+
+
+@socket_server.on('disconnect')
+def connect_handler():
+    emit('disconnect', "User Disconnected", broadcast=True)
 
 
 if __name__ == '__main__':
