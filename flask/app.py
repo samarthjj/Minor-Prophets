@@ -140,11 +140,11 @@ def attempt_signup():
 
     # Check that username rmeets requirements
     if not check_username(username_signup):
-        return json.dumps({})
+        return json.dumps({"token": "invalidUsername"})
 
     # Check that password meets requirements
     if not check_password(password_signup):
-        return json.dumps({})
+        return json.dumps({"token": "badPassword"})
 
     valid_signup = False
 
@@ -165,6 +165,11 @@ def attempt_signup():
     invalid_username = cur.fetchall()[0][0]
     # print("Invalid username?", invalid_username)
     # print("Passwords match?", password_signup == password_repeat_signup)
+
+    if invalid_username:
+        return json.dumps({"token": "badUsername"})
+    if password_signup != password_repeat_signup:
+        return json.dumps({"token": "passwordMatchError"})
 
     # If the username is valid and the passwords match, then create user account.
     if not invalid_username and password_signup == password_repeat_signup:

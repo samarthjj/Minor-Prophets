@@ -50,6 +50,8 @@ function Login({setToken}) {
         });
         if (token.token !== undefined) {
             setToken(token);
+        } else {
+            document.getElementById("login_notice").innerHTML = "Invalid login."
         }
     }
 
@@ -62,6 +64,7 @@ function Login({setToken}) {
             return
         }
         if (username.length > 16) {
+            document.getElementById("signup_notice").innerHTML = "Username is too long."
             return
         }
         const token = await SignupUser({
@@ -69,8 +72,19 @@ function Login({setToken}) {
           password,
             repeatPassword
         });
-        if (token.token !== undefined) {
+        console.log(token.token)
+        if (token.token === "badUsername"){
+            document.getElementById("signup_notice").innerHTML = "Username is already taken."
+        } else if (token.token === "invalidUsername"){
+            document.getElementById("signup_notice").innerHTML = "Username is invalid."
+        } else if (token.token === "badPassword") {
+            document.getElementById("signup_notice").innerHTML = "Password does not follow the requirements."
+        } else if (token.token === "passwordMatchError") {
+            document.getElementById("signup_notice").innerHTML = "Passwords do not match."
+        }else if (token.token !== undefined) {
             setToken(token);
+        } else {
+            document.getElementById("signup_notice").innerHTML = "Please follow the above requirements."
         }
     }
 
@@ -102,6 +116,7 @@ function Login({setToken}) {
                         <label htmlFor="username" className="text-dark">Password</label>
                     </div>
 
+                    <h6 className="text-light" id = "login_notice"> </h6>
                     <div className="form-floating mb-3 mx-5">
                         <button className="btn btn-lg btn-success text-dark" type="submit">Login</button>
                         {/*https://reactrouter.com/web/api/Redirect*/}
@@ -135,7 +150,7 @@ function Login({setToken}) {
                                className="form-control input-small" placeholder="Re-enter Password"/>
                         <label htmlFor="username" className="text-dark">Re-enter Password</label>
                     </div>
-                    <h6 className="text-light">You will not be redirected if you do not satisfy the above requirements.</h6>
+                    <h6 className="text-light" id = "signup_notice"> </h6>
                     <div className="form-floating mb-3 mx-5">
                         <button className="btn btn-lg btn-success text-dark" type="submit">Sign Up</button>
                         {/*https://reactrouter.com/web/api/Redirect*/}
