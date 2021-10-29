@@ -84,7 +84,6 @@ function Login({setToken}) {
                 <h3 class="text-dark">This is where the game logo goes.</h3>
                 <h3 className="text-light">Please login or sign up below.</h3>
                 <h6 className="text-light" >Note: You will not be redirected if you use invalid login credentials or attempt to sign up with a username that is already in use.</h6>
-                <h6 className="text-light">Usernames must be no more than 16 characters.</h6>
             </div>
 
             {/* Bootstrap Spacing: https://getbootstrap.com/docs/5.1/utilities/spacing/*/}
@@ -116,6 +115,9 @@ function Login({setToken}) {
             </div>
 
             <h5 className="text-light">Sign Up</h5>
+            <h6 className="text-light">Usernames must be no more than 16 characters and must contain no whitespace.</h6>
+            <h6 className="text-light">Passwords must be at least 8 characters with no whitespace and must contain each of the following:</h6>
+            <h8 className="text-light">capital letter - lowercase letter - number - special character [!@#$%^&*()]</h8>
             <div className="container-sm">
                 <form className="form-group" onSubmit={handleSignUpSubmit}>
                     <div className="form-floating mb-3 mx-auto w-50">
@@ -133,7 +135,7 @@ function Login({setToken}) {
                                className="form-control input-small" placeholder="Re-enter Password"/>
                         <label htmlFor="username" className="text-dark">Re-enter Password</label>
                     </div>
-
+                    <h6 className="text-light">You will not be redirected if you do not satisfy the above requirements.</h6>
                     <div className="form-floating mb-3 mx-5">
                         <button className="btn btn-lg btn-success text-dark" type="submit">Sign Up</button>
                         {/*https://reactrouter.com/web/api/Redirect*/}

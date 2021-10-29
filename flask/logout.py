@@ -16,9 +16,9 @@ def invalidate_session(token):
 
     cur.execute("UPDATE accounts SET valid_session = %s WHERE token = %s", (False,data_token))
 
-    # cur.execute("SELECT * FROM accounts;")
-    #
-    # data = cur.fetchall()
+    cur.execute("SELECT * FROM accounts;")
+
+    data = cur.fetchall()
 
     conn.commit()
 
@@ -26,9 +26,9 @@ def invalidate_session(token):
     conn.close()
 
     # For debugging:
-    # users = [{"token": i[0], "valid session": i[1], "username": i[2], "password": i[3], "Games Won:": i[4],
-    #           "Total Points:": i[5], "Win Ratio:": i[6], "Favorite Genre:": i[7]} for i in
-    #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    # print(users)
+    users = [{"token": i[0], "valid session": i[1], "username": i[2], "password": i[3], "Games Won:": i[4],
+              "Total Points:": i[5], "Win Ratio:": i[6], "Favorite Genre:": i[7]} for i in
+             data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
+    print(users)
 
     return

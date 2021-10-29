@@ -14,6 +14,7 @@ import data_request
 import random
 import csv
 #import spotify_utils
+from username_password_check import check_password, check_username
 from verify_session import verify_valid_session
 from logout import invalidate_session
 
@@ -137,19 +138,13 @@ def attempt_signup():
     password_signup = html.escape(request.json['password'])
     password_repeat_signup = html.escape(request.json['repeatPassword'])
 
-    # Set password requirements:
-    # https://pypi.org/project/password-strength/
-    # policy = PasswordPolicy.from_names(
-    #     length=8,  # min length: 8
-    #     uppercase=1,  # need min. 2 uppercase letters
-    #     numbers=1,  # need min. 2 digits
-    #     special=1,  # need min. 2 special characters
-    #     nonletters=1,  # need min. 2 non-letter characters (digits, specials, anything)
-    # )
-    #
-    # # Check that password meets requirements
-    # if not policy.test(password_signup):
-    #     return json.dumps({})
+    # Check that username rmeets requirements
+    if not check_username(username_signup):
+        return json.dumps({})
+
+    # Check that password meets requirements
+    if not check_password(password_signup):
+        return json.dumps({})
 
     valid_signup = False
 
