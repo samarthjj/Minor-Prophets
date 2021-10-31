@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { socket, SocketContext } from './socket';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -8,9 +9,9 @@ import reportWebVitals from './reportWebVitals';
 
 /* This seems to render the "App.js" function inside the HTML 'root' element*/
 ReactDOM.render(
-  <React.StrictMode>
+  <SocketContext.Provider value={socket}>
     <App />
-  </React.StrictMode>,
+  </SocketContext.Provider>,
   document.getElementById('root')
 );
 

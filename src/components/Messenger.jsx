@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
-import { socket } from '../socket'
+import React, {useState, useContext, useEffect} from 'react';
+import { SocketContext} from '../socket';
 
 
 const Messenger = () => {
+  const socket = useContext(SocketContext);
+
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
 
 
-  socket.off('connect').on('connect', () => {
-    console.log("User connected");
-  })
+  useEffect(() => {
 
-  socket.off('message').on('message', msg => {
-    console.log(msg);
-    setMessages([...messages, msg])});
-
-    socket.off('disconnect').on('disconnect', () => {
-      console.log("User disconnected");
+    socket.on('connect', () => {
+      console.log(`${socket.id} connected`);
     })
+  
+    socket.on('message', msg => {
+      console.log(msg);
+      setMessages([...messages, msg])
+    })
+
+    return () => {
+      socket.off('connect');
+      socket.off('message');
+    }
+    
+  })
 
   const onChange = (event) => {
     setMessage(event.target.value);
