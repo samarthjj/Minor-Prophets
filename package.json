@@ -18,10 +18,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-flask": "cd flask && python3 app.py",
     "start-api": "cd flask && flask run",
-    "start-api-mac": "cd flask && . venv/Scripts/activate --no-debugger && flask run",
-    "start-both": "react-scripts start && cd flask && venv/Scripts/activate --no-debugger && flask run",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
