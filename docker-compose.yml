@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:3000"
+
+# docker-compose up -d        // build/run the container/image in the background (nicely w/ docker-compose)
+# docker ps                   // get the running image information
+# docker-compose stop <name>  // gracefully stops the image
+# docker-compose restart      // gracefully shuts down and restarts the image
+# docker-compose down         // deletes the image
+
+# If we want to add a database DIRECTLY to our server, we could set that up here with PostgreSQL, instead of using the heroku provided one...
+
+    # environment:
+      # WAIT_HOSTS: mongo:27017  # default port for MongoDB
+  # mongo:
+    # image: mongo:latest
