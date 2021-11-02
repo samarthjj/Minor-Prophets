@@ -7,6 +7,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.23.0",
+    "flask": "^0.2.10",
     "http-proxy-middleware": "^2.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -18,7 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-flask": "cd flask && python3 app.py",
+    "start-flask": "cd flask && python app.py",
     "start-api": "cd flask && flask run",
     "start-api-mac": "cd flask && . venv/Scripts/activate --no-debugger && flask run",
     "start-both": "react-scripts start && cd flask && venv/Scripts/activate --no-debugger && flask run",

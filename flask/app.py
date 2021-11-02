@@ -11,6 +11,7 @@ import uuid
 import data_request
 import random
 import csv
+import data_request
 #import spotify_utils
 
 app = Flask(__name__)
@@ -69,7 +70,7 @@ def attempt_login():
     # If the username is valid, fetch the password stored for that account and compare to the input
     if valid_username:
         cur.execute("SELECT * from accounts WHERE username=%s", (username_login,))
-        password = cur.fetchall()[0][2]
+        password = cur.fetchall()[0][3]
         # Check if password matches database:https://werkzeug.palletsprojects.com/en/2.0.x/utils/
         valid_account = werkzeug.security.check_password_hash(password, password_login)
 
@@ -170,26 +171,33 @@ def attempt_signup():
 @app.route('/api/startGame')
 def gen_questions():
 
-    print("entered")
-
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     rounds = request.args.get('rounds')
 
-    # spotify_utils.grabAlbumYear()
+    #roomcode = request.args.get('roomcode')
+    roomcode = 'A5J3KD'
+
+    cur = data_request.get_cursor()
+
+    cur.execute("CREATE TABLE IF NOT EXISTS questions (question varchar, choice1 varchar, choice2 varchar, choice3 varchar, choice4 varchar, answer varchar, albumart varchar, genre varchar);")
+
+    data_request.get_existing_questions(rounds, roomcode)
+
+    '''
     f = open("questions.json")
-    questions = appcode.generate_questions(json.loads(f.read()), int(rounds))
+    questions = appcode.generate_questions(int(rounds))
     f.close()
 
     random.shuffle(questions)
 
     with open('store.json', 'w') as j:
         json.dump(questions, j)
-
-    return json.dumps(questions)
+    '''
+    return json.dumps("done")
 
 @app.route('/api/questionRequest')
 def grab_question():
-    print("enter 2")
+
     f = open("store.json")
     questions = json.loads(f.read())
     question = random.choice(questions)

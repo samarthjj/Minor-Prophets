@@ -1,9 +1,12 @@
 import json
 import random
 import math
+import spotify_utils
 from datetime import date
 
 
+
+'''
 def generate_questions(albumData, rounds):
 
     questionsPerRound = 3
@@ -16,24 +19,24 @@ def generate_questions(albumData, rounds):
     return questions
 
 '''
-def generate_questions(rounds):
+def generate_questions(numQuestions):
 
-    questionsPerRound = 3
     numberOfCategories = 3
 
-    numberOfQuestionsPerCategory = math.ceil((rounds * questionsPerRound) / numberOfCategories)
+    numberOfQuestionsPerCategory = math.ceil(numQuestions / numberOfCategories)
 
-    albums = ['MONTERO', 'SOUR', 'Planet Her', 'After Hours', 'Happier Than Ever', 'Evolution', 'Future Nostalgia', 'lately I feel EVERYTHING']
-    artists = ['Lil Nas X', 'Olivia Rodrigo', 'Doja Cat', 'The Weekend', 'Billie Eilish', 'Joyner Lucas', 'Dua Lipa', 'WILLOW']
+    albums = ['MONTERO', 'SOUR', 'Planet Her', 'Happier Than Ever', 'Evolution', 'Future Nostalgia', 'lately I feel EVERYTHING']
+    artists = ['Lil Nas X', 'Olivia Rodrigo', 'Doja Cat', 'Billie Eilish', 'Joyner Lucas', 'Dua Lipa', 'WILLOW']
     info = {'Albums': []}
     for i in range(len(albums)):
-        release_date = grabAlbumYear(album[i], artist_name[i], type='album', limit=30)
+        release_date = spotify_utils.grabAlbumYear(albums[i], artists[i], type='album', limit=1)
         info['Albums'].append({'Name': albums[i], 'Artist': artists[i], 'Release Date': release_date})
+
+    print(info)
 
     questions = generate_artist_questions(info, numberOfQuestionsPerCategory) + generate_release_date_questions(info, numberOfQuestionsPerCategory)
 
     return questions
-'''
 
 
 def generate_artist_questions(albumData, numberOfQuestions):
@@ -60,7 +63,7 @@ def generate_artist_questions(albumData, numberOfQuestions):
 
             random.shuffle(choices)
 
-            questions.append({"question": "Which artist released " + album['Name'] + "?", "choices": choices, "answer": answer, "album art": album['Album Art']})
+            questions.append({"question": "Which artist released " + album['Name'] + "?", "choices": choices, "answer": answer})
 
     return questions
 
@@ -92,7 +95,7 @@ def generate_release_date_questions(albumData, numberOfQuestions):
 
             random.shuffle(choices)
 
-            questions.append({"question": "What year was " + album['Name'] + " by " + album['Artist'] + " released?", "choices": choices, "answer": answer, "album art": album['Album Art']})
+            questions.append({"question": "What year was " + album['Name'] + " by " + album['Artist'] + " released?", "choices": choices, "answer": answer})
 
     return questions
 
