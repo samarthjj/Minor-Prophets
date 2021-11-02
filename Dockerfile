@@ -1,4 +1,20 @@
-FROM node:latest
+#FROM node:16.13.0
+#
+#RUN apt-get update
+#
+#WORKDIR /root
+#ENV HOME /root
+#
+#COPY . .
+#
+#RUN npm install
+#
+#EXPOSE 3000
+#
+#CMD npm start
+
+#FROM node:latest
+FROM node:16.13.0
 
 RUN apt-get update
 
@@ -18,10 +34,7 @@ COPY . .
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN pip3 install -r requirements.txt
-RUN npm install react-router-dom
-RUN npm install axios
-
-RUN yarn install
+RUN npm install
 
 EXPOSE 3000
 

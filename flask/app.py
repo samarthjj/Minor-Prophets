@@ -17,10 +17,6 @@ app = Flask(__name__)
 socket_server = SocketIO(app, cors_allowed_origins="*")
 
 
-@app.route('/api/time')
-def get_current_time():
-    return {'time': time.time()}
-
 @app.route('/api/stats')
 def stats():
     # How to get json arguments: https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
@@ -206,6 +202,10 @@ def grab_answer():
         question = json.loads(f.read())
 
     return question
+
+@app.route('/api/time')
+def get_current_time():
+    return {'time': time.time()}
 
 
 @app.route('/api/db')

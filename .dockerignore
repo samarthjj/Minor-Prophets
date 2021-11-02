@@ -4,6 +4,10 @@
 # .env?
 # */.flaskenv*
 # .flaskenv?
+/node_modules
+*/node_modules*
+node_modules
+node_modules?
 
 # Not being used at the moment
 # OH - this isn't necessary because when Heroku builds, it will be using the Git repo, and if .env isn't included (with the local info), it will use it's own!
