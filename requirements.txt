@@ -1,5 +1,5 @@
-flask
-Flask-SocketIO
+flask==1.1.2
+Flask-SocketIO==4.3.2
 eventlet
 python-dotenv
 psycopg2

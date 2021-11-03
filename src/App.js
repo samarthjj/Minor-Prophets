@@ -26,13 +26,13 @@ function App() {
     const {token, setToken} = useToken();
 
     //From tutorial: //https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
-    if (!token) {
-        return (
-            <Router>
-                <Login setToken = {setToken} />
-
-            </Router> )
-    }
+    // if (!token) {
+    //     return (
+    //         <Router>
+    //             <Login setToken = {setToken} />
+    //
+    //         </Router> )
+    // }
 
     return (
         <Router>

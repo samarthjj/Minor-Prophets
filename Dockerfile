@@ -40,8 +40,8 @@ EXPOSE 3000
 EXPOSE 5000
 
 # start app
+# CMD ./runprog 2
 CMD ["/usr/bin/supervisord"]
-# CMD "cd flask && flask run"
 
 # https://advancedweb.hu/supervisor-with-docker-lessons-learned/
 # https://docs.docker.com/config/containers/multi-service_container/
