@@ -3,14 +3,18 @@ import time
 
 import werkzeug
 from flask import Flask, request
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, send
 import os
 import json
 import psycopg2
 import uuid
 
+# This should load the local .env file properly now that running the flask server locally should be 'python app.py' NOT 'flask run' (won't affect digital-ocean)
+from dotenv import load_dotenv
+load_dotenv()
+
 app = Flask(__name__)
-socket_server = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 @app.route('/api/time')
@@ -204,20 +208,20 @@ def test_database():
 #         }
 
 
-@socket_server.on('connect')
-def connect_handler():
-    emit('connect', "User Connected", broadcast=True)
+# @socketio.on('connect')
+# def connect_handler():
+#     emit('connect', "User Connected", broadcast=True)
 
 
-@socket_server.on('message')
+@socketio.on('message')
 def broadcast_message(msg):
     emit('message', msg, broadcast=True)
 
 
-@socket_server.on('disconnect')
-def connect_handler():
-    emit('disconnect', "User Disconnected", broadcast=True)
+# @socketio.on('disconnect')
+# def connect_handler():
+#     emit('disconnect', "User Disconnected", broadcast=True)
 
 
 if __name__ == '__main__':
-    socket_server.run(app, host="0.0.0.0", port=os.environ['PORT'] if 'PORT' in os.environ else 5000)
+    socketio.run(app, host="0.0.0.0", port=5000)

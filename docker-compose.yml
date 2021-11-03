@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    # env_file:
+    #   - env.txt   # set w/in digital ocean
+    ports:
+      - "3000:3000"
+      - "5000:5000"

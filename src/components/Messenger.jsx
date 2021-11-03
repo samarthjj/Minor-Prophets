@@ -1,9 +1,12 @@
 import React, {useState, useContext, useEffect} from 'react';
-import { SocketContext} from '../socket';
+// import { SocketContext} from '../socket';
+const io = require("socket.io-client");
 
+let endPoint = "http://localhost:5000";
+let socket = io.connect(`${endPoint}`);  // https://medium.com/analytics-vidhya/simple-chat-app-with-react-flask-b2ae72404fcb
 
 const Messenger = () => {
-  const socket = useContext(SocketContext);
+  // const socket = useContext(SocketContext);
 
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
