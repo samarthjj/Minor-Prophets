@@ -1,5 +1,7 @@
 # https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project
 import time
+from pydoc import html
+
 import appcode
 import werkzeug
 from flask import Flask, request
@@ -12,6 +14,9 @@ import data_request
 import random
 import csv
 #import spotify_utils
+from username_password_check import check_password, check_username
+from verify_session import verify_valid_session
+from logout import invalidate_session
 
 # This should load the local .env file properly now that running the flask server locally should be 'python app.py' NOT 'flask run' (won't affect digital-ocean)
 from dotenv import load_dotenv
@@ -25,11 +30,17 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 def stats():
     # How to get json arguments: https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     token = request.args.get('token')
-    data = json.dumps(data_request.get_stats(token))
-
-    print(data, flush=True)
-
+    data = json.dumps({"GamesWon": "Invalid Login", "TotalPoints": "Invalid Login", "WinRatio": "Invalid Login", "FavoriteGenre": "Invalid Login"})
+    if (verify_valid_session(token)):
+        data = json.dumps(data_request.get_stats(token))
     return data
+
+@app.route('/api/logout')
+def logout():
+    token = request.args.get('token')
+    if verify_valid_session(token):
+        invalidate_session(token)
+    return json.dumps({})
 
 @app.route('/api/login', methods=['POST'])
 def attempt_login():
@@ -38,6 +49,12 @@ def attempt_login():
     username_login = request.json['username']
     password_login = request.json['password']
     # print(request.json)
+
+    if username_login == 0 or password_login == 0:
+        return json.dumps({})
+
+    username_login = html.escape(request.json['username'])
+    password_login = html.escape(request.json['password'])
 
     valid_login = False
 
@@ -55,10 +72,11 @@ def attempt_login():
     # Delete all accounts [TESTING PURPOSES ONLY- REMOVE ONCE FUNCTIONALITY IS COMPLETE]
     # cur.execute("DROP TABLE accounts")
 
-    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, username varchar, password varchar, games_won varchar, total_points varchar, ratio varchar, fav_genre varchar);")
+
+    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, valid_session varchar, username varchar, password varchar, games_won varchar, total_points varchar, ratio varchar, fav_genre varchar);")
     # How to check for values in a row
     # https://www.tutorialspoint.com/best-way-to-test-if-a-row-exists-in-a-mysql-table
-    # How to check for both username AND password: https://www.postgresql.org/docs/9.1/tutorial-select.html
+    # cur.prepare("SELECT EXISTS(SELECT * from accounts WHERE username=%s)")
     cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s)", (username_login,))
 
     #True/False value if login information is valid
@@ -69,7 +87,7 @@ def attempt_login():
     # If the username is valid, fetch the password stored for that account and compare to the input
     if valid_username:
         cur.execute("SELECT * from accounts WHERE username=%s", (username_login,))
-        password = cur.fetchall()[0][2]
+        password = cur.fetchall()[0][3]
         # Check if password matches database:https://werkzeug.palletsprojects.com/en/2.0.x/utils/
         valid_account = werkzeug.security.check_password_hash(password, password_login)
 
@@ -78,6 +96,7 @@ def attempt_login():
         valid_login = True
         # How to update values in table: https://www.postgresqltutorial.com/postgresql-update/
         cur.execute("UPDATE accounts SET token = %s WHERE username = %s", (token, username_login))
+        cur.execute("UPDATE accounts SET valid_session = %s WHERE username = %s", (True, username_login))
 
     # cur.execute("SELECT * FROM accounts;")
     #
@@ -100,8 +119,7 @@ def attempt_login():
         return json.dumps(output)
     else:
         # If the login information is invalid, return INVALID token to signal not to setToken
-        invalid_token = {"token": "INVALID"}
-        return json.dumps(invalid_token)
+        return json.dumps({})
 
 
 @app.route('/api/signup', methods=['POST'])
@@ -112,6 +130,21 @@ def attempt_signup():
     password_signup = request.json['password']
     password_repeat_signup = request.json['repeatPassword']
     # print(request.json)
+
+    if username_signup == 0 or password_signup == 0 or password_repeat_signup == 0:
+        return json.dumps({})
+
+    username_signup = html.escape(request.json['username'])
+    password_signup = html.escape(request.json['password'])
+    password_repeat_signup = html.escape(request.json['repeatPassword'])
+
+    # Check that username rmeets requirements
+    if not check_username(username_signup):
+        return json.dumps({"token": "invalidUsername"})
+
+    # Check that password meets requirements
+    if not check_password(password_signup):
+        return json.dumps({"token": "badPassword"})
 
     valid_signup = False
 
@@ -126,12 +159,17 @@ def attempt_signup():
 
     # How to check for values in a row
     # https://www.tutorialspoint.com/best-way-to-test-if-a-row-exists-in-a-mysql-table
-    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, username varchar, password varchar, games_won varchar, total_points varchar, ratio varchar, fav_genre varchar);")
+    cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, valid_session varchar, username varchar, password varchar, games_won varchar, total_points varchar, ratio varchar, fav_genre varchar);")
     cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s)", (username_signup,))
     # True/False value if username is not yet taken
     invalid_username = cur.fetchall()[0][0]
     # print("Invalid username?", invalid_username)
     # print("Passwords match?", password_signup == password_repeat_signup)
+
+    if invalid_username:
+        return json.dumps({"token": "badUsername"})
+    if password_signup != password_repeat_signup:
+        return json.dumps({"token": "passwordMatchError"})
 
     # If the username is valid and the passwords match, then create user account.
     if not invalid_username and password_signup == password_repeat_signup:
@@ -140,7 +178,7 @@ def attempt_signup():
         hashed_password = werkzeug.security.generate_password_hash(password_signup, method='pbkdf2:sha256', salt_length=16)
 
         #Create account in table
-        cur.execute("INSERT INTO accounts (token, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s)", (token, username_signup, hashed_password, "0", "0", "0", "Rock"))
+        cur.execute("INSERT INTO accounts (token, valid_session, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (token, True, username_signup, hashed_password, "0", "0", "0", "Rock"))
 
     # cur.execute("SELECT * FROM accounts;")
     #
@@ -152,7 +190,7 @@ def attempt_signup():
     conn.close()
 
     # For debugging:
-    # users = [{"token": i[0], "username": i[1], "password": i[2], "Games Won:": i[3], "Total Points:":i[4], "Win Ratio:":i[5], "Favorite Genre:":i[6]} for i in
+    # users = [{"token": i[0], "valid session": i[1], "username": i[2], "password": i[3], "Games Won:": i[4], "Total Points:":i[5], "Win Ratio:":i[6], "Favorite Genre:":i[7]} for i in
     #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
     # print(users)
 
@@ -163,8 +201,7 @@ def attempt_signup():
         return json.dumps(output)
     else:
         # If the sign up username is invalid (already taken), return INVALID token to signal not to setToken
-        invalid_token = {"token": "INVALID"}
-        return json.dumps(invalid_token)
+        return json.dumps({})
 
 
 @app.route('/api/startGame')
