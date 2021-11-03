@@ -37,6 +37,7 @@ RUN pip3 install -r requirements.txt
 RUN npm install
 
 EXPOSE 3000
+EXPOSE 5000
 
 # start app
 CMD ["/usr/bin/supervisord"]

@@ -265,4 +265,4 @@ def broadcast_message(msg):
 
 
 if __name__ == '__main__':
-    socket_server.run(app)
+    socket_server.run(app, port=5000)
