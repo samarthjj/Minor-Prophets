@@ -5,7 +5,7 @@ services:
     # env_file:
     #   - env.txt   # set w/in digital ocean
     ports:
-      - "8000:3000"
+      - "3000:3000"
       - "5000:5000"
 
 # docker-compose up -d        // build/run the container/image in the background (nicely w/ docker-compose)
