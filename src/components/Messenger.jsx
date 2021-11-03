@@ -3,6 +3,7 @@ import React, {useState, useContext, useEffect} from 'react';
 const io = require("socket.io-client");
 
 let endPoint = "http://localhost:5000"; // WebSocket conns made here now!
+// let endPoint = "http://137.184.97.255:5000"; // (For Deployment change this line)
 let socket = io.connect(`${endPoint}`);  // https://medium.com/analytics-vidhya/simple-chat-app-with-react-flask-b2ae72404fcb
 
 const Messenger = () => {
