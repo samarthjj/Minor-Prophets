@@ -172,16 +172,14 @@ def attempt_signup():
 def gen_questions():
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    rounds = request.args.get('rounds')
+    rounds = int(request.args.get('rounds'))
 
     #roomcode = request.args.get('roomcode')
     roomcode = 'A5J3KD'
 
-    cur = data_request.get_cursor()
-
-    cur.execute("CREATE TABLE IF NOT EXISTS questions (question varchar, choice1 varchar, choice2 varchar, choice3 varchar, choice4 varchar, answer varchar, albumart varchar, genre varchar);")
 
     data_request.get_existing_questions(rounds, roomcode)
+
 
     '''
     f = open("questions.json")
@@ -198,12 +196,16 @@ def gen_questions():
 @app.route('/api/questionRequest')
 def grab_question():
 
+    '''
     f = open("store.json")
     questions = json.loads(f.read())
     question = random.choice(questions)
 
     with open('temp_question_storage.json', 'w') as j:
         json.dump(question, j)
+    '''
+
+    question = data_request.get_question()
 
     return json.dumps(question)
 

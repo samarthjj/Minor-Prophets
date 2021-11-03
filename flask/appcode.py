@@ -5,14 +5,16 @@ import spotify_utils
 from datetime import date
 
 
+def generate_questions(numQuestions):
 
-'''
-def generate_questions(albumData, rounds):
+    f = open("questions.json")
+    albumData = json.load(f)
+    f.close()
 
     questionsPerRound = 3
     numberOfCategories = 3
 
-    numberOfQuestionsPerCategory = math.ceil((rounds * questionsPerRound) / numberOfCategories)
+    numberOfQuestionsPerCategory = math.ceil(numQuestions / numberOfCategories)
 
     questions = generate_artist_questions(albumData, numberOfQuestionsPerCategory) + generate_release_date_questions(albumData, numberOfQuestionsPerCategory) + generate_top_track_questions(albumData, numberOfQuestionsPerCategory)
 
@@ -37,6 +39,7 @@ def generate_questions(numQuestions):
     questions = generate_artist_questions(info, numberOfQuestionsPerCategory) + generate_release_date_questions(info, numberOfQuestionsPerCategory)
 
     return questions
+'''
 
 
 def generate_artist_questions(albumData, numberOfQuestions):
@@ -63,7 +66,7 @@ def generate_artist_questions(albumData, numberOfQuestions):
 
             random.shuffle(choices)
 
-            questions.append({"question": "Which artist released " + album['Name'] + "?", "choices": choices, "answer": answer})
+            questions.append({"question": "Which artist released " + album['Name'] + "?", "choices": choices, "answer": answer, "genre": "Pop"})
 
     return questions
 
@@ -95,7 +98,7 @@ def generate_release_date_questions(albumData, numberOfQuestions):
 
             random.shuffle(choices)
 
-            questions.append({"question": "What year was " + album['Name'] + " by " + album['Artist'] + " released?", "choices": choices, "answer": answer})
+            questions.append({"question": "What year was " + album['Name'] + " by " + album['Artist'] + " released?", "choices": choices, "answer": answer, "genre": "Pop"})
 
     return questions
 
@@ -127,7 +130,7 @@ def generate_top_track_questions(albumData, numberOfQuestions):
 
             random.shuffle(choices)
 
-            questions.append({"question": "Which track has the most plays?", "choices": choices, "answer": answer, "album art": album['Album Art']})
+            questions.append({"question": "Which track has the most plays?", "choices": choices, "answer": answer, "album art": album['Album Art'], "genre": "Pop"})
 
 
     return questions
