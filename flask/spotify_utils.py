@@ -98,3 +98,9 @@ def grabTrackName(track_ID):
     Given a track ID, return the track name associated with it.
     """
     return sp.track(track_ID)["name"]
+
+def grabTrackPopularity(track_ID):
+    """
+    Given a track ID, return the popularity score associated with it as an integer between 0-100 inclusive.
+    """
+    return sp.track(track_ID)["popularity"]

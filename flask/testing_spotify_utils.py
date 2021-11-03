@@ -18,6 +18,8 @@ albums_test_these = [
     ("evermore", "taylor swift", 2020)
 ]
 
+testingPlaylist = "https://open.spotify.com/playlist/23ix3PPVfL1JGc4Zj1GpcL?si=f9207fe35cdb4a56"
+
 
 # Test 1: Receive the correct release year for a given TRACK and artist
 """ These are passing
@@ -53,17 +55,23 @@ for index in range(len(albums_test_these)):
 
 # Test 5: Grabbing correct playlist ID from a playlist URL
 """ This is passing
-print(pickOutID("https://open.spotify.com/playlist/37i9dQZF1DX0kbJZpiYdZl?si=aeaf6f9e24664f77"))
+print(pickOutID(testingPlaylist))
 """
 
 # Test 6: Returning a list of tracks from a playlist url
 """ This is passing
-print(listPlaylistTrackIDs("https://open.spotify.com/playlist/5aDEfIQImLKHbElp6HRHUd?si=eefd56a6587245a4"))
+print(listPlaylistTrackIDs(testingPlaylist))
 """
 
 #Test 7: Returning the name of a track given a track ID
 """ This is passing
-for track in listPlaylistTrackIDs("https://open.spotify.com/playlist/5aDEfIQImLKHbElp6HRHUd?si=eefd56a6587245a4"):
+for track in listPlaylistTrackIDs(testingPlaylist):
     print(grabTrackName(track))
+"""
+
+# Test 8: Returning the correct popularity of tracks
+""" This is passing
+for track in listPlaylistTrackIDs(testingPlaylist):
+    print(grabTrackPopularity(track))
 """
 
