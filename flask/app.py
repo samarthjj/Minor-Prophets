@@ -212,10 +212,12 @@ def grab_question():
 @app.route('/api/answerRequest')
 def grab_answer():
 
+    '''
     with open("temp_question_storage.json", 'r') as f:
         question = json.loads(f.read())
-
-    return question
+    '''
+    
+    return data_request.get_answer()
 
 
 @app.route('/api/db')
