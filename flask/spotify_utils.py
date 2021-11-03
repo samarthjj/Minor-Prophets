@@ -75,3 +75,26 @@ def grabAlbumArt(album_name, artist_name, type='album', limit=1):
             album_art = choice["images"][0]["url"]
 
     return album_art
+
+def pickOutID(playlist_url):
+    """
+    Given a playlist url, this function will return the length-22 ID associated with the playlist
+    to be used for exact lookup.
+    """
+    return playlist_url[34:56]
+
+def listPlaylistTrackIDs(playlist_url):
+    """
+    Given a playlist url, this function will return a list of track IDs from that playlist that can later
+    be used to grab whole track information.
+    """
+    playlist_ID = pickOutID(playlist_url)
+    playlist_data = sp.playlist(playlist_ID)
+    track_IDs = [song["track"]["id"] for song in playlist_data["tracks"]["items"]]
+    return track_IDs
+
+def grabTrackName(track_ID):
+    """
+    Given a track ID, return the track name associated with it.
+    """
+    return sp.track(track_ID)["name"]

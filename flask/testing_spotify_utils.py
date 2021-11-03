@@ -51,3 +51,19 @@ for index in range(len(albums_test_these)):
     print(f"IMAGE URL: {grabAlbumArt(album, artist)}")
 """
 
+# Test 5: Grabbing correct playlist ID from a playlist URL
+""" This is passing
+print(pickOutID("https://open.spotify.com/playlist/37i9dQZF1DX0kbJZpiYdZl?si=aeaf6f9e24664f77"))
+"""
+
+# Test 6: Returning a list of tracks from a playlist url
+""" This is passing
+print(listPlaylistTrackIDs("https://open.spotify.com/playlist/5aDEfIQImLKHbElp6HRHUd?si=eefd56a6587245a4"))
+"""
+
+#Test 7: Returning the name of a track given a track ID
+""" This is passing
+for track in listPlaylistTrackIDs("https://open.spotify.com/playlist/5aDEfIQImLKHbElp6HRHUd?si=eefd56a6587245a4"):
+    print(grabTrackName(track))
+"""
+
