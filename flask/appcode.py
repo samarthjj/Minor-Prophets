@@ -30,8 +30,8 @@ def generate_questions(numQuestions):
 
     numberOfQuestionsPerCategory = math.ceil(numQuestions / numberOfCategories)
 
-    albums = ['MONTERO', 'SOUR', 'Planet Her', 'Happier Than Ever', 'Evolution', 'Future Nostalgia', 'folklore', 'Chromatica']
-    artists = ['Lil Nas X', 'Olivia Rodrigo', 'Doja Cat', 'Billie Eilish', 'Joyner Lucas', 'Dua Lipa', 'Taylor Swift', 'Lady Gaga']
+    #albums = ['MONTERO', 'SOUR', 'Planet Her', 'Happier Than Ever', 'Evolution', 'Future Nostalgia', 'folklore', 'Chromatica']
+    #artists = ['Lil Nas X', 'Olivia Rodrigo', 'Doja Cat', 'Billie Eilish', 'Joyner Lucas', 'Dua Lipa', 'Taylor Swift', 'Lady Gaga']
 
 
     #albums = ['Nine Track Mind', 'The Truth About Love', 'BADLANDS', 'Beauty Behind The Madness', '1989', 'digital druglord', 'thank u, next', 'Pure Heroine', '25', 'The 20/20 Experience', 'Lemonade']
@@ -54,22 +54,43 @@ def generate_questions(numQuestions):
             trackIDs += spotify_utils.listPlaylistTrackIDs(playlist)
 
 
-    for track in trackIDs:
+    usedIDs = []
+
+    for i in range(10):
+
+            track = random.choice(trackIDs)
+            while track in usedIDs:
+
+                track = random.choice(trackIDs)
+
+            usedIDs.append(track)
+
+            print("1")
 
             albumID = spotify_utils.grabAlbumID(track)
 
+            print("2")
+
             releaseDate = spotify_utils.grabAlbumYear(albumID)
+
+            print("3")
 
             name = spotify_utils.grabAlbumName(albumID)
 
-            artist = spotify_utils.grabArtistName(albumID)
+            print("4")
+
+            artist = spotify_utils.grabArtistNamesFromAlbum(albumID)
+
+            print("5")
+
 
             albumTrackIDs = spotify_utils.listAlbumTrackIDs(albumID)
 
+            print("6")
+
+            albumDict = albumDict = {'Name': name, 'Artist': artist[0], 'Release Date': int(releaseDate), 'Tracklist': {}}
+
             if len(artist) == 1:
-
-                albumDict = {'Name': name, 'Artist': artist[0], 'Release Date': int(releaseDate), 'Tracklist': {}}
-
 
                 for albumTrack in albumTrackIDs:
 
@@ -79,9 +100,9 @@ def generate_questions(numQuestions):
 
                     albumDict['Tracklist'][trackName] = int(trackPopularity)
 
-            info['Albums'].append(albumDict)
+                info['Albums'].append(albumDict)
 
-    questions = generate_artist_questions(info, numberOfQuestionsPerCategory) + generate_release_date_questions(info, numberOfQuestionsPerCategory) + generate_top_track_questions(info, numberOfQuestionsPerCategory)
+    questions = generate_artist_questions(info, numberOfQuestionsPerCategory) + generate_release_date_questions(info, numberOfQuestionsPerCategory) + generate_popularity_questions(info, numberOfQuestionsPerCategory)
 
     random.shuffle(questions)
 
@@ -150,7 +171,7 @@ def generate_release_date_questions(albumData, numberOfQuestions):
     return questions
 
 
-def generate_top_track_questions(albumData, numberOfQuestions):
+def generate_popularity_questions(albumData, numberOfQuestions):
 
     questions = []
 
@@ -179,7 +200,7 @@ def generate_top_track_questions(albumData, numberOfQuestions):
 
                 random.shuffle(choices)
 
-                questions.append({"question": "Which track off of " + album['Name'] + " has the most plays?", "choices": choices, "answer": answer, "album art": album['Album Art'], "genre": "Pop"})
+                questions.append({"question": "Which track off of " + album['Name'] + " by " + album['Artist'] + " is the most popular?", "choices": choices, "answer": answer, "genre": "Pop"})
 
     return questions
 

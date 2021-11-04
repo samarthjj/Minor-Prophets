@@ -42,7 +42,7 @@ def get_existing_questions(rounds, roomcode):
     numQuestions = questionsPerRound * rounds
 
     # TESTING PURPOSES ONLY
-    cur.execute("DROP TABLE questions")
+    #cur.execute("DROP TABLE questions")
     cur.execute("CREATE TABLE IF NOT EXISTS questions (question varchar, choice1 varchar, choice2 varchar, choice3 varchar, choice4 varchar, answer varchar, genre varchar, current boolean);")
 
     cur.execute("SELECT * FROM questions WHERE genre=%s;", ("Pop",))
@@ -51,7 +51,7 @@ def get_existing_questions(rounds, roomcode):
 
 
     # TESTING PURPOSES ONLY
-    cur.execute("DROP TABLE rooms")
+    #cur.execute("DROP TABLE rooms")
     cur.execute("CREATE TABLE IF NOT EXISTS rooms (roomcode varchar, question varchar);")
 
 
