@@ -25,6 +25,15 @@ def listPlaylistTrackIDs(playlist_url):
     return track_ids
 
 
+def listAlbumTrackIDs(album_id):
+    """
+    Given an album ID, return a list of all the track IDs associated with the album.
+    """
+    album_data = sp.album(album_id)
+    track_ids = [track["id"] for track in album_data["tracks"]["items"]]
+    return track_ids
+
+
 def pickOutID(playlist_url):
     """
     Given a playlist url, this function will return the length-22 ID associated with the playlist

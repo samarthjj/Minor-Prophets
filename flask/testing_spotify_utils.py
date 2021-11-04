@@ -57,6 +57,12 @@ for track in listPlaylistTrackIDs(testingPlaylist):
 
 # Test 9: Returning the album ID associated with a given track ID. Acceptance if we can return the correct album
 # art using the returned album ID.
+""" This is passing
 single_track = listPlaylistTrackIDs(testingPlaylist)[0]
 album_id = grabAlbumID(single_track)
 print(grabAlbumArt(album_id))
+"""
+
+# Test 10: Returning a list of the track IDs for all tracks in a single album.
+album_id = "0zFqkobYDLzAAHbK2lgc68"
+print(listAlbumTrackIDs(album_id))
