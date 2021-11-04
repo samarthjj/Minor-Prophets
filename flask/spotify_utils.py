@@ -15,12 +15,18 @@ sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=spotify_id,
 
 
 def grabTrackYear(track_id):
+    """
+    Given a track ID, return the year related to the release date of this track as a string.
+    """
     track_data = sp.track(track_id)
     release_year = track_data["album"]["release_date"][0:4]
     return release_year
 
 
 def grabAlbumYear(album_id):
+    """
+    Given an album ID, return the year related to the release date of this album as a string.
+    """
     album_data = sp.album(album_id)
     release_year = album_data["release_date"][0:4]
     return release_year
