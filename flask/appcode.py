@@ -26,7 +26,7 @@ def generate_questions(numQuestions):
 
 def generate_questions(numQuestions):
 
-    numberOfCategories = 2
+    numberOfCategories = 3
 
     numberOfQuestionsPerCategory = math.ceil(numQuestions / numberOfCategories)
 
@@ -44,13 +44,44 @@ def generate_questions(numQuestions):
 
     info = {'Albums': []}
 
-    for i in range(len(albums)):
-        release_date = spotify_utils.grabAlbumYear(albums[i], artists[i], type='album', limit=1)
-        if release_date != None:
-            info['Albums'].append({'Name': albums[i], 'Artist': artists[i], 'Release Date': int(release_date)})
+    trackIDs = []
+
+    with open('playlists.txt') as f:
+        for playlist in f:
+
+            playlist = playlist.rstrip('\r\n')
+
+            trackIDs += spotify_utils.listPlaylistTrackIDs(playlist)
 
 
-    questions = generate_artist_questions(info, numberOfQuestionsPerCategory) + generate_release_date_questions(info, numberOfQuestionsPerCategory)
+    for track in trackIDs:
+
+            albumID = spotify_utils.grabAlbumID(track)
+
+            releaseDate = spotify_utils.grabAlbumYear(albumID)
+
+            name = spotify_utils.grabAlbumName(albumID)
+
+            artist = spotify_utils.grabArtistName(albumID)
+
+            albumTrackIDs = spotify_utils.listAlbumTrackIDs(albumID)
+
+            if len(artist) == 1:
+
+                albumDict = {'Name': name, 'Artist': artist[0], 'Release Date': int(releaseDate), 'Tracklist': {}}
+
+
+                for albumTrack in albumTrackIDs:
+
+                    trackName = spotify_utils.grabTrackName(albumTrack)
+
+                    trackPopularity = spotify_utils.grabTrackPopularity(albumTrack)
+
+                    albumDict['Tracklist'][trackName] = int(trackPopularity)
+
+            info['Albums'].append(albumDict)
+
+    questions = generate_artist_questions(info, numberOfQuestionsPerCategory) + generate_release_date_questions(info, numberOfQuestionsPerCategory) + generate_top_track_questions(info, numberOfQuestionsPerCategory)
 
     random.shuffle(questions)
 
@@ -131,23 +162,24 @@ def generate_top_track_questions(albumData, numberOfQuestions):
 
             top3Songs = findTopThree(album)
 
-            answer = top3Songs[0][0]
-            top3Songs.pop(0)
-            choices = [answer]
+            if top3Songs[0][1] != top3Songs[1][1] != top3Songs[2][0]:
 
-            for i in range(1,3):
-                choice = top3Songs[0][0]
-                choices.append(choice)
+                answer = top3Songs[0][0]
                 top3Songs.pop(0)
+                choices = [answer]
 
-            possibleTracks = getTracks(album['Tracklist'], choices)
+                for i in range(1,3):
+                    choice = top3Songs[0][0]
+                    choices.append(choice)
+                    top3Songs.pop(0)
 
-            choices.append(random.choice(possibleTracks))
+                possibleTracks = getTracks(album['Tracklist'], choices)
 
-            random.shuffle(choices)
+                choices.append(random.choice(possibleTracks))
 
-            questions.append({"question": "Which track off of " + album['Name'] + " has the most plays?", "choices": choices, "answer": answer, "album art": album['Album Art'], "genre": "Pop"})
+                random.shuffle(choices)
 
+                questions.append({"question": "Which track off of " + album['Name'] + " has the most plays?", "choices": choices, "answer": answer, "album art": album['Album Art'], "genre": "Pop"})
 
     return questions
 
