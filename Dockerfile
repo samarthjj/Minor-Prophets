@@ -1,4 +1,20 @@
-FROM node:latest
+#FROM node:16.13.0
+#
+#RUN apt-get update
+#
+#WORKDIR /root
+#ENV HOME /root
+#
+#COPY . .
+#
+#RUN npm install
+#
+#EXPOSE 3000
+#
+#CMD npm start
+
+#FROM node:latest
+FROM node:16.13.0
 
 RUN apt-get update
 
@@ -18,16 +34,14 @@ COPY . .
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN pip3 install -r requirements.txt
-RUN npm install react-router-dom
-RUN npm install axios
-
-RUN yarn install
+RUN npm install
 
 EXPOSE 3000
+EXPOSE 5000
 
 # start app
+# CMD ./runprog 2
 CMD ["/usr/bin/supervisord"]
-# CMD "cd flask && flask run"
 
 # https://advancedweb.hu/supervisor-with-docker-lessons-learned/
 # https://docs.docker.com/config/containers/multi-service_container/

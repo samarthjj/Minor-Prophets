@@ -6,7 +6,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "axios": "^0.23.0",
+    "axios": "^0.24.0",
     "http-proxy-middleware": "^2.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -14,14 +14,10 @@
     "react-scripts": "4.0.3",
     "socket.io-client": "2.4.0",
     "web-vitals": "^1.0.1",
-    "yarn": "^1.22.17"
+    "yarn": "^1.22.11"
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-flask": "cd flask && python3 app.py",
-    "start-api": "cd flask && flask run",
-    "start-api-mac": "cd flask && . venv/Scripts/activate --no-debugger && flask run",
-    "start-both": "react-scripts start && cd flask && venv/Scripts/activate --no-debugger && flask run",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
