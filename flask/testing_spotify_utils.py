@@ -74,3 +74,7 @@ print(listAlbumTrackIDs(album_id))
 single_track = listPlaylistTrackIDs(testingPlaylist)[0]
 print(grabArtistNamesFromTrack(single_track))
 """
+
+#Test 12: Returning a list of artists given an album ID.
+single_album = "0zFqkobYDLzAAHbK2lgc68"
+print(grabArtistNamesFromAlbum(single_album))
