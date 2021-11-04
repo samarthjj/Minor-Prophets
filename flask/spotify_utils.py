@@ -14,6 +14,17 @@ spotify_id = os.environ['SPOTIFY_CLIENT_ID']
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=spotify_id, client_secret=spotify_secret))
 
 
+def listPlaylistTrackIDs(playlist_url):
+    """
+    Given a playlist url, this function will return a list of track IDs from that playlist that can later
+    be used to grab whole track information.
+    """
+    playlist_id = pickOutID(playlist_url)
+    playlist_data = sp.playlist(playlist_id)
+    track_ids = [song["track"]["id"] for song in playlist_data["tracks"]["items"]]
+    return track_ids
+
+
 def grabTrackYear(track_id):
     """
     Given a track ID, return the year related to the release date of this track as a string.
@@ -58,17 +69,6 @@ def pickOutID(playlist_url):
     to be used for exact lookup.
     """
     return playlist_url[34:56]
-
-
-def listPlaylistTrackIDs(playlist_url):
-    """
-    Given a playlist url, this function will return a list of track IDs from that playlist that can later
-    be used to grab whole track information.
-    """
-    playlist_id = pickOutID(playlist_url)
-    playlist_data = sp.playlist(playlist_id)
-    track_ids = [song["track"]["id"] for song in playlist_data["tracks"]["items"]]
-    return track_ids
 
 
 def grabTrackName(track_id):
