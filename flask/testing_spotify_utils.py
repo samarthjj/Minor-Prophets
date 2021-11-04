@@ -76,5 +76,12 @@ print(grabArtistNamesFromTrack(single_track))
 """
 
 #Test 12: Returning a list of artists given an album ID.
+""" This is passing
 single_album = "0zFqkobYDLzAAHbK2lgc68"
 print(grabArtistNamesFromAlbum(single_album))
+"""
+
+# Test 13: Testing isSingle on a "single" and an "album"
+albums = ["0zFqkobYDLzAAHbK2lgc68", "4gYRifAy47Kiw1k152e6hv", "1ORxRsK3MrSLvh7VQTF01F"]
+for album_id in albums:
+    print(f"{grabAlbumName(album_id)} -------- This is a single: {isSingle(album_id)}")

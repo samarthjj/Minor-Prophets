@@ -126,3 +126,15 @@ def grabTrackPopularity(track_id):
     Given a track ID, return the popularity score associated with it as an integer between 0-100 inclusive.
     """
     return sp.track(track_id)["popularity"]
+
+
+def isSingle(album_id):
+    """
+    Given an album ID, return a boolean value indicating whether or not the input album only contains one song.
+    This function does not lookup the actual album type in Spotify's records, since albums with more than one song
+    can be considered a "single".
+    """
+    num_songs = len(sp.album(album_id)["tracks"]["items"])
+    if num_songs == 1:
+        return True
+    return False
