@@ -25,6 +25,14 @@ def listPlaylistTrackIDs(playlist_url):
     return track_ids
 
 
+def pickOutID(playlist_url):
+    """
+    Given a playlist url, this function will return the length-22 ID associated with the playlist
+    to be used for exact lookup.
+    """
+    return playlist_url[34:56]
+
+
 def grabTrackYear(track_id):
     """
     Given a track ID, return the year related to the release date of this track as a string.
@@ -61,14 +69,6 @@ def grabAlbumArt(album_id):
     album_data = sp.album(album_id)
     art = album_data["images"][0]["url"]
     return art
-
-
-def pickOutID(playlist_url):
-    """
-    Given a playlist url, this function will return the length-22 ID associated with the playlist
-    to be used for exact lookup.
-    """
-    return playlist_url[34:56]
 
 
 def grabTrackName(track_id):
