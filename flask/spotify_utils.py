@@ -33,6 +33,15 @@ def pickOutID(playlist_url):
     return playlist_url[34:56]
 
 
+def grabAlbumID(track_id):
+    """
+    Given a track ID, return the album ID associated with it
+    """
+    track_data = sp.track(track_id)
+    album_id = track_data["album"]["id"]
+    return album_id
+
+
 def grabTrackYear(track_id):
     """
     Given a track ID, return the year related to the release date of this track as a string.

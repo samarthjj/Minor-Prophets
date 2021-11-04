@@ -55,3 +55,8 @@ for track in listPlaylistTrackIDs(testingPlaylist):
     print(grabTrackPopularity(track))
 """
 
+# Test 9: Returning the album ID associated with a given track ID. Acceptance if we can return the correct album
+# art using the returned album ID.
+single_track = listPlaylistTrackIDs(testingPlaylist)[0]
+album_id = grabAlbumID(single_track)
+print(grabAlbumArt(album_id))
