@@ -9,19 +9,15 @@ from spotify_utils import *
 testingPlaylist = "https://open.spotify.com/playlist/23ix3PPVfL1JGc4Zj1GpcL?si=f9207fe35cdb4a56"
 
 # Test 1: Receive the correct release year for a given TRACK and artist
-""" These are passing
-for index in range(len(tracks_test_these)):
-    track = tracks_test_these[index][0]
-    artist = tracks_test_these[index][1]
-    print(f"Expected: {tracks_test_these[index][2]} ----- Returned: {grabTrackYear(track, artist)}")
+""" This is passing
+single_track = listPlaylistTrackIDs(testingPlaylist)[0]
+print(grabTrackYear(single_track))
 """
 
 # Test 2: Receive the correct release year for a given ALBUM and artist
-""" These are passing
-for index in range(len(albums_test_these)):
-    album = albums_test_these[index][0]
-    artist = albums_test_these[index][1]
-    print(f"Expected: {albums_test_these[index][2]} ----- Returned: {grabAlbumYear(album, artist)}")
+""" This is passing
+single_album = "0zFqkobYDLzAAHbK2lgc68"
+print(grabAlbumYear(single_album))
 """
 
 # Test 3: Receive the correct album art for a given TRACK
