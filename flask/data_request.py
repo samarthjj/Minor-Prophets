@@ -1,6 +1,7 @@
 import json
 import os
 import appcode
+import random
 import psycopg2
 
 
@@ -30,31 +31,29 @@ def get_stats(token):
     profile = {"GamesWon": data[3], "TotalPoints": data[4], "WinRatio": data[5], "FavoriteGenre": data[6]}
 
     return profile
+    return profile
 
 
 def get_existing_questions(rounds, roomcode):
 
     conn, cur = get_cursor()
 
-    cur.execute("DROP TABLE questions")
-    cur.execute("CREATE TABLE IF NOT EXISTS questions (question varchar, choice1 varchar, choice2 varchar, choice3 varchar, choice4 varchar, answer varchar, genre varchar, current boolean);")
-
-    test_questions(cur)
-
-    cur.execute("SELECT * FROM questions WHERE genre=%s LIMIT %s;", ("pop", rounds,))
-
-    data = cur.fetchall()
-
-    print(data)
-
     questionsPerRound = 3
     numQuestions = questionsPerRound * rounds
 
+    # TESTING PURPOSES ONLY
+    cur.execute("DROP TABLE questions")
+    cur.execute("CREATE TABLE IF NOT EXISTS questions (question varchar, choice1 varchar, choice2 varchar, choice3 varchar, choice4 varchar, answer varchar, genre varchar, current boolean);")
 
+    cur.execute("SELECT * FROM questions WHERE genre=%s;", ("Pop",))
+
+    data = cur.fetchall()
+
+
+    # TESTING PURPOSES ONLY
     cur.execute("DROP TABLE rooms")
     cur.execute("CREATE TABLE IF NOT EXISTS rooms (roomcode varchar, question varchar);")
 
-    test_rooms(cur)
 
     # if there's not enough stored questions
     if len(data)/5 < numQuestions:
@@ -69,15 +68,24 @@ def get_existing_questions(rounds, roomcode):
 
             cur.execute("INSERT INTO rooms (roomcode, question) VALUES (%s, %s)", (roomcode, question["question"]))
 
-        test_rooms(cur)
 
     else:
 
-        for question in data:
+        print("getting existing")
 
-            print(question)
+        random.shuffle(data)
+
+        print("data", data)
+
+        for i in range(numQuestions):
+
+            question = data[i]
 
             cur.execute("INSERT INTO rooms (roomcode, question) VALUES (%s, %s)", (roomcode, question[0]))
+
+
+    test_questions(cur)
+    test_rooms(cur)
 
     conn.commit()
     cur.close()
@@ -85,17 +93,15 @@ def get_existing_questions(rounds, roomcode):
 
 
 
-def get_question():
+def get_question(roomcode):
 
     conn, cur = get_cursor()
 
-    cur.execute("SELECT * FROM rooms LIMIT 1;")
+    cur.execute("SELECT * FROM rooms WHERE roomcode=%s LIMIT 1;", (roomcode,))
 
     question = cur.fetchall()
 
     question = question[0]
-
-    print(question)
 
     cur.execute("SELECT * FROM questions WHERE question=%s LIMIT 1;", (question[1],))
 
@@ -104,8 +110,6 @@ def get_question():
     question = question[0]
 
     cur.execute("UPDATE questions SET current=%s WHERE question=%s;", (True, question[0]))
-
-    print(question)
 
     conn.commit()
     cur.close()
@@ -121,10 +125,14 @@ def get_answer():
       cur.execute("SELECT * FROM questions WHERE current=%s LIMIT 1;", (True,))
 
       question = cur.fetchall()
+
       question = question[0]
 
       cur.execute("UPDATE questions SET current=%s WHERE question=%s;", (False, question[0]))
-      cur.execute("DELETE FROM rooms WHERE question=%s;", (question[0]))
+      cur.execute("DELETE FROM rooms WHERE question=%s;", (question[0],))
+
+      test_questions(cur)
+      test_rooms(cur)
 
       conn.commit()
       cur.close()
@@ -141,13 +149,12 @@ def new_questions_in_database(data, cur):
 
         check = cur.fetchall()
 
-        print(check)
-
         if len(check) == 0:
 
-            cur.execute("INSERT INTO questions (question, choice1, choice2, choice3, choice4, answer, genre, current) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (question["question"], question["choices"][0], question["choices"][1], question["choices"][2], question["choices"][3], question["answer"], question["genre"], False))
+            cur.execute("INSERT INTO questions (question, choice1, choice2, choice3, choice4, answer, genre, current) "
+                        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                        (question["question"], question["choices"][0], question["choices"][1], question["choices"][2], question["choices"][3], question["answer"], question["genre"], False))
 
-    test_questions(cur)
 
 def get_cursor():
     db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
@@ -164,6 +171,7 @@ def test_questions(cur):
 
     print("questions: ")
     print(questions)
+    print(len(questions))
 
 
 def test_rooms(cur):
@@ -174,5 +182,6 @@ def test_rooms(cur):
 
     print("rooms: ")
     print(rooms)
+    print(len(rooms))
 
 

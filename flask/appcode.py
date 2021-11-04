@@ -4,7 +4,7 @@ import math
 import spotify_utils
 from datetime import date
 
-
+'''
 def generate_questions(numQuestions):
 
     f = open("questions.json")
@@ -18,28 +18,44 @@ def generate_questions(numQuestions):
 
     questions = generate_artist_questions(albumData, numberOfQuestionsPerCategory) + generate_release_date_questions(albumData, numberOfQuestionsPerCategory) + generate_top_track_questions(albumData, numberOfQuestionsPerCategory)
 
+    random.shuffle(questions)
+
     return questions
 
 '''
+
 def generate_questions(numQuestions):
 
-    numberOfCategories = 3
+    numberOfCategories = 2
 
     numberOfQuestionsPerCategory = math.ceil(numQuestions / numberOfCategories)
 
-    albums = ['MONTERO', 'SOUR', 'Planet Her', 'Happier Than Ever', 'Evolution', 'Future Nostalgia', 'lately I feel EVERYTHING']
-    artists = ['Lil Nas X', 'Olivia Rodrigo', 'Doja Cat', 'Billie Eilish', 'Joyner Lucas', 'Dua Lipa', 'WILLOW']
+    albums = ['MONTERO', 'SOUR', 'Planet Her', 'Happier Than Ever', 'Evolution', 'Future Nostalgia', 'folklore', 'Chromatica']
+    artists = ['Lil Nas X', 'Olivia Rodrigo', 'Doja Cat', 'Billie Eilish', 'Joyner Lucas', 'Dua Lipa', 'Taylor Swift', 'Lady Gaga']
+
+
+    #albums = ['Nine Track Mind', 'The Truth About Love', 'BADLANDS', 'Beauty Behind The Madness', '1989', 'digital druglord', 'thank u, next', 'Pure Heroine', '25', 'The 20/20 Experience', 'Lemonade']
+    #artists = ['Charlie Puth', 'P!nk', 'Halsey', 'The Weeknd', 'Taylor Swift', 'blackbear', 'Ariana Grande', 'Lorde', 'Adele', 'Justin Timberlake', 'Beyonce']
+
+
+    #albums = ['if i could make it go quiet', 'Long Lost', 'lately I feel EVERYTHING', 'Be the Cowboy', 'If this Isn\'t Nice, I Don\'t Know What Is', 'Historian', 'Twin Fantasy']
+    #artists =['girl in red', 'Lord Huron', 'WILLOW', 'Mitski', 'Still Woozy', 'Lucy Dacus', 'Car Seat Headrest']
+
+
     info = {'Albums': []}
+
     for i in range(len(albums)):
         release_date = spotify_utils.grabAlbumYear(albums[i], artists[i], type='album', limit=1)
-        info['Albums'].append({'Name': albums[i], 'Artist': artists[i], 'Release Date': release_date})
+        if release_date != None:
+            info['Albums'].append({'Name': albums[i], 'Artist': artists[i], 'Release Date': int(release_date)})
 
-    print(info)
 
     questions = generate_artist_questions(info, numberOfQuestionsPerCategory) + generate_release_date_questions(info, numberOfQuestionsPerCategory)
 
+    random.shuffle(questions)
+
     return questions
-'''
+
 
 
 def generate_artist_questions(albumData, numberOfQuestions):
@@ -153,6 +169,7 @@ def bounds(answer):
 def albumChooser(numberOfQuestions, albumData, isTracks):
 
     possibleAlbums = albumData['Albums'].copy()
+
     albums = []
     count = 0
     while count < numberOfQuestions:
