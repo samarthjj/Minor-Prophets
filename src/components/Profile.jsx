@@ -93,11 +93,11 @@ class Profile extends Component {
                     <div className="col-6">
                         <div className="row">
                             <Link to="/TBD"><button className="btn btn-light btn-md text-dark mb-3">Link Spotify</button></Link>
-                            <img src="" alt="Spotify image"/>
+                            {/*<img src="" alt="Spotify image"/>*/}
                         </div>
                         <div className="row">
                             <Link to="/TBD"><button className="btn btn-light btn-md text-dark mb-3">Link Apple Music</button></Link>
-                            <img src="" alt="Apple Music image"/>
+                            {/*<img src="" alt="Apple Music image"/>*/}
                         </div>
                     </div>
 

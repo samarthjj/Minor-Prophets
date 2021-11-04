@@ -1,5 +1,20 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+// import {default as axios} from "axios";
+
+const axios = require('axios').default;
+
+function get_questions()
+{
+    axios.get('/api/startGame', {
+        params: {
+            rounds: 5
+        }
+    })
+        .then(function (response) {
+            console.log("received")
+        })
+}
 
 class GameSetup extends Component {
     render() {
@@ -18,6 +33,9 @@ class GameSetup extends Component {
                         </div>
                         <div className="col-2">
                             <Link to="/question"><button className="btn btn-primary btn-md text-dark mb-3">Start Game</button></Link>
+                        </div>
+                        <div className="col-2">
+                            <button className="btn btn-lg btn-success text-dark" onClick = {get_questions}>Click Here To Generate Questions</button>
                         </div>
                     </div>
 
