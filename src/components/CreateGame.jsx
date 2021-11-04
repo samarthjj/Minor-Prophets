@@ -1,6 +1,7 @@
-import React, {Component} from "react";
-import {Link, Redirect} from "react-router-dom";
+import React, {useState} from "react";
+import {Link, Redirect, useHistory} from "react-router-dom";
 import {default as axios} from "axios";
+import { customAlphabet } from "nanoid";
 
 const handleLogout = async e => {
         // Clear user cookie: https://newbedev.com/javascript-how-to-clear-cookies-in-javascript-code-example
@@ -19,69 +20,86 @@ function logout()
     })
 }
 
-class CreateGame extends Component {
 
-    render() {
-        return (
-            <div class="container-sm text-center">
+const CreateGame = () => {
 
-                <div className="row mb-3">
+    let history = useHistory();
 
-                    {/*Profile Button*/}
-                    <div className="col-2">
-                        <Link to="/profile"><button className="btn btn-success btn-md text-dark mb-3">Profile</button></Link>
-                    </div>
-                    <div className="col-8">
+    const [room_code, set_room_code] = useState("");
 
-                    </div>
-
-                    {/*Logout Button*/}
-                    <div className="col-2">
-                        <button onClick={handleLogout} class="btn btn-success btn-md text-dark mb-3">Logout</button>
-                    </div>
-                </div>
-
-                <h1 className="title text-light">Minor Prophets</h1>
-
-                <div className="landing-logo mb-5">
-                    <h3 className="text-dark">This is where the game logo goes.</h3>
-                </div>
-
-                {/* Bootstrap Spacing: https://getbootstrap.com/docs/5.1/utilities/spacing/*/}
-                {/*Centering content w/ mx-auto (automatic X centering)*/}
-                {/*mb-3 == margin bottom by 3*/}
-
-                <div className="container-sm">
-                    <form className="form-group">
-                        <div className="form-floating mb-3 mx-auto w-50">
-                            <input type="text" className="form-control input-small" id="code" placeholder="Code"/>
-                            <label htmlFor="name" className="text-dark">Enter Code Here</label>
-                        </div>
-
-                        <div className="form-floating mb-3 mx-5">
-                            <Link to="/gamesetup"><button className="btn btn-lg btn-success text-dark" type="submit">Join Game</button></Link>
-                        </div>
-
-                        <div className="form-floating mb-3 mx-5">
-                            <Link to="/gamesetup"><button className="btn btn-lg btn-primary text-dark" type="submit">Start New Game</button></Link>
-                        </div>
-
-                    </form>
-                </div>
-
-                {/*<h1 class="title text-light">Minor Prophets</h1>*/}
-                {/*<h2>This is our landing page, aka the first page.</h2>*/}
-                {/*<Link to="/login"><button class="text-dark">Login</button></Link>*/}
-                {/*<Link to="/signup"><button class="text-dark">Sign Up</button></Link>*/}
-                {/*<div class="landing-logo">*/}
-                {/*    <h3>This is where the game logo goes.</h3>*/}
-                {/*</div>*/}
-                {/*<input className="code" type="text" value="hGjU87Uj" disabled />*/}
-                {/*<Link to="/TBD"><button>Join Game</button></Link>*/}
-                {/*<Link to="/TBD"><button>Start New Game</button></Link>*/}
-            </div>
-        );
+    const generate_room_code = () => {
+        return(customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz', 8)())
     }
+
+    const handleRoom = () => {
+        if (room_code !== ""){
+            axios.get('/api/validateRoom', {
+                params: {
+                    roomcode: room_code
+                }
+            }).then(function (response) {
+                if (response.data["token"] === "goodRoom"){
+                    history.push(`/gamesetup/${room_code}`)
+                }else{
+                    set_room_code("");
+                    alert("This is not a valid room code.")
+                }
+            })
+        }
+    }
+
+    return (
+        <div class="container-sm text-center">
+
+            <div className="row mb-3">
+
+                {/*Profile Button*/}
+                <div className="col-2">
+                    <Link to="/profile"><button className="btn btn-success btn-md text-dark mb-3">Profile</button></Link>
+                </div>
+                <div className="col-8">
+
+                </div>
+
+                {/*Logout Button*/}
+                <div className="col-2">
+                    <button onClick={handleLogout} class="btn btn-success btn-md text-dark mb-3">Logout</button>
+                </div>
+            </div>
+
+            <h1 className="title text-light">Minor Prophets</h1>
+
+            <div className="landing-logo mb-5">
+                <h3 className="text-dark">This is where the game logo goes.</h3>
+            </div>
+
+            {/* Bootstrap Spacing: https://getbootstrap.com/docs/5.1/utilities/spacing/*/}
+            {/*Centering content w/ mx-auto (automatic X centering)*/}
+            {/*mb-3 == margin bottom by 3*/}
+
+            <div className="container-sm">
+                <h3 className="text-light">Start a new game or enter a code to join an existing game.</h3>
+                <form className="form-group">
+
+                    <div className="form-floating mb-3 mx-5">
+                        <Link to={`/gamesetup/${generate_room_code()}`}><button className="btn btn-lg btn-success text-dark" type="submit">Start New Game</button></Link>
+                    </div>
+
+                    <div className="form-floating mb-3 mx-auto w-50">
+                        <input type="text" className="form-control input-small" id="code" placeholder="Code" value={room_code} onChange={(event) => {set_room_code(event.target.value)}} required/>
+                        <label htmlFor="name" className="text-dark">Enter Code Here</label>
+                        
+                    </div>
+
+                    <div className="form-floating mb-3 mx-5">
+                        <button className="btn btn-lg btn-primary text-dark" type="button" onClick={handleRoom}>Join Game</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    );
 }
 
 export default CreateGame;

@@ -5,7 +5,7 @@ from pydoc import html
 import appcode
 import werkzeug
 from flask import Flask, request
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room, leave_room
 import os
 import json
 import psycopg2
@@ -20,6 +20,11 @@ from logout import invalidate_session
 
 app = Flask(__name__)
 socket_server = SocketIO(app, cors_allowed_origins="*")
+
+# Dictionary[String, Dictionary[String, String]]
+# Maps room code to dictionary of players, mapping token to username.
+# Each room info will also contain keys for "owner", "rounds", "genre"
+rooms_user_info = {}
 
 
 @app.route('/api/time')
@@ -204,13 +209,27 @@ def attempt_signup():
         return json.dumps({})
 
 
+@app.route("/api/validateRoom")
+def validate_room():
+    print("Validate Room")
+    room = request.args.get('roomcode')
+    print("Room Code: " + room)
+    if room in rooms_user_info:
+        return json.dumps({"token": "goodRoom"})
+    else:
+        return json.dumps({"token": "badRoom"})
+
 @app.route('/api/startGame')
 def gen_questions():
 
-    print("entered")
+    print("Start Game")
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     rounds = request.args.get('rounds')
+    print("Rounds: " + rounds)
+
+    room = request.args.get('roomcode')
+    print("Room Code: " + room)
 
     # spotify_utils.grabAlbumYear()
     f = open("questions.json")
@@ -226,7 +245,7 @@ def gen_questions():
 
 @app.route('/api/questionRequest')
 def grab_question():
-    print("enter 2")
+    print("Request for Question")
     f = open("store.json")
     questions = json.loads(f.read())
     question = random.choice(questions)
@@ -295,10 +314,36 @@ def test_database():
 #         }
 
 
+@socket_server.on('join')
+def on_join(info):
+    room = info['room']
+    token = request.args.get('token')
+    # Add room to rooms_user_info
+    if not room in rooms_user_info:
+        rooms_user_info[room] = {}
+        rooms_user_info[room]["owner"] = token
+    
+    # Add user to that room
+    # TODO: Fetch username from database.
+    username = None 
+    rooms_user_info[room][token] = username
+
+    join_room(room)
+    emit(username + ' has joined the game.', to=room)
+
+
+@socket_server.on('leave')
+def on_leave(info):
+    room = info['room']
+    token = token = request.args.get('token')
+    username = rooms_user_info[room][token]
+    leave_room(room)
+    emit(username + ' has left the game.', to=room)
+
+
 @socket_server.on('message')
 def broadcast_message(msg):
     emit("message", msg, broadcast=True)
-    return
 
 
 if __name__ == '__main__':
