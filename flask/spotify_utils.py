@@ -103,6 +103,15 @@ def grabAlbumName(album_id):
     return sp.album(album_id)["name"]
 
 
+def grabArtistNamesFromTrack(track_id):
+    """
+    Given a track ID, return a list of artists associated with it.
+    """
+    track_data = sp.track(track_id)
+    artists = [artist["name"] for artist in track_data["album"]["artists"]]
+    return artists
+
+
 def grabTrackPopularity(track_id):
     """
     Given a track ID, return the popularity score associated with it as an integer between 0-100 inclusive.

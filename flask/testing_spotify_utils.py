@@ -64,5 +64,13 @@ print(grabAlbumArt(album_id))
 """
 
 # Test 10: Returning a list of the track IDs for all tracks in a single album.
+""" This is passing
 album_id = "0zFqkobYDLzAAHbK2lgc68"
 print(listAlbumTrackIDs(album_id))
+"""
+
+# Test 11: Returning a list of artists given a track ID.
+""" This is passing
+single_track = listPlaylistTrackIDs(testingPlaylist)[0]
+print(grabArtistNamesFromTrack(single_track))
+"""
