@@ -13,6 +13,7 @@ import uuid
 import data_request
 import random
 import csv
+import data_request
 #import spotify_utils
 from username_password_check import check_password, check_username
 from verify_session import verify_valid_session
@@ -207,42 +208,56 @@ def attempt_signup():
 @app.route('/api/startGame')
 def gen_questions():
 
-    print("entered")
-
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    rounds = request.args.get('rounds')
+    rounds = int(request.args.get('rounds'))
 
-    # spotify_utils.grabAlbumYear()
+    #roomcode = request.args.get('roomcode')
+    roomcode = 'RUN1'
+
+
+    data_request.get_existing_questions(rounds, roomcode)
+
+
+    '''
     f = open("questions.json")
-    questions = appcode.generate_questions(json.loads(f.read()), int(rounds))
+    questions = appcode.generate_questions(int(rounds))
     f.close()
 
     random.shuffle(questions)
 
     with open('store.json', 'w') as j:
         json.dump(questions, j)
-
-    return json.dumps(questions)
+    '''
+    return json.dumps("done")
 
 @app.route('/api/questionRequest')
 def grab_question():
-    print("enter 2")
+
+    # roomcode = request.args.get('roomcode')
+    roomcode = 'RUN1'
+
+    '''
     f = open("store.json")
     questions = json.loads(f.read())
     question = random.choice(questions)
 
     with open('temp_question_storage.json', 'w') as j:
         json.dump(question, j)
+    '''
+
+    question = data_request.get_question(roomcode)
 
     return json.dumps(question)
 
 @app.route('/api/answerRequest')
 def grab_answer():
 
+    '''
     with open("temp_question_storage.json", 'r') as f:
         question = json.loads(f.read())
+    '''
 
-    return question
+    return data_request.get_answer()
 
 @app.route('/api/time')
 def get_current_time():
