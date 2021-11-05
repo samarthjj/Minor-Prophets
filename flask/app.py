@@ -26,7 +26,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socket_server = SocketIO(app, cors_allowed_origins="*")
 
 # Dictionary[String, Dictionary[String, String]]
 # Maps room code to dictionary of players, mapping token to username.
@@ -371,4 +371,4 @@ def broadcast_message(msg):
 
 
 if __name__ == '__main__':
-    socketio.run(app, host="0.0.0.0", port=5000)
+    socket_server.run(app, host="0.0.0.0", port=5000)
