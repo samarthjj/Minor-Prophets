@@ -349,7 +349,7 @@ def on_join(info):
 
     join_room(room)
     # print(rooms_user_info[room])
-    emit("join_room", username + ' has joined the game.', to=room)
+    emit("join_room", username + ' has joined the game.', to=room, broadcast=True)
 
 
 @socket_server.on('leave_room')
@@ -362,7 +362,7 @@ def on_leave(info):
     rooms_user_info[room].pop(token, None) 
     leave_room(room)
     # print(rooms_user_info[room])
-    emit("leave_room", username + ' has left the game.', to=room)
+    emit("leave_room", username + ' has left the game.', to=room, broadcast=True)
 
 
 @socket_server.on('message')
