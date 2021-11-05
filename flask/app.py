@@ -13,6 +13,7 @@ import uuid
 import data_request
 import random
 import csv
+import data_request
 #import spotify_utils
 from username_password_check import check_password, check_username
 from verify_session import verify_valid_session
@@ -20,18 +21,17 @@ from logout import invalidate_session
 from database_utils import retrieve_username
 
 
+# This should load the local .env file properly now that running the flask server locally should be 'python app.py' NOT 'flask run' (won't affect digital-ocean)
+from dotenv import load_dotenv
+load_dotenv()
+
 app = Flask(__name__)
-socket_server = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Dictionary[String, Dictionary[String, String]]
 # Maps room code to dictionary of players, mapping token to username.
 # Each room info will also contain keys for "owner", "rounds", "genre"
-rooms_user_info = {"TEST": {}}
-
-
-@app.route('/api/time')
-def get_current_time():
-    return {'time': time.time()}
+rooms_user_info = {}
 
 @app.route('/api/stats')
 def stats():
@@ -214,46 +214,60 @@ def attempt_signup():
 @app.route('/api/startGame')
 def gen_questions():
 
-    print("Start Game")
-
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    rounds = request.args.get('rounds')
-    print("Rounds: " + rounds)
+    rounds = int(request.args.get('rounds'))
 
-    room = request.args.get('roomcode')
-    print("Room Code: " + room)
+    #roomcode = request.args.get('roomcode')
+    roomcode = 'RUN1'
 
-    # spotify_utils.grabAlbumYear()
+
+    data_request.get_existing_questions(rounds, roomcode)
+
+
+    '''
     f = open("questions.json")
-    questions = appcode.generate_questions(json.loads(f.read()), int(rounds))
+    questions = appcode.generate_questions(int(rounds))
     f.close()
 
     random.shuffle(questions)
 
     with open('store.json', 'w') as j:
         json.dump(questions, j)
-
-    return json.dumps(questions)
+    '''
+    return json.dumps("done")
 
 @app.route('/api/questionRequest')
 def grab_question():
-    print("Request for Question")
+
+    # roomcode = request.args.get('roomcode')
+    roomcode = 'RUN1'
+
+    '''
     f = open("store.json")
     questions = json.loads(f.read())
     question = random.choice(questions)
 
     with open('temp_question_storage.json', 'w') as j:
         json.dump(question, j)
+    '''
+
+    question = data_request.get_question(roomcode)
 
     return json.dumps(question)
 
 @app.route('/api/answerRequest')
 def grab_answer():
 
+    '''
     with open("temp_question_storage.json", 'r') as f:
         question = json.loads(f.read())
+    '''
 
-    return question
+    return data_request.get_answer()
+
+@app.route('/api/time')
+def get_current_time():
+    return {'time': time.time()}
 
 
 @app.route('/api/db')
@@ -357,4 +371,4 @@ def broadcast_message(msg):
 
 
 if __name__ == '__main__':
-    socket_server.run(app)
+    socketio.run(app, host="0.0.0.0", port=5000)

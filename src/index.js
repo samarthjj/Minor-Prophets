@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+// import { socket, SocketContext } from './socket';
 import './index.css';
 import { socket, SocketContext } from './socket';
 import App from './App';
@@ -8,6 +9,13 @@ import reportWebVitals from './reportWebVitals';
 // Injecting PostGres into the code to see if it works.
 
 /* This seems to render the "App.js" function inside the HTML 'root' element*/
+// ReactDOM.render(
+//   <SocketContext.Provider value={socket}>
+//     <App />
+//   </SocketContext.Provider>,
+//   document.getElementById('root')
+// );
+
 ReactDOM.render(
   <SocketContext.Provider value={socket}>
     <App />
