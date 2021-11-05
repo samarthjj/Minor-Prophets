@@ -34,7 +34,7 @@ socket_server = SocketIO(app, cors_allowed_origins="*")
 rooms_user_info = {"TEST": {"owner": "test", "rounds": 5, "genre": "test", "answer": {}, "correct_answer": "", "score": {}}}
 
 @app.route('/api/scores')
-def get_scores():
+def update_scores():
     room = request.args.get('roomcode')
     scores = {"User": [], "Score": []}
     # answers = rooms_user_info[room]["answer"]
@@ -45,14 +45,21 @@ def get_scores():
     answers = {"test": 2}
     correct_answer = 2
     for user in answers.keys():
+        print(rooms_user_info[room]["score"][user])
         if answers[user] == correct_answer:
             rooms_user_info[room]["score"][user] += 1
+        print(rooms_user_info[room]["score"][user])
 
     for user in rooms_user_info[room]["score"].keys():
         scores["User"] = scores["User"] + [user]
         scores["Score"] = scores["Score"] + [rooms_user_info[room]["score"][user]]
-    print(scores)
-    return json.dumps(scores)
+    rooms_user_info[room]["scores"] = scores
+    return json.dumps("")
+
+@app.route('/api/get_scores')
+def get_scores():
+    room = request.args.get('roomcode')
+    return json.dumps(rooms_user_info[room]["scores"])
 
 
 @app.route('/api/stats')
@@ -374,8 +381,9 @@ def on_join(info):
         rooms_user_info[room]["score"] = {}
     if "correct_answer" not in rooms_user_info[room].keys():
         rooms_user_info[room]["correct_answer"] = ""
-    rooms_user_info[room]["answer"][retrieve_username(token)] = ""
-    rooms_user_info[room]["score"][retrieve_username(token)] = 0
+    if retrieve_username(token) not in rooms_user_info[room]["score"].keys():
+        rooms_user_info[room]["answer"][retrieve_username(token)] = ""
+        rooms_user_info[room]["score"][retrieve_username(token)] = 0
 
     join_room(room)
     # print(rooms_user_info[room])

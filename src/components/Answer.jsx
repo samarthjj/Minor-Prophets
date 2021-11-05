@@ -5,6 +5,7 @@ import { SocketContext} from '../socket';
 
 function get_answer(room_code)
 {
+    console.log("getting answer..")
     axios.get('/api/answerRequest', {
         params: {
 
@@ -19,8 +20,7 @@ function get_answer(room_code)
 
 function get_score(room_code)
 {
-    console.log("get score")
-    axios.get('/api/scores', {
+    axios.get('/api/get_scores', {
         params: {
             roomcode: room_code
         }
@@ -42,13 +42,27 @@ function get_score(room_code)
         })
 }
 
+function calc_score(room_code)
+{
+    get_answer(room_code)
+    axios.get('/api/scores', {
+        params: {
+            roomcode: room_code
+        }
+    })
+        .then(function (response) {
+
+        })
+}
+
+
 const Answer = () => {
 
     const socket = useContext(SocketContext);
 
     const { room_code } = useParams();
 
-    get_answer(room_code)
+    // get_answer(room_code)
 
     useEffect(() => {
 
@@ -162,7 +176,10 @@ const Answer = () => {
             </div>
 
             <div className="col-2">
-                    <button onClick={() => get_score(room_code)} className="btn btn-primary btn-md text-dark mb-3">Get Scores</button>
+                    <button onClick={() => calc_score(room_code)} className="btn btn-primary btn-md text-dark mb-3">Calculate Scores [Only 1 person should click this]</button>
+            </div>
+            <div className="col-2">
+                    <button onClick={() => get_score(room_code)} className="btn btn-primary btn-md text-dark mb-3">Get Scores [Everyone should click this after scores are calculated]</button>
             </div>
 
         </div>
