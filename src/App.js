@@ -43,12 +43,12 @@ function App() {
                 {/*<Route exact path="/signup" component={SignUp} />*/}
 
                 <Route exact path="/creategame" component={CreateGame} />
-                <Route exact path="/gamesetup" component={GameSetup} />
+                <Route exact path="/gamesetup/:room_code" component={GameSetup} />
 
                 <Route exact path="/profile" component={Profile}/>
-                <Route exact path="/question" component={Question}/>
-                <Route exact path="/answer" component={Answer}/>
-                <Route exact path="/gameover" component={Gameover}/>
+                <Route exact path="/question/:room_code" component={Question}/>
+                <Route exact path="/answer/:room_code" component={Answer}/>
+                <Route exact path="/gameover/:room_code" component={Gameover}/>
 
                 <Route exact path="/database_test" component={Database} />
                 <Route exact path="/TBD" component={NotFound} />

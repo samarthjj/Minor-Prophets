@@ -35,10 +35,11 @@ const CreateGame = () => {
         if (room_code !== ""){
             axios.get('/api/validateRoom', {
                 params: {
-                    roomcode: room_code
+                    roomcode: room_code, 
+                    token: document.cookie.split("=")[1]
                 }
             }).then(function (response) {
-                if (response.data["token"] === "goodRoom"){
+                if (response.data["response"] === "goodRoom"){
                     history.push(`/gamesetup/${room_code}`)
                 }else{
                     set_room_code("");

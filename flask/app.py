@@ -17,6 +17,8 @@ import csv
 from username_password_check import check_password, check_username
 from verify_session import verify_valid_session
 from logout import invalidate_session
+from database_utils import retrieve_username
+
 
 app = Flask(__name__)
 socket_server = SocketIO(app, cors_allowed_origins="*")
@@ -24,7 +26,7 @@ socket_server = SocketIO(app, cors_allowed_origins="*")
 # Dictionary[String, Dictionary[String, String]]
 # Maps room code to dictionary of players, mapping token to username.
 # Each room info will also contain keys for "owner", "rounds", "genre"
-rooms_user_info = {}
+rooms_user_info = {"TEST": {}}
 
 
 @app.route('/api/time')
@@ -209,16 +211,6 @@ def attempt_signup():
         return json.dumps({})
 
 
-@app.route("/api/validateRoom")
-def validate_room():
-    print("Validate Room")
-    room = request.args.get('roomcode')
-    print("Room Code: " + room)
-    if room in rooms_user_info:
-        return json.dumps({"token": "goodRoom"})
-    else:
-        return json.dumps({"token": "badRoom"})
-
 @app.route('/api/startGame')
 def gen_questions():
 
@@ -314,18 +306,35 @@ def test_database():
 #         }
 
 
+@app.route("/api/validateRoom")
+def validate_room():
+    print("Validate Room")
+    room = request.args.get('roomcode')
+    token = request.args.get('token')
+    retrieve_username(token)
+    print("Room Code: " + room)
+    if room in rooms_user_info:
+        return json.dumps({"response": "goodRoom"})
+    else:
+        return json.dumps({"response": "badRoom"})
+
+
+@socket_server.on('message')
+def broadcast_message(msg):
+    emit('message', msg, broadcast=True)
+
+
 @socket_server.on('join')
 def on_join(info):
     room = info['room']
     token = request.args.get('token')
-    # Add room to rooms_user_info
+    # Register room & owner
     if not room in rooms_user_info:
         rooms_user_info[room] = {}
         rooms_user_info[room]["owner"] = token
     
     # Add user to that room
-    # TODO: Fetch username from database.
-    username = None 
+    username = retrieve_username(token)
     rooms_user_info[room][token] = username
 
     join_room(room)

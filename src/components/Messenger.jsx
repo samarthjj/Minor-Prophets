@@ -1,22 +1,38 @@
-import React, { useState } from 'react';
-import io from "socket.io-client";
+import React, {useState, useContext, useEffect} from 'react';
+import { SocketContext} from '../socket';
 
-let api = "http://0.0.0.0:5000";
-let socket = io.connect(api, { transport: ["websocket"] });
 
 const Messenger = () => {
+  const socket = useContext(SocketContext);
+
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
 
-  socket.on("message", msg => {
-    setMessages([...messages, msg])});
+
+  useEffect(() => {
+
+    socket.on('connect', () => {
+      console.log(`${socket.id} connected`);
+    })
+  
+    socket.on('message', msg => {
+      console.log(msg);
+      setMessages([...messages, msg])
+    })
+
+    return () => {
+      socket.off('connect');
+      socket.off('message');
+    }
+    
+  })
 
   const onChange = (event) => {
     setMessage(event.target.value);
   };
 
   const onClick = () => {
-    socket.emit("message", message);
+    socket.emit('message', message);
     setMessage("");
   };
 
@@ -24,7 +40,11 @@ const Messenger = () => {
     <div className="App">
       <h1 className="text-light">Messages</h1>
       <div className="text-light">
-        {messages.map(msg => (<p>{msg}</p>))}
+        {messages.map(msg => 
+          (<p key={msg}>
+            {msg}
+            </p>
+          ))}
       </div>
       <p>
         <input type="text" onChange={onChange} value={message} />
