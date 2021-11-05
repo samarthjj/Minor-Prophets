@@ -4,6 +4,8 @@ import appcode
 import random
 import psycopg2
 
+from app import rooms_user_info
+
 
 def get_stats(token):
 
@@ -118,7 +120,7 @@ def get_question(roomcode):
     return {"question": question[0], "choices": [question[1], question[2], question[3], question[4]], "answer": question[5], "genre": question[6]}
 
 
-def get_answer():
+def get_answer(room):
 
       conn, cur = get_cursor()
 
@@ -137,6 +139,8 @@ def get_answer():
       conn.commit()
       cur.close()
       conn.close()
+
+      rooms_user_info[room]["correct_answer"] = question[5]
 
       return {'answer': question[5]}
 

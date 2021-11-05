@@ -3,8 +3,7 @@ import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
 
-
-function get_answer()
+function get_answer(room_code)
 {
     axios.get('/api/answerRequest', {
         params: {
@@ -18,13 +17,38 @@ function get_answer()
         })
 }
 
+function get_score(room_code)
+{
+    console.log("get score")
+    axios.get('/api/scores', {
+        params: {
+            roomcode: room_code
+        }
+    })
+        .then(function (response) {
+            console.log(response.data.User)
+            console.log(response.data.Score)
+            let user = response.data.User
+            let score = response.data.Score
+            let output = ""
+            let tableUsers = ["p1","p2","p3","p4","p5"]
+            let tableScores = ["p1score","p2score","p3score","p4score","p5score"]
+            for (let i=0; i<user.length && i < 5; i++) {
+                document.getElementById(tableUsers[i]).innerHTML = user[i]
+                document.getElementById(tableScores[i]).innerHTML = score[i]
+                // output += user[i] + ": " + score[i] + " "
+            }
+            // document.getElementById("scores").innerHTML = output
+        })
+}
+
 const Answer = () => {
 
     const socket = useContext(SocketContext);
 
     const { room_code } = useParams();
 
-    get_answer()
+    get_answer(room_code)
 
     useEffect(() => {
 
@@ -77,6 +101,7 @@ const Answer = () => {
             {/*Scores and Chat*/}
             <div className="row mb-3">
                 <div className="col">
+                    {/*<h8 className="text-light" id = "scores"> </h8>*/}
                     <table className="table table-striped table-success">
                         <thead>
                         <tr>
@@ -86,24 +111,24 @@ const Answer = () => {
                         </thead>
                         <tbody>
                         <tr>
-                            <td>Harrison</td>
-                            <td>145</td>
+                            <td id = "p1"> </td>
+                            <td id = "p1score"> </td>
                         </tr>
                         <tr>
-                            <td>Sam</td>
-                            <td>135</td>
+                            <td id = "p2"> </td>
+                            <td id = "p2score"> </td>
                         </tr>
                         <tr>
-                            <td>Maeve</td>
-                            <td>120</td>
+                            <td id = "p3"> </td>
+                            <td id = "p3score"> </td>
                         </tr>
                         <tr>
-                            <td>Josh</td>
-                            <td>100</td>
+                            <td id = "p4"> </td>
+                            <td id = "p4score"> </td>
                         </tr>
                         <tr>
-                            <td>Joe</td>
-                            <td>95</td>
+                            <td id = "p5"> </td>
+                            <td id = "p5score"> </td>
                         </tr>
                         </tbody>
                     </table>
@@ -134,6 +159,10 @@ const Answer = () => {
 
             <div className="row mb-3">
 
+            </div>
+
+            <div className="col-2">
+                    <button onClick={() => get_score(room_code)} className="btn btn-primary btn-md text-dark mb-3">Get Scores</button>
             </div>
 
         </div>

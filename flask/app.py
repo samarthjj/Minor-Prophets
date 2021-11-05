@@ -30,8 +30,30 @@ socket_server = SocketIO(app, cors_allowed_origins="*")
 
 # Dictionary[String, Dictionary[String, String]]
 # Maps room code to dictionary of players, mapping token to username.
-# Each room info will also contain keys for "owner", "rounds", "genre"
-rooms_user_info = {}
+# Each room info will also contain keys for "owner", "rounds", "genre", "answer", "correct_answer", "score"
+rooms_user_info = {"TEST": {"owner": "test", "rounds": 5, "genre": "test", "answer": {}, "correct_answer": "", "score": {}}}
+
+@app.route('/api/scores')
+def get_scores():
+    room = request.args.get('roomcode')
+    scores = {"User": [], "Score": []}
+    # answers = rooms_user_info[room]["answer"]
+    # correct_answer = rooms_user_info[room]["correct_answer"]
+    # rooms_user_info[room]["score"] = {"test": 0, "yuh": 0}
+    # rooms_user_info[room]["answer"] = {"test": "", "yuh": ""}
+    # answers = {"test": 1, "yuh": 2}
+    answers = {"test": 2}
+    correct_answer = 2
+    for user in answers.keys():
+        if answers[user] == correct_answer:
+            rooms_user_info[room]["score"][user] += 1
+
+    for user in rooms_user_info[room]["score"].keys():
+        scores["User"] = scores["User"] + [user]
+        scores["Score"] = scores["Score"] + [rooms_user_info[room]["score"][user]]
+    print(scores)
+    return json.dumps(scores)
+
 
 @app.route('/api/stats')
 def stats():
@@ -263,7 +285,7 @@ def grab_answer():
         question = json.loads(f.read())
     '''
 
-    return data_request.get_answer()
+    return data_request.get_answer(request.args.get('roomcode'))
 
 @app.route('/api/time')
 def get_current_time():
@@ -346,6 +368,14 @@ def on_join(info):
     # Add user to that room
     username = retrieve_username(token)
     rooms_user_info[room][token] = username
+    if "answer" not in rooms_user_info[room].keys():
+        rooms_user_info[room]["answer"] = {}
+    if "score" not in rooms_user_info[room].keys():
+        rooms_user_info[room]["score"] = {}
+    if "correct_answer" not in rooms_user_info[room].keys():
+        rooms_user_info[room]["correct_answer"] = ""
+    rooms_user_info[room]["answer"][retrieve_username(token)] = ""
+    rooms_user_info[room]["score"][retrieve_username(token)] = 0
 
     join_room(room)
     # print(rooms_user_info[room])
