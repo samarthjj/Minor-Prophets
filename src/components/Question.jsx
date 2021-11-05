@@ -1,6 +1,7 @@
-import React, {Component} from "react";
+import React, {useEffect, useContext} from "react";
 import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
+import { SocketContext} from '../socket';
 
 function get_question() {
     axios.get('/api/questionRequest', {
@@ -10,7 +11,7 @@ function get_question() {
     })
     .then(function (response) {
         //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
-        console.log(response)
+        // console.log(response)
         document.getElementById("question").innerHTML = response.data["question"];
         document.getElementById("choice1").innerHTML = response.data["choices"][0]; //This gets the answer choices correctly
         document.getElementById("choice2").innerHTML = response.data["choices"][1];
@@ -21,9 +22,30 @@ function get_question() {
 
 const Question = () => {
 
+    const socket = useContext(SocketContext);
+
     const { room_code } = useParams();
 
     get_question()
+
+    useEffect(() => {
+
+        socket.on('join_room', (info) => {
+          console.log(info);
+        })
+
+        socket.on('leave_room', (info) => {
+            console.log(info);
+          })
+
+        socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
+      
+        return () => {
+            socket.emit("leave_room", {"room": room_code, "token": document.cookie.split("=")[1]})
+            socket.off('join_room');
+        }
+        
+      })
 
     return (
         <div class="container-sm text-center">

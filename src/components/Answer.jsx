@@ -1,6 +1,7 @@
-import React, {Component} from "react";
+import React, {useEffect, useContext} from "react";
 import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
+import { SocketContext} from '../socket';
 
 
 function get_answer()
@@ -19,9 +20,31 @@ function get_answer()
 
 const Answer = () => {
 
+    const socket = useContext(SocketContext);
+
     const { room_code } = useParams();
 
     get_answer()
+
+    useEffect(() => {
+
+        socket.on('join_room', (info) => {
+          console.log(info);
+        })
+
+        socket.on('leave_room', (info) => {
+            console.log(info);
+          })
+
+        socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
+      
+        return () => {
+            socket.emit("leave_room", {"room": room_code, "token": document.cookie.split("=")[1]})
+            socket.off('join_room');
+        }
+        
+      })
+      
     return (
         <div class="container-sm text-center">
 

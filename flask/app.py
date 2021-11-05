@@ -319,15 +319,11 @@ def validate_room():
         return json.dumps({"response": "badRoom"})
 
 
-@socket_server.on('message')
-def broadcast_message(msg):
-    emit('message', msg, broadcast=True)
-
-
-@socket_server.on('join')
+@socket_server.on('join_room')
 def on_join(info):
     room = info['room']
-    token = request.args.get('token')
+    token = info["token"]
+    # print(room, token)
     # Register room & owner
     if not room in rooms_user_info:
         rooms_user_info[room] = {}
@@ -338,16 +334,21 @@ def on_join(info):
     rooms_user_info[room][token] = username
 
     join_room(room)
-    emit(username + ' has joined the game.', to=room)
+    # print(rooms_user_info[room])
+    emit("join_room", username + ' has joined the game.', to=room)
 
 
-@socket_server.on('leave')
+@socket_server.on('leave_room')
 def on_leave(info):
     room = info['room']
-    token = token = request.args.get('token')
+    token = info["token"]
     username = rooms_user_info[room][token]
+    # print(room, token, username)
+
+    rooms_user_info[room].pop(token, None) 
     leave_room(room)
-    emit(username + ' has left the game.', to=room)
+    # print(rooms_user_info[room])
+    emit("leave_room", username + ' has left the game.', to=room)
 
 
 @socket_server.on('message')
