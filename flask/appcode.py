@@ -88,7 +88,7 @@ def generate_questions(numQuestions):
 
             print("6")
 
-            albumDict = albumDict = {'Name': name, 'Artist': artist[0], 'Release Date': int(releaseDate), 'Tracklist': {}}
+            albumDict = {'Name': name, 'Artist': artist[0], 'Release Date': int(releaseDate), 'Tracklist': {}}
 
             if len(artist) == 1:
 

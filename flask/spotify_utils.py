@@ -22,6 +22,7 @@ def listPlaylistTrackIDs(playlist_url):
     playlist_id = pickOutID(playlist_url)
     playlist_data = sp.playlist(playlist_id)
     track_ids = [song["track"]["id"] for song in playlist_data["tracks"]["items"]]
+
     return track_ids
 
 

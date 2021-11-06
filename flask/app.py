@@ -212,7 +212,7 @@ def gen_questions():
     rounds = int(request.args.get('rounds'))
 
     #roomcode = request.args.get('roomcode')
-    roomcode = 'RUN1'
+    roomcode = 'RUN2'
 
 
     data_request.get_existing_questions(rounds, roomcode)
@@ -234,7 +234,7 @@ def gen_questions():
 def grab_question():
 
     # roomcode = request.args.get('roomcode')
-    roomcode = 'RUN1'
+    roomcode = 'RUN2'
 
     '''
     f = open("store.json")
@@ -252,12 +252,15 @@ def grab_question():
 @app.route('/api/answerRequest')
 def grab_answer():
 
+    # roomcode = request.args.get('roomcode')
+    roomcode = 'RUN2'
+
     '''
     with open("temp_question_storage.json", 'r') as f:
         question = json.loads(f.read())
     '''
 
-    return data_request.get_answer()
+    return data_request.get_answer(roomcode)
 
 
 @app.route('/api/db')
