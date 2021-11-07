@@ -27,21 +27,21 @@ const GameSetup = () => {
     useEffect(() => {
 
         socket.on('join_room', (info) => {
-          console.log(info);
+            console.log(info);
         })
 
         socket.on('leave_room', (info) => {
             console.log(info);
-          })
+        })
 
         socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
-      
+
         return () => {
             socket.emit("leave_room", {"room": room_code, "token": document.cookie.split("=")[1]})
             socket.off('join_room');
         }
-        
-      })
+
+    })
 
     return (
         <div class="text-center">
@@ -80,13 +80,13 @@ const GameSetup = () => {
                             {/*https://getbootstrap.com/docs/5.0/components/button-group/*/}
                             <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
                                 <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off"/>
-                                    <label className="btn btn-success text-dark" htmlFor="btnradio1">1</label>
+                                <label className="btn btn-success text-dark" htmlFor="btnradio1">1</label>
 
                                 <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off"/>
-                                    <label className="btn btn-success text-dark" htmlFor="btnradio2">2</label>
+                                <label className="btn btn-success text-dark" htmlFor="btnradio2">2</label>
 
                                 <input type="radio" className="btn-check" name="btnradio" id="btnradio3" autoComplete="off"/>
-                                    <label className="btn btn-success text-dark" htmlFor="btnradio3">3</label>
+                                <label className="btn btn-success text-dark" htmlFor="btnradio3">3</label>
 
                                 <input type="radio" className="btn-check" name="btnradio" id="btnradio4" autoComplete="off"/>
                                 <label className="btn btn-success text-dark" htmlFor="btnradio4">4</label>
@@ -106,26 +106,26 @@ const GameSetup = () => {
 
                         <table class="table table-striped table-success">
                             <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                </tr>
+                            <tr>
+                                <th scope="col">Name</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Josh</td>
-                                </tr>
-                                <tr>
-                                    <td>Sam</td>
-                                </tr>
-                                <tr>
-                                    <td>Maeve</td>
-                                </tr>
-                                <tr>
-                                    <td>Harrison</td>
-                                </tr>
-                                <tr>
-                                    <td>Joe</td>
-                                </tr>
+                            <tr>
+                                <td>Josh</td>
+                            </tr>
+                            <tr>
+                                <td>Sam</td>
+                            </tr>
+                            <tr>
+                                <td>Maeve</td>
+                            </tr>
+                            <tr>
+                                <td>Harrison</td>
+                            </tr>
+                            <tr>
+                                <td>Joe</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

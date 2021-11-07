@@ -322,11 +322,9 @@ def test_database():
 
 @app.route("/api/validateRoom")
 def validate_room():
-    print("Validate Room")
     room = request.args.get('roomcode')
     token = request.args.get('token')
     retrieve_username(token)
-    print("Room Code: " + room)
     if room in rooms_user_info:
         return json.dumps({"response": "goodRoom"})
     else:
@@ -342,14 +340,19 @@ def on_join(info):
     if not room in rooms_user_info:
         rooms_user_info[room] = {}
         rooms_user_info[room]["owner"] = token
+
+    print("in join ")
     
     # Add user to that room
     username = retrieve_username(token)
     rooms_user_info[room][token] = username
 
+    print(rooms_user_info)
+
     join_room(room)
     # print(rooms_user_info[room])
     emit("join_room", username + ' has joined the game.', room=room)
+
 
 
 @socket_server.on('leave_room')
