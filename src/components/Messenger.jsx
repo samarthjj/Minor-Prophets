@@ -32,6 +32,7 @@ const Messenger = () => {
   };
 
   const onClick = () => {
+      console.log("Send Button Clicked!")
     socket.emit('message', message);
     setMessage("");
   };
