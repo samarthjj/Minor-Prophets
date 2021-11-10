@@ -31,6 +31,7 @@ def get_stats(token):
     profile = {"GamesWon": data[4], "TotalPoints": data[5], "WinRatio": data[6], "FavoriteGenre": data[7]}
 
     return profile
+    return profile
 
 
 def get_existing_questions(rounds, roomcode):
@@ -42,7 +43,7 @@ def get_existing_questions(rounds, roomcode):
 
     # TESTING PURPOSES ONLY
     #cur.execute("DROP TABLE questions")
-    cur.execute("CREATE TABLE IF NOT EXISTS questions (question varchar, choice1 varchar, choice2 varchar, choice3 varchar, choice4 varchar, answer varchar, genre varchar);")
+    cur.execute("CREATE TABLE IF NOT EXISTS questions (question varchar, choice1 varchar, choice2 varchar, choice3 varchar, choice4 varchar, answer varchar, genre varchar, current boolean);")
 
     cur.execute("SELECT * FROM questions WHERE genre=%s;", ("Pop",))
 
@@ -51,7 +52,7 @@ def get_existing_questions(rounds, roomcode):
 
     # TESTING PURPOSES ONLY
     #cur.execute("DROP TABLE rooms")
-    cur.execute("CREATE TABLE IF NOT EXISTS rooms (roomcode varchar, question varchar, current boolean);")
+    cur.execute("CREATE TABLE IF NOT EXISTS rooms (roomcode varchar, question varchar);")
 
 
     # if there's not enough stored questions
@@ -65,7 +66,7 @@ def get_existing_questions(rounds, roomcode):
 
         for question in data:
 
-            cur.execute("INSERT INTO rooms (roomcode, question) VALUES (%s, %s)", (roomcode, question["question"], False))
+            cur.execute("INSERT INTO rooms (roomcode, question) VALUES (%s, %s)", (roomcode, question["question"]))
 
 
     else:
@@ -108,7 +109,7 @@ def get_question(roomcode):
 
     question = question[0]
 
-    cur.execute("UPDATE rooms SET current=%s WHERE question=%s;", (True, question[0]))
+    cur.execute("UPDATE questions SET current=%s WHERE question=%s;", (True, question[0]))
 
     conn.commit()
     cur.close()
@@ -117,16 +118,17 @@ def get_question(roomcode):
     return {"question": question[0], "choices": [question[1], question[2], question[3], question[4]], "answer": question[5], "genre": question[6]}
 
 
-def get_answer(roomcode):
+def get_answer():
 
       conn, cur = get_cursor()
 
-      cur.execute("SELECT * FROM rooms WHERE current=%s AND roomcode=%s LIMIT 1;", (True, roomcode,))
+      cur.execute("SELECT * FROM questions WHERE current=%s LIMIT 1;", (True,))
 
       question = cur.fetchall()
 
       question = question[0]
 
+      cur.execute("UPDATE questions SET current=%s WHERE question=%s;", (False, question[0]))
       cur.execute("DELETE FROM rooms WHERE question=%s;", (question[0],))
 
       test_questions(cur)
@@ -149,9 +151,9 @@ def new_questions_in_database(data, cur):
 
         if len(check) == 0:
 
-            cur.execute("INSERT INTO questions (question, choice1, choice2, choice3, choice4, answer, genre) "
+            cur.execute("INSERT INTO questions (question, choice1, choice2, choice3, choice4, answer, genre, current) "
                         "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                        (question["question"], question["choices"][0], question["choices"][1], question["choices"][2], question["choices"][3], question["answer"], question["genre"]))
+                        (question["question"], question["choices"][0], question["choices"][1], question["choices"][2], question["choices"][3], question["answer"], question["genre"], False))
 
 
 def get_cursor():
