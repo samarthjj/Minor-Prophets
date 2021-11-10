@@ -1,9 +1,11 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { SocketContext} from '../socket';
+import "../css/Messenger.css"
 
 
-const Messenger = () => {
+const Messenger = ({ room_code }) => {
   const socket = useContext(SocketContext);
+  const token = document.cookie.split("=")[1]
 
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -15,9 +17,9 @@ const Messenger = () => {
       console.log(`${socket.id} connected`);
     })
   
-    socket.on('message', msg => {
-      console.log(msg);
-      setMessages([...messages, msg])
+    socket.on('message', info => {
+      console.log(info);
+      setMessages([...messages, `${info["username"]}: ${info["message"]}`])
     })
 
     return () => {
@@ -32,26 +34,28 @@ const Messenger = () => {
   };
 
   const onClick = () => {
-    socket.emit('message', message);
-    setMessage("");
+    if (message.length !== 0){
+      socket.emit('message', {"room": room_code, "token": token, "message": message});
+      setMessage("");
+    } else{
+      alert("Please type a message!")
+    }
   };
 
   return (
-    <div className="App">
+    <div className="Messenger">
       <h1 className="text-light">Messages</h1>
-      <div className="text-light">
+      <ul className="messages bg-success bg-gradient p-2 text-dark bg-opacity-25 overflow-auto border border-light border-3 rounded">
         {messages.map(msg => 
-          (<p key={msg}>
+          (<li className="list-group-item text-dark" key={msg}>
             {msg}
-            </p>
+            </li>
           ))}
-      </div>
-      <p>
-        <input type="text" onChange={onChange} value={message} />
-      </p>
-      <p>
-        <input type="button" onClick={onClick} value="Send"/>
-      </p>
+      </ul>
+    <div className="d-flex">
+      <input className="form-control" placeholder="Type your message here!" type="text" onChange={onChange} value={message}/>
+      <input className="btn btn-primary ms-3" type="button" onClick={onClick} value="Send"/>
+    </div>
     </div>
   );
 };

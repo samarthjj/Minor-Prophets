@@ -2,6 +2,7 @@ import React, {useEffect, useContext} from "react";
 import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
+import Messenger from './Messenger'
 
 function get_question() {
     axios.get('/api/questionRequest', {
@@ -99,27 +100,8 @@ const Question = () => {
                     </div>
                 </div>
 
-                {/*https://getbootstrap.com/docs/5.1/forms/form-control/#readonly-plain-text*/}
-                <div className="col">
-                    <form className="row">
-                        {/*<div className="col-auto">*/}
-                        {/*    <label htmlFor="staticEmail2" className="visually-hidden">Email</label>*/}
-                        {/*    <input type="text" readOnly className="form-control-plaintext" id="staticEmail2"*/}
-                        {/*           value="email@example.com"/>*/}
-                        {/*</div>*/}
-                        <h1 className="text-light">Chat: </h1>
+                <Messenger room_code={room_code}/>
 
-                        <div className="container mx-auto">
-                            <div className="col-auto">
-                                <label htmlFor="chat" className="visually-hidden">Password</label>
-                                <input type="text" className="form-control" id="chat" placeholder="Enter message"/>
-                            </div>
-                            <div className="col-auto">
-                                <button type="submit" className="btn btn-primary mb-3">Send!</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
 
         </div>
