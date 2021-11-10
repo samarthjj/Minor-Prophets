@@ -3,28 +3,30 @@ import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
 
-function get_question() {
-    axios.get('/api/questionRequest', {
-        params: {
-
-        }
-    })
-    .then(function (response) {
-        //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
-        // console.log(response)
-        document.getElementById("question").innerHTML = response.data["question"];
-        document.getElementById("choice1").innerHTML = response.data["choices"][0]; //This gets the answer choices correctly
-        document.getElementById("choice2").innerHTML = response.data["choices"][1];
-        document.getElementById("choice3").innerHTML = response.data["choices"][2];
-        document.getElementById("choice4").innerHTML = response.data["choices"][3];
-    })
-}
 
 const Question = () => {
 
     const socket = useContext(SocketContext);
 
     const { room_code } = useParams();
+
+    const get_question = () => {
+        axios.get('/api/questionRequest', {
+            params: {
+                rounds: 5,
+                roomcode: room_code
+            }
+        })
+            .then(function (response) {
+                //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+                // console.log(response)
+                document.getElementById("question").innerHTML = response.data["question"];
+                document.getElementById("choice1").innerHTML = response.data["choices"][0]; //This gets the answer choices correctly
+                document.getElementById("choice2").innerHTML = response.data["choices"][1];
+                document.getElementById("choice3").innerHTML = response.data["choices"][2];
+                document.getElementById("choice4").innerHTML = response.data["choices"][3];
+            })
+    }
 
     get_question()
 

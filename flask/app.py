@@ -241,8 +241,7 @@ def gen_questions():
 @app.route('/api/questionRequest')
 def grab_question():
 
-    # roomcode = request.args.get('roomcode')
-    roomcode = 'RUN1'
+    roomcode = request.args.get('roomcode')
 
     '''
     f = open("store.json")

@@ -3,6 +3,7 @@ import random
 import math
 import spotify_utils
 from datetime import date
+import os
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -49,7 +50,8 @@ def generate_questions(numQuestions):
 
     trackIDs = []
 
-    with open('playlists.txt') as f:
+
+    with open('flask\playlists.txt') as f:
         for playlist in f:
 
             playlist = playlist.rstrip('\r\n')
