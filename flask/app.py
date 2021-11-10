@@ -366,8 +366,13 @@ def on_leave(info):
 
 
 @socket_server.on('message')
-def broadcast_message(msg):
-    emit("message", msg, broadcast=True)
+def broadcast_message(info):
+    room = info['room']
+    username = rooms_user_info[room][info["token"]]
+    # username = retrieve_username(info["token"])
+    message = info['message']
+    print(username, message)
+    emit("message", {"username": username, "message": message}, room=room)
 
 
 if __name__ == '__main__':
