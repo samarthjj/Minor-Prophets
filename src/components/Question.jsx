@@ -1,4 +1,4 @@
-import React, {useEffect, useContext} from "react";
+import React, {useEffect, useContext, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
@@ -12,19 +12,19 @@ const Question = () => {
 
     // This queries the API using the Room Code and grabs a Question for it - which is stored in the Database already
     function get_question() {
-    axios.get('/api/questionRequest', {
-        params: {
-            roomcode: room_code,
-        }
-    }).then(function (response) {
-            //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
-            // console.log(response)
-            document.getElementById("question").innerHTML = response.data["question"];
-            document.getElementById("choice1").innerHTML = response.data["choices"][0]; //This gets the answer choices correctly
-            document.getElementById("choice2").innerHTML = response.data["choices"][1];
-            document.getElementById("choice3").innerHTML = response.data["choices"][2];
-            document.getElementById("choice4").innerHTML = response.data["choices"][3];
-        })
+        axios.get('/api/questionRequest', {
+            params: {
+                roomcode: room_code,
+            }
+        }).then(function (response) {
+                //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+                // console.log(response)
+                document.getElementById("question").innerHTML = response.data["question"];
+                document.getElementById("choice1").innerHTML = response.data["choices"][0]; //This gets the answer choices correctly
+                document.getElementById("choice2").innerHTML = response.data["choices"][1];
+                document.getElementById("choice3").innerHTML = response.data["choices"][2];
+                document.getElementById("choice4").innerHTML = response.data["choices"][3];
+            })
     }
 
     get_question()
@@ -60,8 +60,20 @@ const Question = () => {
         })
     }
 
-
-    return (
+    // if (isLoading) {
+    //     return (
+    //         <div>
+    //             <h2 className="text-light">Loading...</h2>
+    //             <div id="question" hidden></div>
+    //             <div id="choice1" hidden></div>
+    //             <div id="choice2" hidden></div>
+    //             <div id="choice3" hidden></div>
+    //             <div id="choice4" hidden></div>
+    //         </div>
+    //     );
+    // }
+    // else {
+        return (
         <div class="container-sm text-center">
 
             {/*Button Row*/}
@@ -138,6 +150,8 @@ const Question = () => {
 
         </div>
     );
+    // }
+
 }
 
 export default Question;

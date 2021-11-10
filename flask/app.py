@@ -49,6 +49,20 @@ socket_server = SocketIO(app, cors_allowed_origins="*")
 #                    }
 rooms_user_info = {}
 
+# Runs on each startup, cleans out db.
+def clear_db():
+    db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
+    conn = psycopg2.connect(db_config)
+    cur = conn.cursor()
+
+    cur.execute("DROP TABLE IF EXISTS rooms;")
+    cur.execute("CREATE TABLE IF NOT EXISTS newrooms (roomcode varchar, question varchar, choice1 varchar, choice2 varchar, choice3 varchar, choice4 varchar, answer varchar, genre varchar, current boolean);")
+    cur.execute("DELETE FROM newrooms;")
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
 # Start the game, generate the questions for the game
 @app.route('/api/startGame')
 def gen_questions():
@@ -59,16 +73,20 @@ def gen_questions():
     owner_token = request.args.get('token')
     genre = "" # TBD
 
-    if num_questions < 0 or num_questions > 5:
-        return json.dumps("failed input")
+    # if the game has started, just don't do anything
+    if rooms_user_info[roomcode]["started"]:
+        return json.dumps("game already started")
+    else:
+        if num_questions < 0 or num_questions > 5:
+            return json.dumps("failed input")
 
-    # Only generate the questions once the room is validated
-    data_request.get_existing_questions(num_questions, roomcode)
+        # Only generate the questions once the room is validated
+        data_request.get_existing_questions(num_questions, roomcode)
 
-    # Start the game
-    rooms_user_info[roomcode]["started"] = True
+        # Start the game
+        rooms_user_info[roomcode]["started"] = True
 
-    return json.dumps("done")
+        return json.dumps("done")
 
 # Ask for a question for the game
 @app.route('/api/questionRequest')
@@ -107,11 +125,12 @@ def grab_answer():
 
         print("THE ANSWER IS: ", answer)
 
-        print(answer['answer'])
-        print(rooms_user_info[roomcode]["correct_answer"])
+        # print(answer['answer'])
 
         # Save the answer for calculation
         rooms_user_info[roomcode]["correct_answer"] = answer["answer"]
+
+        print(rooms_user_info[roomcode])
 
         # todo Calculate the scores here? --> Then users can press the button to "reveal" the scores as well
         # Then, a hidden button will appear to view the scores! This is really good!
@@ -134,7 +153,7 @@ def save_answer():
 
     rooms_user_info[roomcode]['answer'][username] = answer
 
-    print(rooms_user_info)
+    print(rooms_user_info[roomcode])
 
     return "answered"
 
@@ -253,7 +272,7 @@ def on_join(info):
 
     join_room(room)
     # print(rooms_user_info[room])
-    print("Joining a room: ", rooms_user_info)
+    print("Joining a room: ", rooms_user_info[room])
 
     emit("join_room", username + ' has joined the game.', room=room)
 @socket_server.on('leave_room')
@@ -266,7 +285,7 @@ def on_leave(info):
     rooms_user_info[room]["users"].pop(token, None)
     leave_room(room)
     # print(rooms_user_info[room])
-    print("Leaving a room: ", rooms_user_info)
+    print("Leaving a room: ", rooms_user_info[room])
 
     emit("leave_room", username + ' has left the game.', room=room)
 
@@ -502,4 +521,5 @@ def test_database():
 
 
 if __name__ == '__main__':
+    clear_db() # Clear the rooms database
     socket_server.run(app, host="0.0.0.0", port=5000)

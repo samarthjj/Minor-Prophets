@@ -62,8 +62,15 @@ def get_existing_questions(num_questions, roomcode):
     # Creating the Rooms Table (storing the questions?)
     # TESTING PURPOSES ONLY
     # This is going to be included so it drops all of the prior rooms every restart / we can do this for sprints so we don't have to worry about performance
-    cur.execute("CREATE TABLE IF NOT EXISTS rooms (roomcode varchar, question varchar);")
-    cur.execute("DELETE FROM rooms;") # Changed, so it just empties all of the rows of the table on startup!
+    # cur.execute("DROP TABLE IF EXISTS rooms;")
+    # cur.execute("CREATE TABLE IF NOT EXISTS rooms (roomcode varchar, question varchar);")
+    # cur.execute("DELETE FROM rooms;") # Changed, so it just empties all of the rows of the table on startup!
+
+    cur.execute("CREATE TABLE IF NOT EXISTS newrooms (roomcode varchar, question varchar, choice1 varchar, choice2 varchar, choice3 varchar, choice4 varchar, answer varchar, genre varchar, current boolean);")
+    # cur.execute("DELETE FROM rooms;")   # empties the db each res
+    # todo having this "DELETE FROM" clause means that each time someone makes a new room, ALL of those are deleted.
+
+    # We want a rooms table
 
     # Checking the number of questions
     print("There are " + str(len(data)) + " questions in the database (for Pop genre)")
@@ -87,15 +94,16 @@ def get_existing_questions(num_questions, roomcode):
         for i in range(numQuestions):
             question = data[i]
 
-            print(question)
+            # print(question)
 
             # This stores the question string into the Rooms table --> Each question is uniquely associated by the Question String !
-            cur.execute("INSERT INTO rooms (roomcode, question) VALUES (%s, %s);", (roomcode, question[0]))
+            cur.execute("INSERT INTO newrooms (roomcode, question, choice1, choice2, choice3, choice4, answer, genre, current) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);", (roomcode, question[0], question[1], question[2], question[3], question[4], question[5], question[6], question[7],))
+            # Okay! We're in business!
 
 
     # Prints ALL of the current saved questions and ALL of the current rooms // do we need a table for the rooms? I don't think so?
     # test_questions(cur)
-    # test_rooms(cur)
+    test_rooms(cur)
 
     # cur.commit() # I'm hoping this fixes the problems?
     conn.commit()
@@ -103,12 +111,14 @@ def get_existing_questions(num_questions, roomcode):
     conn.close()
 
 
-
+# This function needs to change to simply select and save 1 question and answer based on the roomcode. This will save to the JSON
+# Then the JSON will be checked. This can be called simply once per get_question. The answer will be stored the whole time.
 def get_question(roomcode):
 
     conn, cur = get_cursor()
 
-    cur.execute("SELECT * FROM rooms WHERE roomcode=%s LIMIT 1;", (roomcode,))
+    # This is an equivalent of grabbing the TOP 1st item of the category -- so it'll always be the same for each caller
+    cur.execute("SELECT * FROM newrooms WHERE roomcode=%s LIMIT 1;", (roomcode,))
 
     question = cur.fetchall()
 
@@ -118,19 +128,25 @@ def get_question(roomcode):
 
     if len(question) > 0: # i.e. if there exists a question for the room, serve it.
 
-        question = question[0]
+        actual_question = question[0]
 
-        cur.execute("SELECT * FROM questions WHERE question=%s LIMIT 1;", (question[1],))
+        print(actual_question)
 
-        question = cur.fetchall()
+        # cur.execute("SELECT * FROM questions WHERE question=%s LIMIT 1;", (question[1],))
+        # question = cur.fetchall()
+        # question = question[0]
+        # cur.execute("UPDATE questions SET current=%s WHERE question=%s;", (True, question[0]))
 
-        question = question[0]
+        output = {"question": actual_question[1], "choices": [actual_question[2], actual_question[3], actual_question[4], actual_question[5]], "answer": actual_question[6], "genre": actual_question[7]}
 
-        cur.execute("UPDATE questions SET current=%s WHERE question=%s;", (True, question[0]))
-
-        output = {"question": question[0], "choices": [question[1], question[2], question[3], question[4]], "answer": question[5], "genre": question[6]}
+        # moving deletion to requesting the ANSWER / already set up!
     else:
         output = {"question" : "Game Over!", "choices": ["", "", "", ""], "answer": "", "genre": ""}
+
+    # Test to make sure the question got deleted for the room
+    test_rooms(cur)
+
+    # Looks like the front end is calling the API multiple times, this is NOT what we want, so we'll have to do the Loading technique here as well.
 
     conn.commit()
     cur.close()
@@ -138,23 +154,27 @@ def get_question(roomcode):
     return output
 
 
-def get_answer(room):
+def get_answer(roomcode):
     conn, cur = get_cursor()
 
-    cur.execute("SELECT * FROM questions WHERE current=%s LIMIT 1;", (True,))
+    cur.execute("SELECT * FROM newrooms WHERE roomcode=%s LIMIT 1;", (roomcode,))
 
     question = cur.fetchall()
 
+    # Now, have to delete the question from the newrooms table so it cannot be asked again!
+    # cur.execute("DELETE FROM newrooms WHERE question=%s;", (actual_question[1],))
+
     # This print is VERY important -- It allows for the question to be loaded completely before checking its length.
     # Otherwise, Python will continue on and say the length is 0 every time, even when there are questions!
-    print("The Current Question Is ", question)
+    print("The Current Question --ANSWERING-- Is ", question)
 
     if len(question) > 0:
 
-        question = question[0]
+        actual_question = question[0]
 
-        cur.execute("UPDATE questions SET current=%s WHERE question=%s;", (False, question[0]))
-        cur.execute("DELETE FROM rooms WHERE question=%s;", (question[0],))
+        # cur.execute("UPDATE questions SET current=%s WHERE question=%s;", (False, question[0]))
+        # cur.execute("DELETE FROM rooms WHERE question=%s;", (question[0],))
+        cur.execute("DELETE FROM newrooms WHERE question=%s;", (actual_question[1],))
 
         # Printing all of the current questions and existing rooms for testing purposes / I think this works fine.
         # test_questions(cur)
@@ -170,7 +190,8 @@ def get_answer(room):
         # Right now though, there is a table for all of the rooms that's just filling up and not being deleted?
         # Perhaps write a function to delete the row associated with a Room key when the "Game Over" screen is reached!
 
-        output = {'answer': question[5]}
+        # todo Temporary change, going to remove and use a semaphore for the getAnswer request and check the JSON directly
+        output = {'answer': actual_question[6]}
 
     else:
         output = {"answer" : "No more questions!"}
@@ -210,7 +231,7 @@ def test_questions(cur):
 
 def test_rooms(cur):
 
-    cur.execute("SELECT * FROM rooms;")
+    cur.execute("SELECT * FROM newrooms;")
 
     rooms = cur.fetchall()
 
