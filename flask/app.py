@@ -19,6 +19,10 @@ from username_password_check import check_password, check_username
 from verify_session import verify_valid_session
 from logout import invalidate_session
 from database_utils import retrieve_username
+import threading
+import time
+startGameSem = threading.Semaphore()
+getAnswerSem = threading.Semaphore()
 
 
 # This should load the local .env file properly now that running the flask server locally should be 'python app.py' NOT 'flask run' (won't affect digital-ocean)
@@ -67,15 +71,19 @@ def clear_db():
 @app.route('/api/startGame')
 def gen_questions():
 
+    startGameSem.acquire()
+
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     num_questions = int(request.args.get('num_questions'))
     roomcode = request.args.get('roomcode')
     owner_token = request.args.get('token')
     genre = "" # TBD
 
+    output = ""
+
     # if the game has started, just don't do anything
     if rooms_user_info[roomcode]["started"]:
-        return json.dumps("game already started")
+        output = "game already started"
     else:
         if num_questions < 0 or num_questions > 5:
             return json.dumps("failed input")
@@ -86,7 +94,10 @@ def gen_questions():
         # Start the game
         rooms_user_info[roomcode]["started"] = True
 
-        return json.dumps("done")
+        output = "done"
+
+    startGameSem.release()
+    return json.dumps(output)
 
 # Ask for a question for the game
 @app.route('/api/questionRequest')
@@ -112,11 +123,16 @@ def grab_question():
 # Grabs the answer for the question
 @app.route('/api/answerRequest')
 def grab_answer():
+
+    getAnswerSem.acquire()
+
     roomcode = request.args.get('roomcode')
+
+    output = {}
 
     # If the answer has already been grabbed based on the flag, just return it! Otherwise, get the new one
     if rooms_user_info[roomcode]["answer_grabbed"]:
-        return {"answer" : rooms_user_info[roomcode]["correct_answer"]} # Specific format for the answer in front end
+        output = {"answer" : rooms_user_info[roomcode]["correct_answer"]} # Specific format for the answer in front end
     else:
         answer = data_request.get_answer(request.args.get('roomcode'))
 
@@ -136,7 +152,10 @@ def grab_answer():
         # Then, a hidden button will appear to view the scores! This is really good!
         # Can potentially set a flag to not calculate scores for the X amount of people in the lobby, but it's probably okay to do it runtime wise
 
-        return answer
+        output = answer
+
+    getAnswerSem.release()
+    return output
 
 # Save the answer chosen by the player
 @app.route('/api/saveAnswer')
