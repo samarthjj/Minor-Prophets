@@ -17,10 +17,11 @@ const GameSetup = () => {
             params: {
                 // Add event listeners to extract rounds and genre to send to backend.
                 rounds: 5,
-                roomcode: room_code
+                roomcode: room_code,
+                owner: document.cookie.split("=")[1]
             }
         }).then(function (response) {
-            console.log("received")
+            console.log(response)
         })
     }
 

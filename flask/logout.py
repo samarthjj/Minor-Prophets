@@ -14,7 +14,7 @@ def invalidate_session(token):
     conn = psycopg2.connect(db_config)
     cur = conn.cursor()
 
-    cur.execute("UPDATE accounts SET valid_session = %s WHERE token = %s", (False,data_token))
+    cur.execute("UPDATE accounts SET valid_session = %s WHERE token = %s;", (False,data_token))
 
     cur.execute("SELECT * FROM accounts;")
 

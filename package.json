@@ -19,7 +19,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "start-flask": "cd flask && python3 app.py",
+    "start-flask": "cd flask && python app.py",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

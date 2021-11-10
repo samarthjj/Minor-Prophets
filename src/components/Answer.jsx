@@ -8,7 +8,7 @@ function get_answer(room_code)
     console.log("getting answer..")
     axios.get('/api/answerRequest', {
         params: {
-
+            roomcode: room_code // This wasn't here either.... ???
         }
     })
         .then(function (response) {
@@ -18,6 +18,9 @@ function get_answer(room_code)
         })
 }
 
+// Idea for this :: have it so every time you press a button or refresh, you can see the scores all fill in
+// We don't need to integrate WS here, but it would be nice
+// As more players enter their responses, the scoreboard will fill up
 function get_score(room_code)
 {
     axios.get('/api/get_scores', {
@@ -62,7 +65,8 @@ const Answer = () => {
 
     const { room_code } = useParams();
 
-    // get_answer(room_code)
+    // This was commented out... ?
+    get_answer(room_code)
 
     useEffect(() => {
 

@@ -15,14 +15,14 @@ def verify_valid_session(token):
     conn = psycopg2.connect(db_config)
     cur = conn.cursor()
 
-    cur.execute("SELECT EXISTS(SELECT * from accounts WHERE token=%s)", (data_token,))
+    cur.execute("SELECT EXISTS(SELECT * from accounts WHERE token=%s);", (data_token,))
     valid_token = cur.fetchall()[0][0]
 
     if not valid_token:
         return False
 
     if valid_token:
-        cur.execute("SELECT * from accounts WHERE token=%s", (data_token,))
+        cur.execute("SELECT * from accounts WHERE token=%s;", (data_token,))
         user_data = cur.fetchall()[0]
         if user_data[1] == "false":
             return False

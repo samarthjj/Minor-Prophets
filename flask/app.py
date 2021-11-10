@@ -31,8 +31,102 @@ socket_server = SocketIO(app, cors_allowed_origins="*")
 # Dictionary[String, Dictionary[String, String]]
 # Maps room code to dictionary of players, mapping token to username.
 # Each room info will also contain keys for "owner", "rounds", "genre", "answer", "correct_answer", "score"
-rooms_user_info = {"TEST": {"owner": "test", "rounds": 5, "genre": "test", "answer": {}, "correct_answer": "", "score": {}}}
+# rooms_user_info = {"TEST":
+#                        {"owner": "test",
+#                         "users": {},
+#                         "rounds": 5,
+#                         "genre": "test",
+#                         "answer": {
+#                             "token1" : "1",
+#                             "token2" : "3"
+#                         },
+#                         "correct_answer": "",
+#                         "score": {
+#                             "token1" : "score1",
+#                             "token2" : "score2",
+#                             }
+#                         }
+#                    }
+rooms_user_info = {}
 
+# Start the game, generate the questions for the game
+@app.route('/api/startGame')
+def gen_questions():
+
+    # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
+    rounds = int(request.args.get('rounds'))
+    roomcode = request.args.get('roomcode')
+    owner_token = request.args.get('owner')
+    genre = "" # TBD
+
+    # print("Starting the Game!")
+    # print(rounds)
+    # print(roomcode)
+
+    rounds = 5 # --> This will be manually set by the user in the GameSetup eventually
+
+    # print("Exiting the /api/startGame call")
+
+    # f = open("questions.json")
+    # questions = appcode.generate_questions(int(rounds))
+    # f.close()
+    #
+    # random.shuffle(questions)
+    #
+    # with open('store.json', 'w') as j:
+    #     json.dump(questions, j)
+
+    # Validate the room hasn't been created already, etc.
+    # Actually, this has already been done! So, don't need to worry about that!
+    # if roomcode in rooms_user_info.keys():
+    #     return json.dumps("ROOM INVALID")
+    # else:
+    #     print("The owner of the room is: ", owner_token)
+    #
+    #     # Store the room information to the Flask variable
+    #     # The owner token needs to be passed with the button press
+    #     rooms_user_info[roomcode] = {"owner" : owner_token, "rounds" : rounds, "genre" : "Pop", "answer" : {}, "correct_answer" : "", "score" : {}}
+
+    # Only generate the questions once the room is validated
+    data_request.get_existing_questions(rounds, roomcode)
+
+    return json.dumps("done")
+
+# Ask for a question for the game
+@app.route('/api/questionRequest')
+def grab_question():
+
+    # Found error, the roomcode is not being saved/the way the request is getting the roomcode is bricked
+
+    roomcode = request.args.get('roomcode')
+    # roomcode = 'RUN1' # why was this set ?
+
+    # print("The Current Roomcode is " + str(roomcode))
+
+    # f = open("store.json")
+    # questions = json.loads(f.read())
+    # question = random.choice(questions)
+    #
+    # with open('temp_question_storage.json', 'w') as j:
+    #     json.dump(question, j)
+
+    # Grabs a question for the specified Roomcode
+    # Need to add checks that this is a valid room code
+    question = data_request.get_question(roomcode)
+    # question = {"hi":"there"}
+
+    return json.dumps(question)
+
+# Grabs the answer for the question
+@app.route('/api/answerRequest')
+def grab_answer():
+    # with open("temp_question_storage.json", 'r') as f:
+    #     question = json.loads(f.read())
+
+    return data_request.get_answer(request.args.get('roomcode'))
+
+
+# Updates the scores of each user --> Josh needs to call this when the people move to the Answer screen, and it can be calculated for each user
 @app.route('/api/scores')
 def update_scores():
     room = request.args.get('roomcode')
@@ -56,12 +150,78 @@ def update_scores():
     rooms_user_info[room]["scores"] = scores
     return json.dumps("")
 
+# Dumps the scores for each user
 @app.route('/api/get_scores')
 def get_scores():
     room = request.args.get('roomcode')
     return json.dumps(rooms_user_info[room]["scores"])
 
 
+
+# Validates the room
+@app.route("/api/validateRoom")
+def validate_room():
+    print("Validate Room")
+    room = request.args.get('roomcode')
+    token = request.args.get('token')
+    retrieve_username(token)
+    print("Room Code: " + room)
+    if room in rooms_user_info and rooms_user_info[room]["started"] == False:   # If the game has started, don't let them in (they can still go to the room code w/ link manually, how to prevent?)
+        return json.dumps({"response": "goodRoom"})
+    else:
+        return json.dumps({"response": "badRoom"})
+@socket_server.on('join_room')
+def on_join(info):
+    room = info['room']
+    token = info["token"]
+    # print(room, token)
+    # Register room & owner
+    if not room in rooms_user_info:
+        rooms_user_info[room] = {}
+        rooms_user_info[room]["owner"] = token
+        rooms_user_info[room]["users"] = {}     # Initialize with an empty dict to store people
+        rooms_user_info[room]["started"] = False    # Sets the game to "not have started yet"
+
+    # Add user to that room
+    username = retrieve_username(token)
+    rooms_user_info[room]["users"][token] = username  # Adjusted to make the organization neater
+
+    if "answer" not in rooms_user_info[room].keys():
+        rooms_user_info[room]["answer"] = {}
+    if "score" not in rooms_user_info[room].keys():
+        rooms_user_info[room]["score"] = {}
+    if "correct_answer" not in rooms_user_info[room].keys():
+        rooms_user_info[room]["correct_answer"] = ""
+    if retrieve_username(token) not in rooms_user_info[room]["score"].keys():
+        rooms_user_info[room]["answer"][retrieve_username(token)] = ""
+        rooms_user_info[room]["score"][retrieve_username(token)] = 0
+
+    join_room(room)
+    # print(rooms_user_info[room])
+    print("Joining a room: ", rooms_user_info)
+
+    emit("join_room", username + ' has joined the game.', room=room)
+@socket_server.on('leave_room')
+def on_leave(info):
+    room = info['room']
+    token = info["token"]
+    username = rooms_user_info[room]["users"][token]
+    # print(room, token, username)
+
+    rooms_user_info[room]["users"].pop(token, None)
+    leave_room(room)
+    # print(rooms_user_info[room])
+    print("Leaving a room: ", rooms_user_info)
+
+    emit("leave_room", username + ' has left the game.', room=room)
+
+
+@socket_server.on('message')
+def broadcast_message(msg):
+    emit("message", msg, broadcast=True)
+
+
+# Stats
 @app.route('/api/stats')
 def stats():
     # How to get json arguments: https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
@@ -71,13 +231,14 @@ def stats():
         data = json.dumps(data_request.get_stats(token))
     return data
 
+
+# Login
 @app.route('/api/logout')
 def logout():
     token = request.args.get('token')
     if verify_valid_session(token):
         invalidate_session(token)
     return json.dumps({})
-
 @app.route('/api/login', methods=['POST'])
 def attempt_login():
     # Get username and password
@@ -113,7 +274,7 @@ def attempt_login():
     # How to check for values in a row
     # https://www.tutorialspoint.com/best-way-to-test-if-a-row-exists-in-a-mysql-table
     # cur.prepare("SELECT EXISTS(SELECT * from accounts WHERE username=%s)")
-    cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s)", (username_login,))
+    cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s);", (username_login,))
 
     #True/False value if login information is valid
     valid_username = cur.fetchall()[0][0]
@@ -122,7 +283,7 @@ def attempt_login():
     valid_account = False
     # If the username is valid, fetch the password stored for that account and compare to the input
     if valid_username:
-        cur.execute("SELECT * from accounts WHERE username=%s", (username_login,))
+        cur.execute("SELECT * from accounts WHERE username=%s;", (username_login,))
         password = cur.fetchall()[0][3]
         # Check if password matches database:https://werkzeug.palletsprojects.com/en/2.0.x/utils/
         valid_account = werkzeug.security.check_password_hash(password, password_login)
@@ -131,8 +292,8 @@ def attempt_login():
     if valid_account:
         valid_login = True
         # How to update values in table: https://www.postgresqltutorial.com/postgresql-update/
-        cur.execute("UPDATE accounts SET token = %s WHERE username = %s", (token, username_login))
-        cur.execute("UPDATE accounts SET valid_session = %s WHERE username = %s", (True, username_login))
+        cur.execute("UPDATE accounts SET token = %s WHERE username = %s;", (token, username_login))
+        cur.execute("UPDATE accounts SET valid_session = %s WHERE username = %s;", (True, username_login))
 
     # cur.execute("SELECT * FROM accounts;")
     #
@@ -156,8 +317,6 @@ def attempt_login():
     else:
         # If the login information is invalid, return INVALID token to signal not to setToken
         return json.dumps({})
-
-
 @app.route('/api/signup', methods=['POST'])
 def attempt_signup():
     # Get username and password
@@ -196,7 +355,7 @@ def attempt_signup():
     # How to check for values in a row
     # https://www.tutorialspoint.com/best-way-to-test-if-a-row-exists-in-a-mysql-table
     cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, valid_session varchar, username varchar, password varchar, games_won varchar, total_points varchar, ratio varchar, fav_genre varchar);")
-    cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s)", (username_signup,))
+    cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s);", (username_signup,))
     # True/False value if username is not yet taken
     invalid_username = cur.fetchall()[0][0]
     # print("Invalid username?", invalid_username)
@@ -214,7 +373,7 @@ def attempt_signup():
         hashed_password = werkzeug.security.generate_password_hash(password_signup, method='pbkdf2:sha256', salt_length=16)
 
         #Create account in table
-        cur.execute("INSERT INTO accounts (token, valid_session, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (token, True, username_signup, hashed_password, "0", "0", "0", "Rock"))
+        cur.execute("INSERT INTO accounts (token, valid_session, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);", (token, True, username_signup, hashed_password, "0", "0", "0", "Rock"))
 
     # cur.execute("SELECT * FROM accounts;")
     #
@@ -240,65 +399,10 @@ def attempt_signup():
         return json.dumps({})
 
 
-@app.route('/api/startGame')
-def gen_questions():
-
-    # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    rounds = int(request.args.get('rounds'))
-
-    #roomcode = request.args.get('roomcode')
-    roomcode = 'RUN1'
-
-
-    data_request.get_existing_questions(rounds, roomcode)
-
-
-    '''
-    f = open("questions.json")
-    questions = appcode.generate_questions(int(rounds))
-    f.close()
-
-    random.shuffle(questions)
-
-    with open('store.json', 'w') as j:
-        json.dump(questions, j)
-    '''
-    return json.dumps("done")
-
-@app.route('/api/questionRequest')
-def grab_question():
-
-    # roomcode = request.args.get('roomcode')
-    roomcode = 'RUN1'
-
-    '''
-    f = open("store.json")
-    questions = json.loads(f.read())
-    question = random.choice(questions)
-
-    with open('temp_question_storage.json', 'w') as j:
-        json.dump(question, j)
-    '''
-
-    question = data_request.get_question(roomcode)
-
-    return json.dumps(question)
-
-@app.route('/api/answerRequest')
-def grab_answer():
-
-    '''
-    with open("temp_question_storage.json", 'r') as f:
-        question = json.loads(f.read())
-    '''
-
-    return data_request.get_answer(request.args.get('roomcode'))
-
+# Testing
 @app.route('/api/time')
 def get_current_time():
     return {'time': time.time()}
-
-
 @app.route('/api/db')
 def test_database():
     # todo <Add Database Functionality>
@@ -319,7 +423,7 @@ def test_database():
     cur = conn.cursor()
 
     cur.execute("CREATE TABLE IF NOT EXISTS users (username varchar, name varchar);")
-    cur.execute("INSERT INTO users (username, name) VALUES (%s, %s)", ("jmcaskie", "Josh"))
+    cur.execute("INSERT INTO users (username, name) VALUES (%s, %s);", ("jmcaskie", "Josh"))
     # Wow - don't forget Python syntax when working in a non-python IDE... 30 min debug for missing a ')'
 
     cur.execute("SELECT * FROM users;")
@@ -340,72 +444,6 @@ def test_database():
 #         print(row)
 
     return {"users" : users}
-
-#         {
-#              "items": [
-#                { "id": 1, "name": "Apples",  "price": "$2" },
-#                { "id": 2, "name": "Peaches", "price": "$5" }
-#              ]
-#         }
-
-
-@app.route("/api/validateRoom")
-def validate_room():
-    print("Validate Room")
-    room = request.args.get('roomcode')
-    token = request.args.get('token')
-    retrieve_username(token)
-    print("Room Code: " + room)
-    if room in rooms_user_info:
-        return json.dumps({"response": "goodRoom"})
-    else:
-        return json.dumps({"response": "badRoom"})
-
-
-@socket_server.on('join_room')
-def on_join(info):
-    room = info['room']
-    token = info["token"]
-    # print(room, token)
-    # Register room & owner
-    if not room in rooms_user_info:
-        rooms_user_info[room] = {}
-        rooms_user_info[room]["owner"] = token
-    
-    # Add user to that room
-    username = retrieve_username(token)
-    rooms_user_info[room][token] = username
-    if "answer" not in rooms_user_info[room].keys():
-        rooms_user_info[room]["answer"] = {}
-    if "score" not in rooms_user_info[room].keys():
-        rooms_user_info[room]["score"] = {}
-    if "correct_answer" not in rooms_user_info[room].keys():
-        rooms_user_info[room]["correct_answer"] = ""
-    if retrieve_username(token) not in rooms_user_info[room]["score"].keys():
-        rooms_user_info[room]["answer"][retrieve_username(token)] = ""
-        rooms_user_info[room]["score"][retrieve_username(token)] = 0
-
-    join_room(room)
-    # print(rooms_user_info[room])
-    emit("join_room", username + ' has joined the game.', room=room)
-
-
-@socket_server.on('leave_room')
-def on_leave(info):
-    room = info['room']
-    token = info["token"]
-    username = rooms_user_info[room][token]
-    # print(room, token, username)
-
-    rooms_user_info[room].pop(token, None) 
-    leave_room(room)
-    # print(rooms_user_info[room])
-    emit("leave_room", username + ' has left the game.', room=room)
-
-
-@socket_server.on('message')
-def broadcast_message(msg):
-    emit("message", msg, broadcast=True)
 
 
 if __name__ == '__main__':
