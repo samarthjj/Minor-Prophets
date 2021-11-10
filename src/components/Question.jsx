@@ -1,4 +1,4 @@
-import React, {useEffect, useContext} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
@@ -26,6 +26,24 @@ const Question = () => {
     const socket = useContext(SocketContext);
 
     const { room_code } = useParams();
+
+    const initialSeconds = 30
+
+    const [seconds, setSeconds ] =  useState(initialSeconds)
+
+    useEffect(()=>{
+        let myInterval = setInterval(() => {
+            if (seconds > 0) {
+                setSeconds(seconds - 1);
+            }
+            if (seconds === 0) {
+                clearInterval(myInterval)
+            }
+        }, 1000)
+        return ()=> {
+            clearInterval(myInterval);
+        };
+    });
 
     get_question()
 
@@ -69,7 +87,7 @@ const Question = () => {
                     <button className="btn btn-danger btn-lg text-dark mb-3" id="question" disabled></button>
                 </div>
                 <div className="col">
-                    <button className="btn btn-primary btn-md text-dark mb-3" disabled>30 seconds</button>
+                    <button className="btn btn-primary btn-md text-dark mb-3" disabled>{seconds} Seconds Remaining</button>
                 </div>
             </div>
 
