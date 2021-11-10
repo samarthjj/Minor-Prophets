@@ -1,4 +1,4 @@
-import React, {useEffect, useContext, useState, component} from "react";
+import React, {useEffect, useContext, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 import { SocketContext} from '../socket';
 import {default as axios} from "axios";
@@ -15,29 +15,39 @@ const NonHostLobby = () => {
 
     const [names, setNames] = useState([]);
 
-    const [tokens, setTokens] = useState([])
+    const [tokens, setTokens] = useState([]);
 
-    /*
-    const get_existing_players = () => {
-        axios.get('/api/startGame', {
+    const[initialize, setInitialize] = useState(false);
+
+
+    // runs when the page loads to get the usernames of the players that are already in the room
+    const get_existing_players = () =>  {
+        axios.get('/api/initialize_table', {
             params: {
-                // Add event listeners to extract rounds and genre to send to backend.
-                rounds: 5,
                 roomcode: room_code
             }
         }).then(function (response) {
-            console.log("received")
+            console.log(response.data["users"]);
+            for (let name of response.data["users"]){
+                if (!names.includes(name)) {
+                    setNames(names => [...names, name]);
+                    console.log(names);
+                }
+            }
         })
     }
-    */
 
     useEffect(() => {
 
+        const token = document.cookie.split("=")[1];
+
         socket.on('join_room', info => {
-            if (!names.includes(info)) {
-                setNames([...names, info]);
-                console.log(info);
-                console.log(names);
+            info = JSON.parse(info);
+            console.log(info);
+            console.log(names);
+            if (!names.includes(info['username']) && info['token'] != token) {
+                console.log(info['username']);
+                setNames([...names, info['username']]);
             }
         })
 
@@ -45,6 +55,7 @@ const NonHostLobby = () => {
             console.log("leaving");
         })
 
+        // brings the player to the first question
         socket.on('question', info => {
             console.log("question signal recieved")
             const path = '/question/' + room_code;
@@ -52,8 +63,7 @@ const NonHostLobby = () => {
             window.location.pathname = path;
         })
 
-        const token = document.cookie.split("=")[1];
-        console.log(tokens);
+
         if (!tokens.includes(token)) {
             console.log("emitting");
             socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]});
@@ -65,7 +75,15 @@ const NonHostLobby = () => {
         }
      })
 
+    if (!initialize) {
+        get_existing_players();
+        setInitialize(true)
+    }
+
+
+    //https://www.youtube.com/watch?v=dYjdzpZv5yc for the dynamic table
     return (
+
         <div class="text-center">
 
             <div class="container-sm">
@@ -93,7 +111,6 @@ const NonHostLobby = () => {
                             </tr>
                             </thead>
                             <tbody>
-                            <!--//https://www.youtube.com/watch?v=dYjdzpZv5yc-->
                                 {names.map((name) => (
                                     <tr>
                                         <td>{name}</td>

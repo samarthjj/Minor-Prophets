@@ -333,6 +333,21 @@ def validate_room():
         return json.dumps({"response": "badRoom"})
 
 
+# grabs usernames of all players already in the room
+@app.route("/api/initialize_table")
+def get_users():
+
+    room = request.args.get('roomcode')
+
+    users = []
+    for user in rooms_user_info[room]:
+        if user != "owner":
+            users.append(rooms_user_info[room][user])
+
+    return json.dumps({"users": users})
+
+
+# adds new player to dictionary and gets their username based on token
 @socket_server.on('join_room')
 def on_join(info):
     room = info['room']
@@ -353,7 +368,10 @@ def on_join(info):
 
     join_room(room)
 
-    emit('join_room', username, room=room)
+    dic = json.dumps({'username': username, 'token': token})
+
+    emit('join_room', dic, room=room)
+
 
 @socket_server.on('leave_room')
 def on_leave(info):
@@ -367,10 +385,12 @@ def on_leave(info):
     # print(rooms_user_info[room])
     emit('leave_room', username, room=room)
 
+
+# broadcasts to all players in a room that the host has started the game
 @socket_server.on('question')
 def on_start(info):
     print("reached python ", info)
-    emit("question", broadcast=True)
+    emit("question", room=info)
 
 
 @socket_server.on('message')

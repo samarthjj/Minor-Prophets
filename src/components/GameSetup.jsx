@@ -12,11 +12,13 @@ const GameSetup = () => {
 
     const { room_code } = useParams();
 
+    // called when start game is pressed to initialize the questions and tell the other lobbies that the game is starting
     const starting = () => {
         get_questions();
-        socket.emit('question', document.cookie.split("=")[1]);
+        socket.emit('question', room_code);
     }
 
+    // tells the backend to generate/retrieve the questions
     const get_questions = () => {
         axios.get('/api/startGame', {
             params: {
