@@ -70,9 +70,9 @@ const Gameover = () => {
                 <div className="col-8">
 
                 </div>
-                <div className="col-2">
-                    <Link to={`/gamesetup/${room_code}`}><button className="btn btn-success btn-md text-dark mb-3">Play Again</button></Link>
-                </div>
+                {/*<div className="col-2">*/}
+                {/*    <Link to={`/gamesetup/${room_code}`}><button className="btn btn-success btn-md text-dark mb-3">Play Again</button></Link>*/}
+                {/*</div>*/}
             </div>
 
             {/*Winner*/}

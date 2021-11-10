@@ -10,6 +10,12 @@ const Question = () => {
 
     const { room_code } = useParams();
 
+    var questionstorage = "";
+    var choice1storage = "";
+    var choice2storage = "";
+    var choice3storage = "";
+    var choice4storage = "";
+
     // This queries the API using the Room Code and grabs a Question for it - which is stored in the Database already
     function get_question() {
         axios.get('/api/questionRequest', {
@@ -19,6 +25,13 @@ const Question = () => {
         }).then(function (response) {
                 //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
                 // console.log(response)
+
+                questionstorage = response.data["question"];
+                choice1storage = response.data["choices"][0];
+                choice2storage = response.data["choices"][1];
+                choice3storage = response.data["choices"][2];
+                choice4storage = response.data["choices"][3];
+
                 document.getElementById("question").innerHTML = response.data["question"];
                 document.getElementById("choice1").innerHTML = response.data["choices"][0]; //This gets the answer choices correctly
                 document.getElementById("choice2").innerHTML = response.data["choices"][1];
@@ -51,7 +64,7 @@ const Question = () => {
     function save_answer(choice) {
         axios.get('/api/saveAnswer', {
             params: {
-                answer: document.getElementById("choice" + choice.toString()).innerHTML,
+                answer: choice,
                 roomcode: room_code,
                 token: document.cookie.split("=")[1]
             }
@@ -106,21 +119,21 @@ const Question = () => {
                     <div className="row mb-3">
                         <div className="col">
                             <input type="radio" className="btn-check mb-3" name="options" id="option1" autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option1" id="choice1" onClick={() => save_answer(1)}></label>  {/*Here's to hoping I get this indexing right!*/}
+                            <label className="btn btn-primary" htmlFor="option1" id="choice1" onClick={() => save_answer(choice1storage)}></label>  {/*Here's to hoping I get this indexing right!*/}
                         </div>
                         <div className="col">
                             <input type="radio" className="btn-check btn-lg mb-3" name="options" id="option2" autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option2" id="choice2" onClick={() => save_answer(2)}></label>
+                            <label className="btn btn-primary" htmlFor="option2" id="choice2" onClick={() => save_answer(choice2storage)}></label>
                         </div>
                     </div>
                     <div className="row mb-3">
                         <div className="col">
                             <input type="radio" className="btn-check" name="options" id="option3" autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option3" id="choice3" onClick={() => save_answer(3)}></label>
+                            <label className="btn btn-primary" htmlFor="option3" id="choice3" onClick={() => save_answer(choice3storage)}></label>
                         </div>
                         <div className="col">
                             <input type="radio" className="btn-check" name="options" id="option4" autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option4" id="choice4" onClick={() => save_answer(4)}></label>
+                            <label className="btn btn-primary" htmlFor="option4" id="choice4" onClick={() => save_answer(choice4storage)}></label>
                         </div>
                     </div>
                 </div>
