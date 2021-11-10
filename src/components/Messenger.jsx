@@ -18,7 +18,6 @@ const Messenger = ({ room_code }) => {
     })
   
     socket.on('message', info => {
-      console.log(info);
       setMessages([...messages, `${info["username"]}: ${info["message"]}`])
     })
 

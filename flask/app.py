@@ -322,11 +322,9 @@ def test_database():
 
 @app.route("/api/validateRoom")
 def validate_room():
-    print("Validate Room")
     room = request.args.get('roomcode')
     token = request.args.get('token')
-    retrieve_username(token)
-    print("Room Code: " + room)
+
     if room in rooms_user_info:
         return json.dumps({"response": "goodRoom"})
     else:
@@ -337,7 +335,6 @@ def validate_room():
 def on_join(info):
     room = info['room']
     token = info["token"]
-    # print(room, token)
     # Register room & owner
     if not room in rooms_user_info:
         rooms_user_info[room] = {}
@@ -348,7 +345,6 @@ def on_join(info):
     rooms_user_info[room][token] = username
 
     join_room(room)
-    # print(rooms_user_info[room])
     emit("join_room", username + ' has joined the game.', room=room)
 
 
@@ -357,11 +353,9 @@ def on_leave(info):
     room = info['room']
     token = info["token"]
     username = rooms_user_info[room][token]
-    # print(room, token, username)
 
     rooms_user_info[room].pop(token, None) 
     leave_room(room)
-    # print(rooms_user_info[room])
     emit("leave_room", username + ' has left the game.', room=room)
 
 
@@ -371,7 +365,6 @@ def broadcast_message(info):
     username = rooms_user_info[room][info["token"]]
     # username = retrieve_username(info["token"])
     message = info['message']
-    print(username, message)
     emit("message", {"username": username, "message": message}, room=room)
 
 
