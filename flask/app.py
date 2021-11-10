@@ -86,6 +86,9 @@ def grab_question():
     question = data_request.get_question(roomcode)
     # question = {"hi":"there"}
 
+    # Reset the flag so a new answer will be grabbed next time.
+    rooms_user_info[roomcode]["answer_grabbed"] = False
+
     return json.dumps(question)
 
 # Grabs the answer for the question
@@ -93,20 +96,28 @@ def grab_question():
 def grab_answer():
     roomcode = request.args.get('roomcode')
 
-    answer = data_request.get_answer(request.args.get('roomcode'))
-    print("THE ANSWER IS: ", answer)
+    # If the answer has already been grabbed based on the flag, just return it! Otherwise, get the new one
+    if rooms_user_info[roomcode]["answer_grabbed"]:
+        return {"answer" : rooms_user_info[roomcode]["correct_answer"]} # Specific format for the answer in front end
+    else:
+        answer = data_request.get_answer(request.args.get('roomcode'))
 
-    print(answer['answer'])
-    print(rooms_user_info[roomcode]["correct_answer"])
+        # Mark that the answer has been grabbed
+        rooms_user_info[roomcode]["answer_grabbed"] = True
 
-    # Save the answer for calculation
-    rooms_user_info[roomcode]["correct_answer"] = answer["answer"]
+        print("THE ANSWER IS: ", answer)
 
-    # todo Calculate the scores here? --> Then users can press the button to "reveal" the scores as well
-    # Then, a hidden button will appear to view the scores! This is really good!
-    # Can potentially set a flag to not calculate scores for the X amount of people in the lobby, but it's probably okay to do it runtime wise
+        print(answer['answer'])
+        print(rooms_user_info[roomcode]["correct_answer"])
 
-    return answer
+        # Save the answer for calculation
+        rooms_user_info[roomcode]["correct_answer"] = answer["answer"]
+
+        # todo Calculate the scores here? --> Then users can press the button to "reveal" the scores as well
+        # Then, a hidden button will appear to view the scores! This is really good!
+        # Can potentially set a flag to not calculate scores for the X amount of people in the lobby, but it's probably okay to do it runtime wise
+
+        return answer
 
 # Save the answer chosen by the player
 @app.route('/api/saveAnswer')
@@ -219,11 +230,12 @@ def on_join(info):
     token = info["token"]
     # print(room, token)
     # Register room & owner
-    if not room in rooms_user_info:
+    if room not in rooms_user_info:
         rooms_user_info[room] = {}
         rooms_user_info[room]["owner"] = token
         rooms_user_info[room]["users"] = {}     # Initialize with an empty dict to store people
         rooms_user_info[room]["started"] = False    # Sets the game to "not have started yet"
+        rooms_user_info[room]["answer_grabbed"] = False     # Track if the answer has been grabbed yet.. improvement
 
     # Add user to that room
     username = retrieve_username(token)
