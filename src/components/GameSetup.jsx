@@ -23,13 +23,14 @@ const GameSetup = () => {
         axios.get('/api/startGame', {
             params: {
                 // Add event listeners to extract rounds and genre to send to backend.
-                rounds: 5,
-                roomcode: room_code
+                num_questions: 3,
+                roomcode: room_code,
+                token: document.cookie.split("=")[1]
             }
         }).then(function (response) {
-            console.log("received")
+            console.log(response)
         })
-    }
+    };
 
     useEffect(() => {
 
@@ -46,8 +47,8 @@ const GameSetup = () => {
         return () => {
             //Use this space to clean up any effects.
         }
-
-    })
+        
+    });
 
     return (
         <div class="text-center">
@@ -78,7 +79,7 @@ const GameSetup = () => {
                     <div className="col-9">
 
                         <div className="row">
-                            <h2 className="text-light">Number of Rounds</h2>
+                            <h2 className="text-light">Number of Questions</h2>
                         </div>
 
                         <div className="row">
