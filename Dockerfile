@@ -58,5 +58,4 @@ CMD ["/usr/bin/supervisord"]
 # 'yarn start-both' does NOT work
 
 # Notes:
-# 'flask run --no-debugger' is necessary so JSON is formatted properly between flask/react components
-# supervisord.conf needs the 'nodaemon=true' to work with Docker
+# 'flask run --no-debugger' is necessary so JSON is formatted properly between flask/react componds the 'nodaemon=true' to work with Docker
