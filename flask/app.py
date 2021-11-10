@@ -54,41 +54,19 @@ rooms_user_info = {}
 def gen_questions():
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    rounds = int(request.args.get('rounds'))
+    num_questions = int(request.args.get('num_questions'))
     roomcode = request.args.get('roomcode')
-    owner_token = request.args.get('owner')
+    owner_token = request.args.get('token')
     genre = "" # TBD
 
-    # print("Starting the Game!")
-    # print(rounds)
-    # print(roomcode)
-
-    rounds = 5 # --> This will be manually set by the user in the GameSetup eventually
-
-    # print("Exiting the /api/startGame call")
-
-    # f = open("questions.json")
-    # questions = appcode.generate_questions(int(rounds))
-    # f.close()
-    #
-    # random.shuffle(questions)
-    #
-    # with open('store.json', 'w') as j:
-    #     json.dump(questions, j)
-
-    # Validate the room hasn't been created already, etc.
-    # Actually, this has already been done! So, don't need to worry about that!
-    # if roomcode in rooms_user_info.keys():
-    #     return json.dumps("ROOM INVALID")
-    # else:
-    #     print("The owner of the room is: ", owner_token)
-    #
-    #     # Store the room information to the Flask variable
-    #     # The owner token needs to be passed with the button press
-    #     rooms_user_info[roomcode] = {"owner" : owner_token, "rounds" : rounds, "genre" : "Pop", "answer" : {}, "correct_answer" : "", "score" : {}}
+    if num_questions < 0 or num_questions > 5:
+        return json.dumps("failed input")
 
     # Only generate the questions once the room is validated
-    data_request.get_existing_questions(rounds, roomcode)
+    data_request.get_existing_questions(num_questions, roomcode)
+
+    # Start the game
+    rooms_user_info[roomcode]["started"] = True
 
     return json.dumps("done")
 
@@ -103,13 +81,6 @@ def grab_question():
 
     # print("The Current Roomcode is " + str(roomcode))
 
-    # f = open("store.json")
-    # questions = json.loads(f.read())
-    # question = random.choice(questions)
-    #
-    # with open('temp_question_storage.json', 'w') as j:
-    #     json.dump(question, j)
-
     # Grabs a question for the specified Roomcode
     # Need to add checks that this is a valid room code
     question = data_request.get_question(roomcode)
@@ -120,41 +91,97 @@ def grab_question():
 # Grabs the answer for the question
 @app.route('/api/answerRequest')
 def grab_answer():
-    # with open("temp_question_storage.json", 'r') as f:
-    #     question = json.loads(f.read())
+    roomcode = request.args.get('roomcode')
 
-    return data_request.get_answer(request.args.get('roomcode'))
+    answer = data_request.get_answer(request.args.get('roomcode'))
+    print("THE ANSWER IS: ", answer)
+
+    print(answer['answer'])
+    print(rooms_user_info[roomcode]["correct_answer"])
+
+    # Save the answer for calculation
+    rooms_user_info[roomcode]["correct_answer"] = answer["answer"]
+
+    # todo Calculate the scores here? --> Then users can press the button to "reveal" the scores as well
+    # Then, a hidden button will appear to view the scores! This is really good!
+    # Can potentially set a flag to not calculate scores for the X amount of people in the lobby, but it's probably okay to do it runtime wise
+
+    return answer
+
+# Save the answer chosen by the player
+@app.route('/api/saveAnswer')
+def save_answer():
+    answer = request.args.get('answer')
+    owner_token = request.args.get('token')
+    roomcode = request.args.get('roomcode')
+    # print(answer)
+
+    # if len(answer) > 1000:
+    #     return "nice overflow attempt :)"
+
+    username = rooms_user_info[roomcode]['users'][owner_token]
+
+    rooms_user_info[roomcode]['answer'][username] = answer
+
+    print(rooms_user_info)
+
+    return "answered"
+
 
 
 # Updates the scores of each user --> Josh needs to call this when the people move to the Answer screen, and it can be calculated for each user
 @app.route('/api/scores')
 def update_scores():
     room = request.args.get('roomcode')
-    scores = {"User": [], "Score": []}
+
+    # Grab current answers of users (that answered
+    user_answers = rooms_user_info[room]['answer']
+    correct_answer = rooms_user_info[room]['correct_answer']
+
+    # have a key to check if the scores have already been updated for this round?
+    # introduce race conditions though!
+
+    # There will always be a blank "" answer for new joiners, so we don't need to worry about checking for existence
+    for (username, ans) in user_answers.items():
+        if ans == correct_answer:
+            rooms_user_info[room]["score"][username] += 1
+            print(username, " got it right!")
+
+
     # answers = rooms_user_info[room]["answer"]
     # correct_answer = rooms_user_info[room]["correct_answer"]
     # rooms_user_info[room]["score"] = {"test": 0, "yuh": 0}
     # rooms_user_info[room]["answer"] = {"test": "", "yuh": ""}
     # answers = {"test": 1, "yuh": 2}
-    answers = {"test": 2}
-    correct_answer = 2
-    for user in answers.keys():
-        print(rooms_user_info[room]["score"][user])
-        if answers[user] == correct_answer:
-            rooms_user_info[room]["score"][user] += 1
-        print(rooms_user_info[room]["score"][user])
 
-    for user in rooms_user_info[room]["score"].keys():
-        scores["User"] = scores["User"] + [user]
-        scores["Score"] = scores["Score"] + [rooms_user_info[room]["score"][user]]
-    rooms_user_info[room]["scores"] = scores
+    # Reworked (keeping scores as k/v pairs)
+
+    # answers = {"test": 2}
+    # correct_answer = 2
+    # for user in answers.keys():
+    #     print(rooms_user_info[room]["score"][user])
+    #     if answers[user] == correct_answer:
+    #         rooms_user_info[room]["score"][user] += 1
+    #     print(rooms_user_info[room]["score"][user])
+
     return json.dumps("")
 
 # Dumps the scores for each user
 @app.route('/api/get_scores')
 def get_scores():
     room = request.args.get('roomcode')
-    return json.dumps(rooms_user_info[room]["scores"])
+
+    curr_scores = rooms_user_info[room]["score"]
+
+    scores = {"User": [], "Score": []}
+
+    # iterate through the keys, create an array, pass that to the front end for rendering properly
+    for user in curr_scores.keys():
+        scores["User"] = scores["User"] + [user]
+        scores["Score"] = scores["Score"] + [rooms_user_info[room]["score"][user]]
+    rooms_user_info[room]["scores"] = scores
+
+    return json.dumps(scores)
 
 
 

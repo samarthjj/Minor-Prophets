@@ -3,61 +3,6 @@ import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
 
-function get_answer(room_code)
-{
-    console.log("getting answer..")
-    axios.get('/api/answerRequest', {
-        params: {
-            roomcode: room_code // This wasn't here either.... ???
-        }
-    })
-        .then(function (response) {
-            //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
-            // console.log("yoot")
-            document.getElementById("answer").innerHTML = "The Answer Was: " + response.data["answer"];
-        })
-}
-
-// Idea for this :: have it so every time you press a button or refresh, you can see the scores all fill in
-// We don't need to integrate WS here, but it would be nice
-// As more players enter their responses, the scoreboard will fill up
-function get_score(room_code)
-{
-    axios.get('/api/get_scores', {
-        params: {
-            roomcode: room_code
-        }
-    })
-        .then(function (response) {
-            console.log(response.data.User)
-            console.log(response.data.Score)
-            let user = response.data.User
-            let score = response.data.Score
-            let output = ""
-            let tableUsers = ["p1","p2","p3","p4","p5"]
-            let tableScores = ["p1score","p2score","p3score","p4score","p5score"]
-            for (let i=0; i<user.length && i < 5; i++) {
-                document.getElementById(tableUsers[i]).innerHTML = user[i]
-                document.getElementById(tableScores[i]).innerHTML = score[i]
-                // output += user[i] + ": " + score[i] + " "
-            }
-            // document.getElementById("scores").innerHTML = output
-        })
-}
-
-function calc_score(room_code)
-{
-    get_answer(room_code)
-    axios.get('/api/scores', {
-        params: {
-            roomcode: room_code
-        }
-    })
-        .then(function (response) {
-
-        })
-}
-
 
 const Answer = () => {
 
@@ -65,8 +10,67 @@ const Answer = () => {
 
     const { room_code } = useParams();
 
-    // This was commented out... ?
-    get_answer(room_code)
+    function get_answer() {
+        // Disable this as soon as possible
+        document.getElementById("answer").disabled = true;
+
+        console.log("getting answer..")
+        axios.get('/api/answerRequest', {
+            params: {
+                roomcode: room_code // This wasn't here either.... ???
+            }
+        }).then(function (response) {
+                //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+                // console.log("yoot")
+                document.getElementById("answer").innerHTML = "The Answer Was: " + response.data["answer"];
+        })
+    }
+
+    // Idea for this :: have it so every time you press a button or refresh, you can see the scores all fill in
+    // We don't need to integrate WS here, but it would be nice
+    // As more players enter their responses, the scoreboard will fill up
+    function get_score() {
+        axios.get('/api/get_scores', {
+            params: {
+                roomcode: room_code
+            }
+        })
+            .then(function (response) {
+                // console.log(response.data.User)
+                // console.log(response.data.Score)
+                let user = response.data.User
+                let score = response.data.Score
+                // let output = ""
+                let tableUsers = ["p1","p2","p3","p4","p5"]
+                let tableScores = ["p1score","p2score","p3score","p4score","p5score"]
+                for (let i=0; i<user.length && i < 5; i++) {
+                    document.getElementById(tableUsers[i]).innerHTML = user[i]
+                    document.getElementById(tableScores[i]).innerHTML = score[i]
+                    // output += user[i] + ": " + score[i] + " "
+                }
+                // document.getElementById("scores").innerHTML = output
+
+                // for (const [key, value] of Object.entries(response.data)) {
+                //     console.log(key);
+                //     console.log(value);
+                // }
+        })
+    }
+
+    function calc_score() {
+        // get_answer(room_code)
+        axios.get('/api/scores', {
+            params: {
+                roomcode: room_code
+            }
+        })
+            .then(function (response) {
+
+            })
+    }
+
+    // get_answer(room_code)
+    // lets have this run onClick instead
 
     useEffect(() => {
 
@@ -109,7 +113,7 @@ const Answer = () => {
             {/*Answer and Countdown*/}
             <div className="row mb-3">
                 <div className="col">
-                    <button className="btn btn-danger btn-lg text-dark mb-3" id="answer" disabled></button>
+                    <button className="btn btn-danger btn-lg text-dark mb-3" id="answer" onClick={() => {get_answer()}}>Reveal Answer</button> {/*<!-- Call the get_answer() function when it's needed -->*/}
                 </div>
                 <div className="col">
                     <button className="btn btn-primary btn-md text-dark mb-3" disabled>10 seconds</button>

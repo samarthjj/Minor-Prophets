@@ -14,7 +14,7 @@ const Question = () => {
     function get_question() {
     axios.get('/api/questionRequest', {
         params: {
-            roomcode: room_code
+            roomcode: room_code,
         }
     }).then(function (response) {
             //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
@@ -48,6 +48,19 @@ const Question = () => {
         
       })
 
+    function save_answer(choice) {
+        axios.get('/api/saveAnswer', {
+            params: {
+                answer: document.getElementById("choice" + choice.toString()).innerHTML,
+                roomcode: room_code,
+                token: document.cookie.split("=")[1]
+            }
+        }).then(function (response) {
+            console.log(response);
+        })
+    }
+
+
     return (
         <div class="container-sm text-center">
 
@@ -75,28 +88,27 @@ const Question = () => {
             </div>
 
             {/*Answer Choices + Chat*/}
+            {/* I could add onClick()'s to each of these to interact with the API with the choice, etc. and store it that way */}
             <div className="row mb-3">
                 <div className="col">
                     <div className="row mb-3">
                         <div className="col">
-                            <input type="radio" className="btn-check mb-3" name="options" id="option1"
-                                    autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option1" id="choice1"></label>
+                            <input type="radio" className="btn-check mb-3" name="options" id="option1" autoComplete="off"/>
+                            <label className="btn btn-primary" htmlFor="option1" id="choice1" onClick={() => save_answer(1)}></label>  {/*Here's to hoping I get this indexing right!*/}
                         </div>
                         <div className="col">
-                            <input type="radio" className="btn-check btn-lg mb-3" name="options" id="option2"
-                                    autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option2" id="choice2"></label>
+                            <input type="radio" className="btn-check btn-lg mb-3" name="options" id="option2" autoComplete="off"/>
+                            <label className="btn btn-primary" htmlFor="option2" id="choice2" onClick={() => save_answer(2)}></label>
                         </div>
                     </div>
                     <div className="row mb-3">
                         <div className="col">
                             <input type="radio" className="btn-check" name="options" id="option3" autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option3" id="choice3"></label>
+                            <label className="btn btn-primary" htmlFor="option3" id="choice3" onClick={() => save_answer(3)}></label>
                         </div>
                         <div className="col">
                             <input type="radio" className="btn-check" name="options" id="option4" autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option4" id="choice4"></label>
+                            <label className="btn btn-primary" htmlFor="option4" id="choice4" onClick={() => save_answer(4)}></label>
                         </div>
                     </div>
                 </div>

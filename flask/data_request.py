@@ -40,15 +40,13 @@ def get_stats(token):
     # return profile
 
 
-def get_existing_questions(rounds, roomcode):
+def get_existing_questions(num_questions, roomcode):
 
     conn, cur = get_cursor()
 
-    # conn.close()
-    # return
-
-    questionsPerRound = 1 # Changed for testing
-    numQuestions = questionsPerRound * rounds
+    # rounds actually e
+    # questionsPerRound = 1 # Changed for testing
+    numQuestions = num_questions # questionsPerRound * rounds
     print("numQuestions = " + str(numQuestions))
 
     # Creating the questions table if it doesn't exist
