@@ -183,6 +183,22 @@ def get_scores():
 
     return json.dumps(scores)
 
+# Used to determine different screens for an owner or a player // Specifically for the Answer.jsx file (temporarily so only owner can press "calculate scores" once)
+@app.route('/api/ownerOrPlayer')
+def owner_or_player():
+    roomcode = request.args.get('roomcode')
+    token = request.args.get('token')
+    print(roomcode)
+    print(token)
+    print(rooms_user_info[roomcode]["owner"])
+
+    if rooms_user_info[roomcode]["owner"] == token:
+        output = "Owner"
+    else:
+        output = "Player"
+
+    print(output)
+    return json.dumps({"response": output})
 
 
 # Validates the room
