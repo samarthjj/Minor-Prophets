@@ -19,11 +19,12 @@ const Gameover = () => {
             console.log(info);
           })
 
-        socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
+        // socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
       
         return () => {
             socket.emit("leave_room", {"room": room_code, "token": document.cookie.split("=")[1]})
             socket.off('join_room');
+            socket.disconnect()
         }
         
       })
