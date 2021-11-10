@@ -12,6 +12,11 @@ const GameSetup = () => {
 
     const { room_code } = useParams();
 
+    const starting = () => {
+        get_questions();
+        socket.emit('question', document.cookie.split("=")[1]);
+    }
+
     const get_questions = () => {
         axios.get('/api/startGame', {
             params: {
@@ -56,7 +61,7 @@ const GameSetup = () => {
                         <Link to="/creategame"><button class="btn btn-success btn-md text-dark mb-3">Cancel</button></Link>
                     </div>
                     <div className="col-2">
-                        <Link to={`/question/${room_code}`}><button className="btn btn-primary btn-md text-dark mb-3" onClick = {get_questions}>Start Game</button></Link>
+                        <Link to={`/question/${room_code}`}><button className="btn btn-primary btn-md text-dark mb-3" onClick = {starting}>Start Game</button></Link>
                     </div>
                     {/* <div className="col-2">
                         <button className="btn btn-lg btn-success text-dark" onClick = {get_questions}>Click Here To Generate Questions</button>

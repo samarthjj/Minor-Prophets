@@ -218,7 +218,7 @@ def gen_questions():
     rounds = int(request.args.get('rounds'))
 
     #roomcode = request.args.get('roomcode')
-    roomcode = 'RUN1'
+    roomcode = request.args.get('roomcode')
 
 
     data_request.get_existing_questions(rounds, roomcode)
@@ -233,7 +233,9 @@ def gen_questions():
 
     with open('store.json', 'w') as j:
         json.dump(questions, j)
+        
     '''
+
     return json.dumps("done")
 
 @app.route('/api/questionRequest')
@@ -350,10 +352,8 @@ def on_join(info):
     print(rooms_user_info)
 
     join_room(room)
-    # print(rooms_user_info[room])
-    emit("join_room", username + ' has joined the game.', room=room)
 
-
+    emit('join_room', username, room=room)
 
 @socket_server.on('leave_room')
 def on_leave(info):
@@ -365,7 +365,12 @@ def on_leave(info):
     rooms_user_info[room].pop(token, None) 
     leave_room(room)
     # print(rooms_user_info[room])
-    emit("leave_room", username + ' has left the game.', room=room)
+    emit('leave_room', username, room=room)
+
+@socket_server.on('question')
+def on_start(info):
+    print("reached python ", info)
+    emit("question", broadcast=True)
 
 
 @socket_server.on('message')
