@@ -105,6 +105,7 @@ const Answer = () => {
                 token: document.cookie.split("=")[1]
             }
         }).then(function (response) {
+            console.log("Owner?")
             setOwner(response.data["response"] === "Owner"); // If it's "Owner", isOwner => True
             setLoading(false); // Once this updates, it will reload the page and see the isOwner value!
         })
