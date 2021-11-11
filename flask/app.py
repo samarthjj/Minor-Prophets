@@ -684,7 +684,7 @@ def broadcast_message(info):
     username = rooms_user_info[room]['users'][info["token"]]
     # username = retrieve_username(info["token"])
     message = info['message']
-    emit("message", {"username": username, "message": message}, room=room)
+    emit("message", {"username": username, "message": message}, broadcast=True)
 
 
 if __name__ == '__main__':
