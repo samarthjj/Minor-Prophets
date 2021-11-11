@@ -12,11 +12,18 @@ def retrieve_username(token):
 
     cur.execute("SELECT username from accounts WHERE token=%s;", (token,))
 
-    username = cur.fetchall()[0][0]
+
+    # print(list(cur.fetchall()[0])[0])
+    # username = list(cur.fetchall()[0])[0]
+    # print(username)
+    # [('test',)]
+    username = cur.fetchall()
+    print(username[0][0])
+    output = username[0][0]
 
     conn.commit()
 
     cur.close()
     conn.close()
 
-    return username
+    return output

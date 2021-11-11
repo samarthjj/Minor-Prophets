@@ -6,6 +6,7 @@ import Landing from "./components/Landing";
 import NotFound from './components/NotFound';
 import CreateGame from "./components/CreateGame";
 import GameSetup from "./components/GameSetup";
+import NonHostLobby from "./components/NonHostLobby";
 import Database from "./components/Database";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
@@ -43,6 +44,7 @@ function App() {
 
                 <Route exact path="/creategame" component={CreateGame} />
                 <Route exact path="/gamesetup/:room_code" component={GameSetup} />
+                <Route exact path="/nonhostlobby/:room_code" component={NonHostLobby} />
 
                 <Route exact path="/profile" component={Profile}/>
                 <Route exact path="/question/:room_code" component={Question}/>

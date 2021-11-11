@@ -3,31 +3,33 @@ import random
 import math
 import spotify_utils
 from datetime import date
+import os
 
-'''
+from dotenv import load_dotenv
+load_dotenv()
+
+
+# def generate_questions(numQuestions):
+#
+#     f = open("questions.json")
+#     albumData = json.load(f)
+#     f.close()
+#
+#     questionsPerRound = 3
+#     numberOfCategories = 3
+#
+#     numberOfQuestionsPerCategory = math.ceil(numQuestions / numberOfCategories)
+#
+#     questions = generate_artist_questions(albumData, numberOfQuestionsPerCategory) + generate_release_date_questions(albumData, numberOfQuestionsPerCategory) + generate_top_track_questions(albumData, numberOfQuestionsPerCategory)
+#
+#     random.shuffle(questions)
+#
+#     return questions
+
+
 def generate_questions(numQuestions):
 
-    f = open("questions.json")
-    albumData = json.load(f)
-    f.close()
-
-    questionsPerRound = 3
     numberOfCategories = 3
-
-    numberOfQuestionsPerCategory = math.ceil(numQuestions / numberOfCategories)
-
-    questions = generate_artist_questions(albumData, numberOfQuestionsPerCategory) + generate_release_date_questions(albumData, numberOfQuestionsPerCategory) + generate_top_track_questions(albumData, numberOfQuestionsPerCategory)
-
-    random.shuffle(questions)
-
-    return questions
-
-'''
-
-def generate_questions(numQuestions):
-
-    numberOfCategories = 3
-
     numberOfQuestionsPerCategory = math.ceil(numQuestions / numberOfCategories)
 
     #albums = ['MONTERO', 'SOUR', 'Planet Her', 'Happier Than Ever', 'Evolution', 'Future Nostalgia', 'folklore', 'Chromatica']
@@ -43,16 +45,13 @@ def generate_questions(numQuestions):
 
 
     info = {'Albums': []}
-
     trackIDs = []
 
-    with open('playlists.txt') as f:
+
+    with open('flask\playlists.txt') as f:
         for playlist in f:
-
             playlist = playlist.rstrip('\r\n')
-
             trackIDs += spotify_utils.listPlaylistTrackIDs(playlist)
-
 
     usedIDs = []
 
@@ -83,7 +82,6 @@ def generate_questions(numQuestions):
 
             print("5")
 
-
             albumTrackIDs = spotify_utils.listAlbumTrackIDs(albumID)
 
             print("6")
@@ -107,7 +105,6 @@ def generate_questions(numQuestions):
     random.shuffle(questions)
 
     return questions
-
 
 
 def generate_artist_questions(albumData, numberOfQuestions):

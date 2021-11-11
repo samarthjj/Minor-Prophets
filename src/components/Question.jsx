@@ -1,25 +1,9 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useEffect, useContext, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
 import Messenger from './Messenger'
 
-function get_question() {
-    axios.get('/api/questionRequest', {
-        params: {
-
-        }
-    })
-    .then(function (response) {
-        //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
-        // console.log(response)
-        document.getElementById("question").innerHTML = response.data["question"];
-        document.getElementById("choice1").innerHTML = response.data["choices"][0]; //This gets the answer choices correctly
-        document.getElementById("choice2").innerHTML = response.data["choices"][1];
-        document.getElementById("choice3").innerHTML = response.data["choices"][2];
-        document.getElementById("choice4").innerHTML = response.data["choices"][3];
-    })
-}
 
 const Question = () => {
 
@@ -44,6 +28,35 @@ const Question = () => {
             clearInterval(myInterval);
         };
     });
+    var questionstorage = "";
+    var choice1storage = "";
+    var choice2storage = "";
+    var choice3storage = "";
+    var choice4storage = "";
+
+    // This queries the API using the Room Code and grabs a Question for it - which is stored in the Database already
+    function get_question() {
+        axios.get('/api/questionRequest', {
+            params: {
+                roomcode: room_code,
+            }
+        }).then(function (response) {
+                //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+                // console.log(response)
+
+                questionstorage = response.data["question"];
+                choice1storage = response.data["choices"][0];
+                choice2storage = response.data["choices"][1];
+                choice3storage = response.data["choices"][2];
+                choice4storage = response.data["choices"][3];
+
+                document.getElementById("question").innerHTML = response.data["question"];
+                document.getElementById("choice1").innerHTML = response.data["choices"][0]; //This gets the answer choices correctly
+                document.getElementById("choice2").innerHTML = response.data["choices"][1];
+                document.getElementById("choice3").innerHTML = response.data["choices"][2];
+                document.getElementById("choice4").innerHTML = response.data["choices"][3];
+            })
+    }
 
     get_question()
 
@@ -65,7 +78,32 @@ const Question = () => {
         
       })
 
-    return (
+    function save_answer(choice) {
+        axios.get('/api/saveAnswer', {
+            params: {
+                answer: choice,
+                roomcode: room_code,
+                token: document.cookie.split("=")[1]
+            }
+        }).then(function (response) {
+            console.log(response);
+        })
+    }
+
+    // if (isLoading) {
+    //     return (
+    //         <div>
+    //             <h2 className="text-light">Loading...</h2>
+    //             <div id="question" hidden></div>
+    //             <div id="choice1" hidden></div>
+    //             <div id="choice2" hidden></div>
+    //             <div id="choice3" hidden></div>
+    //             <div id="choice4" hidden></div>
+    //         </div>
+    //     );
+    // }
+    // else {
+        return (
         <div class="container-sm text-center">
 
             {/*Button Row*/}
@@ -96,24 +134,22 @@ const Question = () => {
                 <div className="col">
                     <div className="row mb-3">
                         <div className="col">
-                            <input type="radio" className="btn-check mb-3" name="options" id="option1"
-                                    autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option1" id="choice1"></label>
+                            <input type="radio" className="btn-check mb-3" name="options" id="option1" autoComplete="off"/>
+                            <label className="btn btn-primary" htmlFor="option1" id="choice1" onClick={() => save_answer(choice1storage)}></label>  {/*Here's to hoping I get this indexing right!*/}
                         </div>
                         <div className="col">
-                            <input type="radio" className="btn-check btn-lg mb-3" name="options" id="option2"
-                                    autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option2" id="choice2"></label>
+                            <input type="radio" className="btn-check btn-lg mb-3" name="options" id="option2" autoComplete="off"/>
+                            <label className="btn btn-primary" htmlFor="option2" id="choice2" onClick={() => save_answer(choice2storage)}></label>
                         </div>
                     </div>
                     <div className="row mb-3">
                         <div className="col">
                             <input type="radio" className="btn-check" name="options" id="option3" autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option3" id="choice3"></label>
+                            <label className="btn btn-primary" htmlFor="option3" id="choice3" onClick={() => save_answer(choice3storage)}></label>
                         </div>
                         <div className="col">
                             <input type="radio" className="btn-check" name="options" id="option4" autoComplete="off"/>
-                            <label className="btn btn-primary" htmlFor="option4" id="choice4"></label>
+                            <label className="btn btn-primary" htmlFor="option4" id="choice4" onClick={() => save_answer(choice4storage)}></label>
                         </div>
                     </div>
                 </div>

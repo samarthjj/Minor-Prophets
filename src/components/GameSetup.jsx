@@ -1,6 +1,7 @@
 import React, {useEffect, useContext} from "react";
 import {Link, useParams} from "react-router-dom";
 import { SocketContext} from '../socket';
+import NonHostLobby from './NonHostLobby';
 // import {default as axios} from "axios";
 
 const axios = require('axios').default;
@@ -12,35 +13,43 @@ const GameSetup = () => {
 
     const { room_code } = useParams();
 
+    // called when start game is pressed to initialize the questions and tell the other lobbies that the game is starting
+    const starting = () => {
+        get_questions();
+        socket.emit('question', room_code);
+    }
+
+    // tells the backend to generate/retrieve the questions
     const get_questions = () => {
         axios.get('/api/startGame', {
             params: {
                 // Add event listeners to extract rounds and genre to send to backend.
-                rounds: 5,
-                roomcode: room_code
+                num_questions: 3,
+                roomcode: room_code,
+                token: document.cookie.split("=")[1]
             }
         }).then(function (response) {
-            console.log("received")
+            console.log(response)
         })
-    }
+    };
 
     useEffect(() => {
 
         socket.on('join_room', (info) => {
-          console.log(info);
+            console.log(info);
         })
 
         socket.on('leave_room', (info) => {
             console.log(info);
-          })
+        })
 
         socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
-      
+
         return () => {
             //Use this space to clean up any effects.
         }
         
-      })
+    });
 
     return (
         <div class="text-center">
@@ -56,7 +65,7 @@ const GameSetup = () => {
                         <Link to="/creategame"><button class="btn btn-success btn-md text-dark mb-3">Cancel</button></Link>
                     </div>
                     <div className="col-2">
-                        <Link to={`/question/${room_code}`}><button className="btn btn-primary btn-md text-dark mb-3" onClick = {get_questions}>Start Game</button></Link>
+                        <Link to={`/question/${room_code}`}><button className="btn btn-primary btn-md text-dark mb-3" onClick = {starting}>Start Game</button></Link>
                     </div>
                     {/* <div className="col-2">
                         <button className="btn btn-lg btn-success text-dark" onClick = {get_questions}>Click Here To Generate Questions</button>
@@ -71,7 +80,7 @@ const GameSetup = () => {
                     <div className="col-9">
 
                         <div className="row">
-                            <h2 className="text-light">Number of Rounds</h2>
+                            <h2 className="text-light">Number of Questions</h2>
                         </div>
 
                         <div className="row">
@@ -79,13 +88,13 @@ const GameSetup = () => {
                             {/*https://getbootstrap.com/docs/5.0/components/button-group/*/}
                             <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
                                 <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off"/>
-                                    <label className="btn btn-success text-dark" htmlFor="btnradio1">1</label>
+                                <label className="btn btn-success text-dark" htmlFor="btnradio1">1</label>
 
                                 <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off"/>
-                                    <label className="btn btn-success text-dark" htmlFor="btnradio2">2</label>
+                                <label className="btn btn-success text-dark" htmlFor="btnradio2">2</label>
 
                                 <input type="radio" className="btn-check" name="btnradio" id="btnradio3" autoComplete="off"/>
-                                    <label className="btn btn-success text-dark" htmlFor="btnradio3">3</label>
+                                <label className="btn btn-success text-dark" htmlFor="btnradio3">3</label>
 
                                 <input type="radio" className="btn-check" name="btnradio" id="btnradio4" autoComplete="off"/>
                                 <label className="btn btn-success text-dark" htmlFor="btnradio4">4</label>
@@ -100,34 +109,36 @@ const GameSetup = () => {
 
                 {/*Players and Genre*/}
                 <div className="row mb-3">
-                    <div className="col-3">
-                        <h2 className="text-light">Players</h2>
 
-                        <table class="table table-striped table-success">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Josh</td>
-                                </tr>
-                                <tr>
-                                    <td>Sam</td>
-                                </tr>
-                                <tr>
-                                    <td>Maeve</td>
-                                </tr>
-                                <tr>
-                                    <td>Harrison</td>
-                                </tr>
-                                <tr>
-                                    <td>Joe</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <NonHostLobby />
+                    {/*<div className="col-3">*/}
+                    {/*    <h2 className="text-light">Players</h2>*/}
+
+                    {/*    <table class="table table-striped table-success">*/}
+                    {/*        <thead>*/}
+                    {/*        <tr>*/}
+                    {/*            <th scope="col">Name</th>*/}
+                    {/*        </tr>*/}
+                    {/*        </thead>*/}
+                    {/*        <tbody>*/}
+                    {/*        <tr>*/}
+                    {/*            <td>Josh</td>*/}
+                    {/*        </tr>*/}
+                    {/*        <tr>*/}
+                    {/*            <td>Sam</td>*/}
+                    {/*        </tr>*/}
+                    {/*        <tr>*/}
+                    {/*            <td>Maeve</td>*/}
+                    {/*        </tr>*/}
+                    {/*        <tr>*/}
+                    {/*            <td>Harrison</td>*/}
+                    {/*        </tr>*/}
+                    {/*        <tr>*/}
+                    {/*            <td>Joe</td>*/}
+                    {/*        </tr>*/}
+                    {/*        </tbody>*/}
+                    {/*    </table>*/}
+                    {/*</div>*/}
 
                     <div className="col-9">
                         <div class="row">
