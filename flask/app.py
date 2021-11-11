@@ -139,14 +139,14 @@ def grab_answer():
         # Mark that the answer has been grabbed
         rooms_user_info[roomcode]["answer_grabbed"] = True
 
-        print("THE ANSWER IS: ", answer)
+        # print("THE ANSWER IS: ", answer)
 
         # print(answer['answer'])
 
         # Save the answer for calculation
         rooms_user_info[roomcode]["correct_answer"] = answer["answer"]
 
-        print(rooms_user_info[roomcode])
+        # print(rooms_user_info[roomcode])
 
         # todo Calculate the scores here? --> Then users can press the button to "reveal" the scores as well
         # Then, a hidden button will appear to view the scores! This is really good!
@@ -172,7 +172,7 @@ def save_answer():
 
     rooms_user_info[roomcode]['answer'][username] = answer
 
-    print(rooms_user_info[roomcode])
+    # print(rooms_user_info[roomcode])
 
     return "answered"
 
@@ -194,7 +194,7 @@ def update_scores():
     for (username, ans) in user_answers.items():
         if ans == correct_answer:
             rooms_user_info[room]["score"][username] += 1
-            print(username, " got it right!")
+            # print(username, " got it right!")
 
 
     # answers = rooms_user_info[room]["answer"]
@@ -238,28 +238,28 @@ def get_scores():
 def owner_or_player():
     roomcode = request.args.get('roomcode')
     token = request.args.get('token')
-    print(roomcode)
-    print(token)
+    # print(roomcode)
+    # print(token)
 
-    print("right here", rooms_user_info[roomcode]["owner"])
+    # print("right here", rooms_user_info[roomcode]["owner"])
 
     if rooms_user_info[roomcode]["owner"] == token:
         output = "Owner"
     else:
         output = "Player"
 
-    print(output)
+    # print(output)
     return json.dumps({"response": output})
 
 
 # Validates the room
 @app.route("/api/validateRoom")
 def validate_room():
-    print("Validate Room")
+    # print("Validate Room")
     room = request.args.get('roomcode')
     token = request.args.get('token')
-    retrieve_username(token)
-    print("Room Code: " + room)
+    # retrieve_username(token)
+    # print("Room Code: " + room)
     if room in rooms_user_info and rooms_user_info[room]["started"] == False:   # If the game has started, don't let them in (they can still go to the room code w/ link manually, how to prevent?)
         return json.dumps({"response": "goodRoom"})
     else:
@@ -282,6 +282,7 @@ def on_join(info):
     # Add user to that room
     username = retrieve_username(token)
     rooms_user_info[room]["users"][token] = username  # Adjusted to make the organization neater
+    print(username, room, request.sid)
 
     if "answer" not in rooms_user_info[room].keys():
         rooms_user_info[room]["answer"] = {}
@@ -295,11 +296,11 @@ def on_join(info):
 
     join_room(room)
     # print(rooms_user_info[room])
-    print("Joining a room: ", rooms_user_info[room])
+    # print("Joining a room: ", rooms_user_info[room])
 
     dic = json.dumps({'username': username, 'token': token})
 
-    emit('join_room', dic, room=room)
+    emit('join_room', dic)
 
 
 
@@ -313,7 +314,7 @@ def on_leave(info):
     rooms_user_info[room]["users"].pop(token, None)
     leave_room(room)
     # print(rooms_user_info[room])
-    print("Leaving a room: ", rooms_user_info[room])
+    # print("Leaving a room: ", rooms_user_info[room])
 
     emit('leave_room', username, room=room)
 
@@ -345,7 +346,7 @@ def attempt_login():
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     username_login = request.json['username']
     password_login = request.json['password']
-    print(request.json)
+    # print(request.json)
 
     if username_login == 0 or password_login == 0:
         return json.dumps({})
@@ -574,7 +575,7 @@ def test_database():
     # https://www.twilio.com/blog/environment-variables-python --> Source
     db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
 
-    print(db_config)
+    # print(db_config)
 
     # https://www.psycopg.org/docs/usage.html --> Great PostgreSQL Source
 
@@ -597,7 +598,7 @@ def test_database():
 #     print(json.dumps(data))
 
     users = [{"username" : i[0], "name" : i[1]} for i in data] # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    print(users)
+    # print(users)
 
 #     for row in data:
 #         print(row)
@@ -619,7 +620,7 @@ def get_users():
     room = request.args.get('roomcode')
 
     users = []
-    for token,user in rooms_user_info[room]['users'].items():
+    for token, user in rooms_user_info[room]['users'].items():
         users.append(user)
 
     return json.dumps({"users": users})
@@ -630,7 +631,6 @@ def get_users():
 def on_join(info):
     room = info['room']
     token = info["token"]
-    # print(room, token)
     # Register room & owner
     if not room in rooms_user_info:
         rooms_user_info[room] = {}
@@ -645,6 +645,7 @@ def on_join(info):
     print(rooms_user_info)
 
     join_room(room)
+    emit("join_room", username + ' has joined the game.', room=room)
 
     dic = json.dumps({'username': username, 'token': token})
 
@@ -656,7 +657,6 @@ def on_leave(info):
     room = info['room']
     token = info["token"]
     username = rooms_user_info[room][token]
-    # print(room, token, username)
 
     rooms_user_info[room].pop(token, None)
     leave_room(room)
@@ -667,13 +667,19 @@ def on_leave(info):
 # broadcasts to all players in a room that the host has started the game
 @socket_server.on('question')
 def on_start(info):
-    print("reached python ", info)
+    # print("reached python ", info)
     emit("question", room=info)
 
 
 @socket_server.on('message')
-def broadcast_message(msg):
-    emit("message", msg, broadcast=True)
+def broadcast_message(info):
+    room = info['room']
+    username = rooms_user_info[room]["users"][info["token"]]
+    # username = retrieve_username(info["token"])
+    message = info['message']
+    print("Message Event")
+    print(info, "username", username)
+    emit("message", {"username": username, "message": message})
 
 
 if __name__ == '__main__':

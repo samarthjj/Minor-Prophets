@@ -28,11 +28,9 @@ const NonHostLobby = () => {
                 roomcode: room_code
             }
         }).then(function (response) {
-            console.log(response.data["users"]);
             for (let name of response.data["users"]){
                 if (!names.includes(name)) {
                     setNames(names => [...names, name]);
-                    console.log(names);
                 }
             }
         })
@@ -53,11 +51,8 @@ const NonHostLobby = () => {
 
         socket.on('join_room', info => {
             info = JSON.parse(info);
-            console.log(info);
-            console.log(names);
-            console.log(initialize);
+
             if (!names.includes(info['username']) && info['token'] != token) {
-                console.log(info['username']);
                 setNames([...names, info['username']]);
             }
         })
@@ -66,19 +61,17 @@ const NonHostLobby = () => {
             console.log("leaving");
         })
 
+        if (!tokens.includes(token)) {
+            socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]});
+            setTokens([...tokens, token]);
+        }
+
         // brings the player to the first question
         socket.on('question', info => {
-            console.log("question signal recieved")
             const path = '/question/' + room_code;
             //https://www.w3schools.com/js/js_window_location.asp
             window.location.pathname = path;
         })
-
-        if (!tokens.includes(token)) {
-            console.log("emitting");
-            socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]});
-            setTokens([...tokens, token]);
-        }
 
         if (!initialize) {
             sleep(600)

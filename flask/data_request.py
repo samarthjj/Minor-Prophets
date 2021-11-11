@@ -47,7 +47,7 @@ def get_existing_questions(num_questions, roomcode):
     # rounds actually e
     # questionsPerRound = 1 # Changed for testing
     numQuestions = num_questions # questionsPerRound * rounds
-    print("numQuestions = " + str(numQuestions))
+    # print("numQuestions = " + str(numQuestions))
 
     # Creating the questions table if it doesn't exist
     # TESTING PURPOSES ONLY
@@ -73,7 +73,7 @@ def get_existing_questions(num_questions, roomcode):
     # We want a rooms table
 
     # Checking the number of questions
-    print("There are " + str(len(data)) + " questions in the database (for Pop genre)")
+    # print("There are " + str(len(data)) + " questions in the database (for Pop genre)")
 
     # if there's not enough stored questions
     # if len(data)/5 < numQuestions:
@@ -86,7 +86,7 @@ def get_existing_questions(num_questions, roomcode):
         #     cur.execute("INSERT INTO rooms (roomcode, question) VALUES (%s, %s)", (roomcode, question["question"]))
 
     else: # When there are enough stored questions
-        print("Getting Existing Stored Data")
+        # print("Getting Existing Stored Data")
 
         # Randomize and select 5 questions to put into
         random.shuffle(data)
@@ -166,7 +166,7 @@ def get_answer(roomcode):
 
     # This print is VERY important -- It allows for the question to be loaded completely before checking its length.
     # Otherwise, Python will continue on and say the length is 0 every time, even when there are questions!
-    print("The Current Question --ANSWERING-- Is ", question)
+    # print("The Current Question --ANSWERING-- Is ", question)
 
     if len(question) > 0:
 
@@ -224,9 +224,9 @@ def test_questions(cur):
 
     questions = cur.fetchall()
 
-    print("questions: ")
-    print(questions)
-    print(len(questions))
+    # print("questions: ")
+    # print(questions)
+    # print(len(questions))
 
 
 def test_rooms(cur):
@@ -235,8 +235,8 @@ def test_rooms(cur):
 
     rooms = cur.fetchall()
 
-    print("rooms: ")
-    print(rooms)
-    print("There are this many pending room questions in the table: " + str(len(rooms)))
+    # print("rooms: ")
+    # print(rooms)
+    # print("There are this many pending room questions in the table: " + str(len(rooms)))
 
 
