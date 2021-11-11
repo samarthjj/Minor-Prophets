@@ -78,19 +78,19 @@ const Answer = () => {
 
     const [seconds, setSeconds ] =  useState(initialSeconds)
 
-    useEffect(()=>{
-        let myInterval = setInterval(() => {
-            if (seconds > 0) {
-                setSeconds(seconds - 1);
-            }
-            if (seconds === 0) {
-                clearInterval(myInterval)
-            }
-        }, 1000)
-        return ()=> {
-            clearInterval(myInterval);
-        };
-    });
+    // useEffect(()=>{
+    //     let myInterval = setInterval(() => {
+    //         if (seconds > 0) {
+    //             setSeconds(seconds - 1);
+    //         }
+    //         if (seconds === 0) {
+    //             clearInterval(myInterval)
+    //         }
+    //     }, 1000)
+    //     return ()=> {
+    //         clearInterval(myInterval);
+    //     };
+    // });
 
     useEffect(() => {
 
@@ -285,26 +285,11 @@ const Answer = () => {
                     </table>
                 </div>
 
+
                 {/*https://getbootstrap.com/docs/5.1/forms/form-control/#readonly-plain-text*/}
                 <div className="col">
-                    <form className="row">
-                        {/*<div className="col-auto">*/}
-                        {/*    <label htmlFor="staticEmail2" className="visually-hidden">Email</label>*/}
-                        {/*    <input type="text" readOnly className="form-control-plaintext" id="staticEmail2"*/}
-                        {/*           value="email@example.com"/>*/}
-                        {/*</div>*/}
-                        <h1 className="text-light">Chat: </h1>
 
-                        <div className="container mx-auto">
-                            <div className="col-auto">
-                                <label htmlFor="chat" className="visually-hidden">Password</label>
-                                <input type="text" className="form-control" id="chat" placeholder="Enter message"/>
-                            </div>
-                            <div className="col-auto">
-                                <button type="submit" className="btn btn-primary mb-3">Send!</button>
-                            </div>
-                        </div>
-                    </form>
+                    <Messenger room_code={room_code}/>
                 </div>
             </div>
 

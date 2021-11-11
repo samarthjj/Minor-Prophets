@@ -5,7 +5,7 @@ from pydoc import html
 import appcode
 import werkzeug
 from flask import Flask, request
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_socketio import SocketIO, emit, join_room, leave_room, send
 import os
 import json
 import psycopg2
@@ -464,8 +464,16 @@ def attempt_signup():
     # print("Passwords match?", password_signup == password_repeat_signup)
 
     if invalid_username:
+        conn.commit()
+
+        cur.close()
+        conn.close()
         return json.dumps({"token": "badUsername"})
     if password_signup != password_repeat_signup:
+        conn.commit()
+
+        cur.close()
+        conn.close()
         return json.dumps({"token": "passwordMatchError"})
 
     # If the username is valid and the passwords match, then create user account.
@@ -673,7 +681,7 @@ def on_start(info):
 @socket_server.on('message')
 def broadcast_message(info):
     room = info['room']
-    username = rooms_user_info[room][info["token"]]
+    username = rooms_user_info[room]['users'][info["token"]]
     # username = retrieve_username(info["token"])
     message = info['message']
     emit("message", {"username": username, "message": message}, room=room)
