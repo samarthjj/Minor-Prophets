@@ -455,8 +455,18 @@ def attempt_signup():
     # print("Passwords match?", password_signup == password_repeat_signup)
 
     if invalid_username:
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
         return json.dumps({"token": "badUsername"})
     if password_signup != password_repeat_signup:
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
         return json.dumps({"token": "passwordMatchError"})
 
     # If the username is valid and the passwords match, then create user account.

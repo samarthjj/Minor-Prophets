@@ -19,12 +19,22 @@ def verify_valid_session(token):
     valid_token = cur.fetchall()[0][0]
 
     if not valid_token:
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
         return False
 
     if valid_token:
         cur.execute("SELECT * from accounts WHERE token=%s;", (data_token,))
         user_data = cur.fetchall()[0]
         if user_data[1] == "false":
+            conn.commit()
+
+            cur.close()
+            conn.close()
+
             return False
 
     # cur.execute("SELECT * FROM accounts;")
