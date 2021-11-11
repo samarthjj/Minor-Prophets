@@ -255,11 +255,11 @@ def owner_or_player():
 # Validates the room
 @app.route("/api/validateRoom")
 def validate_room():
-    print("Validate Room")
+    # print("Validate Room")
     room = request.args.get('roomcode')
     token = request.args.get('token')
-    retrieve_username(token)
-    print("Room Code: " + room)
+    # retrieve_username(token)
+    # print("Room Code: " + room)
     if room in rooms_user_info and rooms_user_info[room]["started"] == False:   # If the game has started, don't let them in (they can still go to the room code w/ link manually, how to prevent?)
         return json.dumps({"response": "goodRoom"})
     else:
