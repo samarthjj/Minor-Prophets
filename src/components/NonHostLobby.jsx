@@ -2,6 +2,7 @@ import React, {useEffect, useContext, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 import { SocketContext} from '../socket';
 import {default as axios} from "axios";
+import '../css/NonHostLobby.css'
 // import {default as axios} from "axios";
 
 //const axios = require('axios').default;
@@ -37,6 +38,15 @@ const NonHostLobby = () => {
         })
     }
 
+    //https://www.sitepoint.com/delay-sleep-pause-wait/
+    const sleep = (milliseconds) => {
+        const date = Date.now();
+        let currentDate = null;
+        do {
+            currentDate = Date.now();
+        } while (currentDate - date < milliseconds);
+    }
+
     useEffect(() => {
 
         const token = document.cookie.split("=")[1];
@@ -45,6 +55,7 @@ const NonHostLobby = () => {
             info = JSON.parse(info);
             console.log(info);
             console.log(names);
+            console.log(initialize);
             if (!names.includes(info['username']) && info['token'] != token) {
                 console.log(info['username']);
                 setNames([...names, info['username']]);
@@ -63,11 +74,16 @@ const NonHostLobby = () => {
             window.location.pathname = path;
         })
 
-
         if (!tokens.includes(token)) {
             console.log("emitting");
             socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]});
             setTokens([...tokens, token]);
+        }
+
+        if (!initialize) {
+            sleep(600)
+            get_existing_players();
+            setInitialize(true)
         }
 
         return () => {
@@ -75,28 +91,27 @@ const NonHostLobby = () => {
         }
      })
 
-    if (!initialize) {
-        get_existing_players();
-        setInitialize(true)
-    }
 
 
     //https://www.youtube.com/watch?v=dYjdzpZv5yc for the dynamic table
     return (
 
+        <div className="NonHostLobby">
+
         <div class="text-center">
 
             <div class="container-sm">
 
-                {/*Cancel Button*/}
-                <div className="row mb-3">
-                    <div className="col-8">
 
-                    </div>
-                    <div className="col-2">
-                        <Link to="/creategame"><button class="btn btn-success btn-md text-dark mb-3">Cancel</button></Link>
-                    </div>
-                </div>
+                {/*/!*Cancel Button*!/*/}
+                {/*<div className="row mb-3">*/}
+                {/*    <div className="col-8">*/}
+
+                {/*    </div>*/}
+                {/*    <div className="col-2">*/}
+                {/*        <Link to="/creategame"><button class="btn btn-success btn-md text-dark mb-3">Cancel</button></Link>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
                 {/*Players*/}
 
@@ -126,6 +141,8 @@ const NonHostLobby = () => {
                 </div>
 
             </div>
+
+        </div>
 
         </div>
     );

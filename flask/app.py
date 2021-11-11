@@ -218,6 +218,7 @@ def update_scores():
 # Dumps the scores for each user
 @app.route('/api/get_scores')
 def get_scores():
+
     room = request.args.get('roomcode')
 
     curr_scores = rooms_user_info[room]["score"]
@@ -239,7 +240,8 @@ def owner_or_player():
     token = request.args.get('token')
     print(roomcode)
     print(token)
-    print(rooms_user_info[roomcode]["owner"])
+
+    print("right here", rooms_user_info[roomcode]["owner"])
 
     if rooms_user_info[roomcode]["owner"] == token:
         output = "Owner"
@@ -262,6 +264,8 @@ def validate_room():
         return json.dumps({"response": "goodRoom"})
     else:
         return json.dumps({"response": "badRoom"})
+
+
 @socket_server.on('join_room')
 def on_join(info):
     room = info['room']
@@ -293,7 +297,12 @@ def on_join(info):
     # print(rooms_user_info[room])
     print("Joining a room: ", rooms_user_info[room])
 
-    emit("join_room", username + ' has joined the game.', room=room)
+    dic = json.dumps({'username': username, 'token': token})
+
+    emit('join_room', dic, room=room)
+
+
+
 @socket_server.on('leave_room')
 def on_leave(info):
     room = info['room']
@@ -306,12 +315,7 @@ def on_leave(info):
     # print(rooms_user_info[room])
     print("Leaving a room: ", rooms_user_info[room])
 
-    emit("leave_room", username + ' has left the game.', room=room)
-
-
-@socket_server.on('message')
-def broadcast_message(msg):
-    emit("message", msg, broadcast=True)
+    emit('leave_room', username, room=room)
 
 
 # Stats
@@ -325,7 +329,6 @@ def stats():
     return data
 
 
-# Login
 @app.route('/api/logout')
 def logout():
     token = request.args.get('token')
@@ -333,13 +336,16 @@ def logout():
         invalidate_session(token)
     return json.dumps({})
 
+
 @app.route('/api/login', methods=['POST'])
 def attempt_login():
+
+
     # Get username and password
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     username_login = request.json['username']
     password_login = request.json['password']
-    # print(request.json)
+    print(request.json)
 
     if username_login == 0 or password_login == 0:
         return json.dumps({})
@@ -494,7 +500,7 @@ def attempt_signup():
         # If the sign up username is invalid (already taken), return INVALID token to signal not to setToken
         return json.dumps({})
 
-
+'''
 @app.route('/api/startGame')
 def gen_questions():
 
@@ -508,7 +514,7 @@ def gen_questions():
     data_request.get_existing_questions(rounds, roomcode)
 
 
-    '''
+    
     f = open("questions.json")
     questions = appcode.generate_questions(int(rounds))
     f.close()
@@ -518,23 +524,24 @@ def gen_questions():
     with open('store.json', 'w') as j:
         json.dump(questions, j)
 
-    '''
 
     return json.dumps("done")
+    
+
 
 @app.route('/api/questionRequest')
 def grab_question():
 
     roomcode = request.args.get('roomcode')
 
-    '''
+    
     f = open("store.json")
     questions = json.loads(f.read())
     question = random.choice(questions)
 
     with open('temp_question_storage.json', 'w') as j:
         json.dump(question, j)
-    '''
+
 
     question = data_request.get_question(roomcode)
 
@@ -542,13 +549,13 @@ def grab_question():
 
 @app.route('/api/answerRequest')
 def grab_answer():
-
-    '''
+   
     with open("temp_question_storage.json", 'r') as f:
         question = json.loads(f.read())
-    '''
 
     return data_request.get_answer()
+    
+'''
 
 @app.route('/api/time')
 def get_current_time():
@@ -605,31 +612,19 @@ def test_database():
 #         }
 
 
-@app.route("/api/validateRoom")
-def validate_room():
-    room = request.args.get('roomcode')
-    token = request.args.get('token')
-    retrieve_username(token)
-    if room in rooms_user_info:
-        return json.dumps({"response": "goodRoom"})
-    else:
-        return json.dumps({"response": "badRoom"})
-
-
 # grabs usernames of all players already in the room
-@app.route("/api/initialize_table")
+@app.route('/api/initialize_table')
 def get_users():
 
     room = request.args.get('roomcode')
 
     users = []
-    for user in rooms_user_info[room]:
-        if user != "owner":
-            users.append(rooms_user_info[room][user])
+    for token,user in rooms_user_info[room]['users'].items():
+        users.append(user)
 
     return json.dumps({"users": users})
 
-
+'''
 # adds new player to dictionary and gets their username based on token
 @socket_server.on('join_room')
 def on_join(info):
@@ -654,7 +649,7 @@ def on_join(info):
     dic = json.dumps({'username': username, 'token': token})
 
     emit('join_room', dic, room=room)
-
+    
 
 @socket_server.on('leave_room')
 def on_leave(info):
@@ -667,7 +662,7 @@ def on_leave(info):
     leave_room(room)
     # print(rooms_user_info[room])
     emit('leave_room', username, room=room)
-
+'''
 
 # broadcasts to all players in a room that the host has started the game
 @socket_server.on('question')

@@ -1,6 +1,7 @@
 import React, {useEffect, useContext} from "react";
 import {Link, useParams} from "react-router-dom";
 import { SocketContext} from '../socket';
+import NonHostLobby from './NonHostLobby';
 // import {default as axios} from "axios";
 
 const axios = require('axios').default;
@@ -108,34 +109,36 @@ const GameSetup = () => {
 
                 {/*Players and Genre*/}
                 <div className="row mb-3">
-                    <div className="col-3">
-                        <h2 className="text-light">Players</h2>
 
-                        <table class="table table-striped table-success">
-                            <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>Josh</td>
-                            </tr>
-                            <tr>
-                                <td>Sam</td>
-                            </tr>
-                            <tr>
-                                <td>Maeve</td>
-                            </tr>
-                            <tr>
-                                <td>Harrison</td>
-                            </tr>
-                            <tr>
-                                <td>Joe</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <NonHostLobby />
+                    {/*<div className="col-3">*/}
+                    {/*    <h2 className="text-light">Players</h2>*/}
+
+                    {/*    <table class="table table-striped table-success">*/}
+                    {/*        <thead>*/}
+                    {/*        <tr>*/}
+                    {/*            <th scope="col">Name</th>*/}
+                    {/*        </tr>*/}
+                    {/*        </thead>*/}
+                    {/*        <tbody>*/}
+                    {/*        <tr>*/}
+                    {/*            <td>Josh</td>*/}
+                    {/*        </tr>*/}
+                    {/*        <tr>*/}
+                    {/*            <td>Sam</td>*/}
+                    {/*        </tr>*/}
+                    {/*        <tr>*/}
+                    {/*            <td>Maeve</td>*/}
+                    {/*        </tr>*/}
+                    {/*        <tr>*/}
+                    {/*            <td>Harrison</td>*/}
+                    {/*        </tr>*/}
+                    {/*        <tr>*/}
+                    {/*            <td>Joe</td>*/}
+                    {/*        </tr>*/}
+                    {/*        </tbody>*/}
+                    {/*    </table>*/}
+                    {/*</div>*/}
 
                     <div className="col-9">
                         <div class="row">

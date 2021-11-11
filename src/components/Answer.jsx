@@ -36,8 +36,6 @@ const Answer = () => {
             }
         })
             .then(function (response) {
-                // console.log(response.data.User)
-                // console.log(response.data.Score)
                 let user = response.data.User
                 let score = response.data.Score
                 // let output = ""
@@ -59,6 +57,7 @@ const Answer = () => {
 
     function calc_score() {
         // get_answer(room_code)
+
         document.getElementById("calculate").disabled = true;
 
         axios.get('/api/scores', {
@@ -105,6 +104,7 @@ const Answer = () => {
             }
         }).then(function (response) {
             console.log("Owner?")
+            console.log(response.data["response"])
             setOwner(response.data["response"] === "Owner"); // If it's "Owner", isOwner => True
             setLoading(false); // Once this updates, it will reload the page and see the isOwner value!
         })
