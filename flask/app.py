@@ -612,17 +612,6 @@ def test_database():
 #         }
 
 
-@app.route("/api/validateRoom")
-def validate_room():
-    room = request.args.get('roomcode')
-    token = request.args.get('token')
-
-    if room in rooms_user_info:
-        return json.dumps({"response": "goodRoom"})
-    else:
-        return json.dumps({"response": "badRoom"})
-
-
 # grabs usernames of all players already in the room
 @app.route('/api/initialize_table')
 def get_users():
