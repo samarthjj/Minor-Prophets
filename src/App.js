@@ -8,7 +8,6 @@ import CreateGame from "./components/CreateGame";
 import GameSetup from "./components/GameSetup";
 import NonHostLobby from "./components/NonHostLobby";
 import Database from "./components/Database";
-import Messenger from './components/Messenger';
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import useToken from "./useToken";
@@ -54,7 +53,6 @@ function App() {
 
                 <Route exact path="/database_test" component={Database} />
                 <Route exact path="/TBD" component={NotFound} />
-                <Route exact path="/messenger" component={Messenger} />
             </Switch>
          </Router>
     );

@@ -255,11 +255,10 @@ def owner_or_player():
 # Validates the room
 @app.route("/api/validateRoom")
 def validate_room():
-    print("Validate Room")
+
     room = request.args.get('roomcode')
     token = request.args.get('token')
-    retrieve_username(token)
-    print("Room Code: " + room)
+
     if room in rooms_user_info and rooms_user_info[room]["started"] == False:   # If the game has started, don't let them in (they can still go to the room code w/ link manually, how to prevent?)
         return json.dumps({"response": "goodRoom"})
     else:
@@ -328,7 +327,6 @@ def stats():
         data = json.dumps(data_request.get_stats(token))
     return data
 
-
 @app.route('/api/logout')
 def logout():
     token = request.args.get('token')
@@ -336,11 +334,8 @@ def logout():
         invalidate_session(token)
     return json.dumps({})
 
-
 @app.route('/api/login', methods=['POST'])
 def attempt_login():
-
-
     # Get username and password
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     username_login = request.json['username']
@@ -514,7 +509,7 @@ def gen_questions():
     data_request.get_existing_questions(rounds, roomcode)
 
 
-    
+
     f = open("questions.json")
     questions = appcode.generate_questions(int(rounds))
     f.close()
@@ -526,15 +521,13 @@ def gen_questions():
 
 
     return json.dumps("done")
-    
-
 
 @app.route('/api/questionRequest')
 def grab_question():
 
     roomcode = request.args.get('roomcode')
 
-    
+
     f = open("store.json")
     questions = json.loads(f.read())
     question = random.choice(questions)
@@ -549,13 +542,13 @@ def grab_question():
 
 @app.route('/api/answerRequest')
 def grab_answer():
-   
+
     with open("temp_question_storage.json", 'r') as f:
         question = json.loads(f.read())
+    '''
 
     return data_request.get_answer()
-    
-'''
+
 
 @app.route('/api/time')
 def get_current_time():
@@ -649,7 +642,7 @@ def on_join(info):
     dic = json.dumps({'username': username, 'token': token})
 
     emit('join_room', dic, room=room)
-    
+
 
 @socket_server.on('leave_room')
 def on_leave(info):
@@ -672,10 +665,13 @@ def on_start(info):
 
 
 @socket_server.on('message')
-def broadcast_message(msg):
-    emit("message", msg, broadcast=True)
+def broadcast_message(info):
+    room = info['room']
+    username = rooms_user_info[room][info["token"]]
+    # username = retrieve_username(info["token"])
+    message = info['message']
+    emit("message", {"username": username, "message": message}, room=room)
 
 
 if __name__ == '__main__':
-    clear_db() # Clear the rooms database
     socket_server.run(app, host="0.0.0.0", port=5000)

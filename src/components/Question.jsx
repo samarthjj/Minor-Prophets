@@ -1,7 +1,8 @@
-import React, {useEffect, useContext, useState} from "react";
+import React, {useEffect, useContext} from "react";
 import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
+import Messenger from './Messenger'
 
 
 const Question = () => {
@@ -39,6 +40,30 @@ const Question = () => {
                 document.getElementById("choice4").innerHTML = response.data["choices"][3];
             })
     }
+
+const Question = () => {
+
+    const socket = useContext(SocketContext);
+
+    const { room_code } = useParams();
+
+    const initialSeconds = 30
+
+    const [seconds, setSeconds ] =  useState(initialSeconds)
+
+    useEffect(()=>{
+        let myInterval = setInterval(() => {
+            if (seconds > 0) {
+                setSeconds(seconds - 1);
+            }
+            if (seconds === 0) {
+                clearInterval(myInterval)
+            }
+        }, 1000)
+        return ()=> {
+            clearInterval(myInterval);
+        };
+    });
 
     get_question()
 
@@ -107,7 +132,7 @@ const Question = () => {
                     <button className="btn btn-danger btn-lg text-dark mb-3" id="question" disabled></button>
                 </div>
                 <div className="col">
-                    <button className="btn btn-primary btn-md text-dark mb-3" disabled>30 seconds</button>
+                    <button className="btn btn-primary btn-md text-dark mb-3" disabled>{seconds} Seconds Remaining</button>
                 </div>
             </div>
 
@@ -136,27 +161,8 @@ const Question = () => {
                     </div>
                 </div>
 
-                {/*https://getbootstrap.com/docs/5.1/forms/form-control/#readonly-plain-text*/}
-                <div className="col">
-                    <form className="row">
-                        {/*<div className="col-auto">*/}
-                        {/*    <label htmlFor="staticEmail2" className="visually-hidden">Email</label>*/}
-                        {/*    <input type="text" readOnly className="form-control-plaintext" id="staticEmail2"*/}
-                        {/*           value="email@example.com"/>*/}
-                        {/*</div>*/}
-                        <h1 className="text-light">Chat: </h1>
+                <Messenger room_code={room_code}/>
 
-                        <div className="container mx-auto">
-                            <div className="col-auto">
-                                <label htmlFor="chat" className="visually-hidden">Password</label>
-                                <input type="text" className="form-control" id="chat" placeholder="Enter message"/>
-                            </div>
-                            <div className="col-auto">
-                                <button type="submit" className="btn btn-primary mb-3">Send!</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
 
         </div>
