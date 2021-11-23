@@ -329,9 +329,44 @@ def stats():
 @app.route('/api/logout')
 def logout():
     token = request.args.get('token')
+
+    db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
+    conn = psycopg2.connect(db_config)
+    cur = conn.cursor()
+
+    guest = False
+    data_token = ''
+    for i in range(1, len(token) - 1):
+        data_token = data_token + token[i]
+    cur.execute("CREATE TABLE IF NOT EXISTS guestAccounts (token varchar);")
+
+    cur.execute("SELECT EXISTS(SELECT * from guestAccounts WHERE token=%s);", (data_token,))
+
+    # True/False value if login information is valid
+    guest_token = cur.fetchall()[0][0]
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    if guest_token:
+        db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
+        conn = psycopg2.connect(db_config)
+        cur = conn.cursor()
+
+        cur.execute("DELETE from guestAccounts WHERE token=%s;", (data_token,))
+        cur.execute("DELETE from accounts WHERE token=%s;", (data_token,))
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
     if verify_valid_session(token):
         invalidate_session(token)
     return json.dumps({})
+
 @app.route('/api/login', methods=['POST'])
 def attempt_login():
     # Get username and password
@@ -501,6 +536,86 @@ def attempt_signup():
         # If the sign up username is invalid (already taken), return INVALID token to signal not to setToken
         return json.dumps({})
 
+@app.route('/api/signupGuest', methods=['POST'])
+def signup_guest():
+
+    valid_signup = False
+
+    # Generate random tokens: https://docs.python.org/2/library/uuid.html
+    # uuid.uuid4() will generate a completely random ID to use as a token
+    # (token is generated here so it can be stored in database if user is valid)
+    token = str(uuid.uuid1())
+    print(token, type(token))
+
+    while not valid_signup:
+        username = "Guest" + str(uuid.uuid4())[0:7]
+
+        db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
+        conn = psycopg2.connect(db_config)
+        cur = conn.cursor()
+
+        # How to check for values in a row
+        # https://www.tutorialspoint.com/best-way-to-test-if-a-row-exists-in-a-mysql-table
+        cur.execute("CREATE TABLE IF NOT EXISTS accounts (token varchar, valid_session varchar, username varchar, password varchar, games_won varchar, total_points varchar, ratio varchar, fav_genre varchar);")
+        cur.execute("SELECT EXISTS(SELECT * from accounts WHERE username=%s);", (username,))
+        # True/False value if username is not yet taken
+        invalid_username = cur.fetchall()[0][0]
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        if invalid_username:
+            continue
+        else:
+            db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
+            conn = psycopg2.connect(db_config)
+            cur = conn.cursor()
+
+            hashed_password = werkzeug.security.generate_password_hash(str(uuid.uuid4()), method='pbkdf2:sha256',
+                                                                       salt_length=16)
+
+            # Create account in table
+            cur.execute("INSERT INTO accounts (token, valid_session, username, password, games_won, total_points, ratio, fav_genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
+                (token, True, username, hashed_password, "0", "0", "0", "N/A"))
+
+            cur.execute("CREATE TABLE IF NOT EXISTS guestAccounts (token varchar);")
+            cur.execute("INSERT INTO guestAccounts (token) VALUES (%s);", (token,))
+
+            conn.commit()
+
+            cur.close()
+            conn.close()
+
+            valid_signup = True
+
+    # db_config = os.environ['DATABASE_URL'] if 'DATABASE_URL' in os.environ else os.environ['DATABASE_URL_LOCAL']
+    # conn = psycopg2.connect(db_config)
+    # cur = conn.cursor()
+
+    # cur.execute("SELECT * FROM accounts;")
+    #
+    # data = cur.fetchall()
+
+    # conn.commit()
+    #
+    # cur.close()
+    # conn.close()
+
+    # For debugging:
+    # users = [{"token": i[0], "valid session": i[1], "username": i[2], "password": i[3], "Games Won:": i[4], "Total Points:":i[5], "Win Ratio:":i[6], "Favorite Genre:":i[7]} for i in
+    #          data]  # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
+    # print(users)
+
+    # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
+    # Return token to be stored in session storage by setToken
+    if valid_signup:
+        output = {"token": token}
+        return json.dumps(output)
+    else:
+        # If the sign up username is invalid (already taken), return INVALID token to signal not to setToken
+        return json.dumps({})
 
 # Testing
 @app.route('/api/time')

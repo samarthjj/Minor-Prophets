@@ -26,6 +26,17 @@ async function SignupUser(credentials) {
          .then(data => data.json())
 }
 
+async function LoginGuest() {
+     return fetch("/api/signupGuest", {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json'
+       },
+       body: ""
+     })
+         .then(data => data.json())
+}
+
 function Login({setToken}) {
 
 
@@ -85,6 +96,17 @@ function Login({setToken}) {
             setToken(token);
         } else {
             document.getElementById("signup_notice").innerHTML = "Please follow the above requirements."
+        }
+    }
+
+    const handleGuestSubmit = async e => {
+        e.preventDefault();
+        const token = await LoginGuest({
+        });
+        if (token.token !== undefined) {
+            setToken(token);
+        } else {
+            document.getElementById("login_notice").innerHTML = "Error: Please try again."
         }
     }
 
@@ -156,6 +178,20 @@ function Login({setToken}) {
                         {/*https://reactrouter.com/web/api/Redirect*/}
                         <Redirect to='/creategame'/>
                     </div>
+
+                </form>
+            </div>
+
+            <div className="container-sm">
+                <form className="form-group" onSubmit={handleGuestSubmit}>
+                    <div className="form-floating mb-3 mx-5">
+                        <button className="btn btn-lg btn-success text-dark" type="submit">Continue as Guest</button>
+                        {/*https://reactrouter.com/web/api/Redirect*/}
+                        <Redirect to='/creategame'/>
+                    </div>
+                    {/*<div className="form-floating mb-3 mx-5">*/}
+                    {/*    <Link to="/signup"><button className="btn btn-lg btn-success text-dark" type="submit">Sign Up</button></Link>*/}
+                    {/*</div>*/}
 
                 </form>
             </div>
