@@ -169,6 +169,7 @@ const Answer = () => {
             {/*Scores and Chat*/}
             <div className="row mb-3">
                 <div className="col">
+                    {/*<h8 className="text-light" id = "scores"> </h8>*/}
                     <table className="table table-striped table-success">
                         <thead>
                         <tr>
@@ -206,6 +207,13 @@ const Answer = () => {
 
             <div className="row mb-3">
 
+            </div>
+
+            <div className="col-2">
+                    <button onClick={() => calc_score(room_code)} className="btn btn-primary btn-md text-dark mb-3" id="calculate">Calculate Scores [Only 1 person should click this]</button>
+            </div>
+            <div className="col-2">
+                    <button onClick={() => get_score(room_code)} className="btn btn-primary btn-md text-dark mb-3">Get Scores [Everyone should click this after scores are calculated]</button>
             </div>
 
         </div>
