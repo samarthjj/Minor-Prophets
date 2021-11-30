@@ -359,6 +359,7 @@ def logout():
         cur = conn.cursor()
 
         cur.execute("DELETE from guestAccounts WHERE token=%s;", (data_token,))
+        # Delete a row: https://www.postgresqltutorial.com/postgresql-delete/
         cur.execute("DELETE from accounts WHERE token=%s;", (data_token,))
 
         conn.commit()
