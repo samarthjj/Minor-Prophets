@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {Link, Redirect, useHistory} from "react-router-dom";
 import {default as axios} from "axios";
 import { customAlphabet } from "nanoid";
@@ -33,6 +33,9 @@ const CreateGame = () => {
     }
 
     const handleRoom = () => {
+
+        console.log(room_code);
+
         if (room_code !== ""){
             axios.get('/api/validateRoom', {
                 params: {
@@ -41,9 +44,11 @@ const CreateGame = () => {
                 }
             }).then(function (response) {
                 if (response.data["response"] === "goodRoom"){
+                    console.log("good")
                     history.push(`/nonhostlobby/${room_code}`)
                 }else{
                     set_room_code("");
+                    window.location.pathname = "/creategame";
                     alert("This is not a valid room code.")
                 }
             })

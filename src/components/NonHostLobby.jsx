@@ -54,8 +54,6 @@ const NonHostLobby = () => {
         socket.on('join_room', info => {
             info = JSON.parse(info);
             console.log(info);
-            console.log(names);
-            console.log(initialize);
             if (!names.includes(info['username']) && info['token'] != token) {
                 console.log(info['username']);
                 setNames([...names, info['username']]);
@@ -75,6 +73,7 @@ const NonHostLobby = () => {
         })
 
         if (!tokens.includes(token)) {
+            sleep(500)
             console.log("emitting");
             socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]});
             setTokens([...tokens, token]);

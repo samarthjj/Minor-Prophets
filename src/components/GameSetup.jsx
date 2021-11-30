@@ -1,4 +1,4 @@
-import React, {useEffect, useContext} from "react";
+import React, {useEffect, useContext, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 import { SocketContext} from '../socket';
 import NonHostLobby from './NonHostLobby';
@@ -13,6 +13,8 @@ const GameSetup = () => {
 
     const { room_code } = useParams();
 
+    const [rounds, setRounds] = useState("");
+
     // called when start game is pressed to initialize the questions and tell the other lobbies that the game is starting
     const starting = () => {
         get_questions();
@@ -24,7 +26,7 @@ const GameSetup = () => {
         axios.get('/api/startGame', {
             params: {
                 // Add event listeners to extract rounds and genre to send to backend.
-                num_questions: 3,
+                rounds: rounds,
                 roomcode: room_code,
                 token: document.cookie.split("=")[1]
             }
@@ -32,6 +34,7 @@ const GameSetup = () => {
             console.log(response)
         })
     };
+
 
     useEffect(() => {
 
@@ -80,26 +83,26 @@ const GameSetup = () => {
                     <div className="col-9">
 
                         <div className="row">
-                            <h2 className="text-light">Number of Questions</h2>
+                            <h2 className="text-light">Number of Rounds</h2>
                         </div>
 
                         <div className="row">
 
                             {/*https://getbootstrap.com/docs/5.0/components/button-group/*/}
                             <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off"/>
+                                <input type="radio" className="btn-check" value = "1" name="btnradio" id="btnradio1" autoComplete="off" onChange={(event) => {setRounds(event.target.value)}}/>
                                 <label className="btn btn-success text-dark" htmlFor="btnradio1">1</label>
 
-                                <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off"/>
+                                <input type="radio" className="btn-check" value = "2" name="btnradio" id="btnradio2" autoComplete="off" onChange={(event) => {setRounds(event.target.value)}} />
                                 <label className="btn btn-success text-dark" htmlFor="btnradio2">2</label>
 
-                                <input type="radio" className="btn-check" name="btnradio" id="btnradio3" autoComplete="off"/>
+                                <input type="radio" className="btn-check" value = "3" name="btnradio" id="btnradio3" autoComplete="off" onChange={(event) => {setRounds(event.target.value)}}/>
                                 <label className="btn btn-success text-dark" htmlFor="btnradio3">3</label>
 
-                                <input type="radio" className="btn-check" name="btnradio" id="btnradio4" autoComplete="off"/>
+                                <input type="radio" className="btn-check" value = "4" name="btnradio" id="btnradio4" autoComplete="off" onChange={(event) => {setRounds(event.target.value)}}/>
                                 <label className="btn btn-success text-dark" htmlFor="btnradio4">4</label>
 
-                                <input type="radio" className="btn-check" name="btnradio" id="btnradio5" autoComplete="off"/>
+                                <input type="radio" className="btn-check" value = "5" name="btnradio" id="btnradio5" autoComplete="off" onChange={(event) => {setRounds(event.target.value)}}/>
                                 <label className="btn btn-success text-dark" htmlFor="btnradio5">5</label>
                             </div>
 

@@ -74,10 +74,14 @@ def gen_questions():
     startGameSem.acquire()
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    num_questions = int(request.args.get('num_questions'))
+    num_rounds = int(request.args.get('rounds'))
+    print(num_rounds)
     roomcode = request.args.get('roomcode')
     owner_token = request.args.get('token')
     genre = "" # TBD
+
+    questions_per_round = 3
+    num_questions = num_rounds * questions_per_round
 
     output = ""
 
@@ -85,7 +89,7 @@ def gen_questions():
     if rooms_user_info[roomcode]["started"]:
         output = "game already started"
     else:
-        if num_questions < 0 or num_questions > 5:
+        if num_rounds < 0 or num_rounds > 5:
             return json.dumps("failed input")
 
         # Only generate the questions once the room is validated
@@ -259,7 +263,8 @@ def validate_room():
     room = request.args.get('roomcode')
     token = request.args.get('token')
     # retrieve_username(token)
-    # print("Room Code: " + room)
+    print("Room Code: " + room)
+    print(rooms_user_info)
     if room in rooms_user_info and rooms_user_info[room]["started"] == False:   # If the game has started, don't let them in (they can still go to the room code w/ link manually, how to prevent?)
         return json.dumps({"response": "goodRoom"})
     else:
