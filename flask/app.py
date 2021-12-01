@@ -21,6 +21,7 @@ from logout import invalidate_session
 from database_utils import retrieve_username
 import threading
 import time
+import statistics
 startGameSem = threading.Semaphore()
 getAnswerSem = threading.Semaphore()
 
@@ -37,7 +38,7 @@ socket_server = SocketIO(app, cors_allowed_origins="*")
 # Each room info will also contain keys for "owner", "rounds", "genre", "answer", "correct_answer", "score"
 # rooms_user_info = {"TEST":
 #                        {"owner": "test",
-#                         "users": {},
+#                         "users": {<token> : <username>},
 #                         "rounds": 5,
 #                         "genre": "test",
 #                         "answer": {
@@ -94,6 +95,11 @@ def gen_questions():
         # Start the game
         rooms_user_info[roomcode]["started"] = True
 
+        # Increment the "# of games" statistic for the players in the lobby
+            # I don't believe the tokens are checked for validity before attempting to add them to a room... But I think the server would error if that occurs anyway?
+        for token in rooms_user_info[roomcode]["users"].keys():
+            statistics.incrementGamesPlayed(token)
+
         output = "done"
 
     startGameSem.release()
@@ -146,7 +152,7 @@ def grab_answer():
         # Save the answer for calculation
         rooms_user_info[roomcode]["correct_answer"] = answer["answer"]
 
-        print(rooms_user_info[roomcode])
+        # print(rooms_user_info[roomcode])
 
         # todo Calculate the scores here? --> Then users can press the button to "reveal" the scores as well
         # Then, a hidden button will appear to view the scores! This is really good!
@@ -172,7 +178,7 @@ def save_answer():
 
     rooms_user_info[roomcode]['answer'][username] = answer
 
-    print(rooms_user_info[roomcode])
+    # print(rooms_user_info[roomcode])
 
     return "answered"
 
@@ -238,17 +244,17 @@ def get_scores():
 def owner_or_player():
     roomcode = request.args.get('roomcode')
     token = request.args.get('token')
-    print(roomcode)
-    print(token)
+    # print(roomcode)
+    # print(token)
 
-    print("right here", rooms_user_info[roomcode]["owner"])
+    # print("right here", rooms_user_info[roomcode]["owner"])
 
     if rooms_user_info[roomcode]["owner"] == token:
         output = "Owner"
     else:
         output = "Player"
 
-    print(output)
+    # print(output)
     return json.dumps({"response": output})
 
 
@@ -380,7 +386,7 @@ def signup_guest():
     # uuid.uuid4() will generate a completely random ID to use as a token
     # (token is generated here so it can be stored in database if user is valid)
     token = str(uuid.uuid1())
-    print(token, type(token))
+    # print(token, type(token))
 
     while not valid_signup:
         username = "Guest" + str(uuid.uuid4())[0:7]
@@ -460,7 +466,7 @@ def attempt_login():
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     username_login = request.json['username']
     password_login = request.json['password']
-    print(request.json)
+    # print(request.json)
 
     if username_login == 0 or password_login == 0:
         return json.dumps({})

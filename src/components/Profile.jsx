@@ -59,7 +59,7 @@ class Profile extends Component {
                         <h3 className="text-light" id = "TotalPoints"> </h3>
                     </div>
                     <div className="col-3">
-                        <h3 className="text-light">Win/loss ratio: </h3>
+                        <h3 className="text-light">Number of Games Played: </h3>
                     </div>
                     <div className="col-3">
                         <h3 className="text-light" id = "Ratio"> </h3>
