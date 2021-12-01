@@ -3,6 +3,7 @@ import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
 import Messenger from './Messenger'
+import Timer from './Timer'
 
 
 const Question = () => {
@@ -10,24 +11,6 @@ const Question = () => {
     const socket = useContext(SocketContext);
 
     const { room_code } = useParams();
-
-    const initialSeconds = 30
-
-    const [seconds, setSeconds ] =  useState(initialSeconds)
-
-    // useEffect(()=>{
-    //     let myInterval = setInterval(() => {
-    //         if (seconds > 0) {
-    //             setSeconds(seconds - 1);
-    //         }
-    //         if (seconds === 0) {
-    //             clearInterval(myInterval)
-    //         }
-    //     }, 1000)
-    //     return ()=> {
-    //         clearInterval(myInterval);
-    //     };
-    // });
 
     var questionstorage = "";
     var choice1storage = "";
@@ -125,9 +108,7 @@ const Question = () => {
                 <div className="col">
                     <button className="btn btn-danger btn-lg text-dark mb-3" id="question" disabled></button>
                 </div>
-                <div className="col">
-                    <button className="btn btn-primary btn-md text-dark mb-3" disabled>{seconds} Seconds Remaining</button>
-                </div>
+                <Timer />
             </div>
 
             {/*Answer Choices + Chat*/}

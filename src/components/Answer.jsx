@@ -78,6 +78,20 @@ const Answer = () => {
 
     const [seconds, setSeconds ] =  useState(initialSeconds)
 
+    // function timer() {
+    //     let myInterval =setInterval(() => {
+    //         if (seconds > 0) {
+    //             setSeconds(seconds - 1);
+    //         }
+    //         if (seconds === 0) {
+    //             clearInterval(myInterval)
+    //         }
+    //     }, 1000)
+    //     return () => {
+    //         clearInterval(myInterval);
+    //     };
+    // }
+
     // useEffect(()=>{
     //     let myInterval = setInterval(() => {
     //         if (seconds > 0) {
