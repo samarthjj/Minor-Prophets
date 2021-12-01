@@ -19,6 +19,7 @@ const GameSetup = () => {
     const starting = () => {
         get_questions();
         socket.emit('question', room_code);
+        window.location.pathname = "/question/" + room_code;
     }
 
     // tells the backend to generate/retrieve the questions
@@ -68,7 +69,7 @@ const GameSetup = () => {
                         <Link to="/creategame"><button class="btn btn-success btn-md text-dark mb-3">Cancel</button></Link>
                     </div>
                     <div className="col-2">
-                        <Link to={`/question/${room_code}`}><button className="btn btn-primary btn-md text-dark mb-3" onClick = {starting}>Start Game</button></Link>
+                        <button className="btn btn-primary btn-md text-dark mb-3" onClick = {starting}>Start Game</button>
                     </div>
                     {/* <div className="col-2">
                         <button className="btn btn-lg btn-success text-dark" onClick = {get_questions}>Click Here To Generate Questions</button>

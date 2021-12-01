@@ -3,6 +3,7 @@ import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
 import Messenger from './Messenger'
+import Rounds from './Rounds'
 
 
 const Answer = () => {
@@ -11,6 +12,8 @@ const Answer = () => {
 
     const { room_code } = useParams();
 
+    const token = document.cookie.split("=")[1]
+
     function get_answer() {
         // Disable this as soon as possible
         document.getElementById("answer").disabled = true;
@@ -18,7 +21,8 @@ const Answer = () => {
         console.log("getting answer..")
         axios.get('/api/answerRequest', {
             params: {
-                roomcode: room_code // This wasn't here either.... ???
+                roomcode: room_code, // This wasn't here either.... ???
+                token: token
             }
         }).then(function (response) {
                 //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
@@ -71,6 +75,7 @@ const Answer = () => {
             })
     }
 
+
     // get_answer(room_code)
     // lets have this run onClick instead
 
@@ -103,7 +108,7 @@ const Answer = () => {
           })
 
         // socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
-      
+
         return () => {
             //Use this space to clean up any effects.
         }
@@ -156,6 +161,10 @@ const Answer = () => {
                 </div>
             </div>
 
+
+            <Rounds room_code={room_code}/>
+
+
             {/*Answer and Countdown*/}
             <div className="row mb-3">
                 <div className="col">
@@ -165,6 +174,7 @@ const Answer = () => {
                     <button className="btn btn-primary btn-md text-dark mb-3" disabled>{seconds} Seconds Remaining</button>
                 </div>
             </div>
+
 
             {/*Scores and Chat*/}
             <div className="row mb-3">
@@ -205,9 +215,13 @@ const Answer = () => {
                 <Messenger room_code={room_code}/>
             </div>
 
+
+
+
             <div className="row mb-3">
 
             </div>
+
 
             <div className="col-2">
                     <button onClick={() => calc_score(room_code)} className="btn btn-primary btn-md text-dark mb-3" id="calculate">Calculate Scores [Only 1 person should click this]</button>
@@ -238,6 +252,8 @@ const Answer = () => {
                     <Link to={`/gameover/${room_code}`}><button className="btn btn-primary btn-md text-dark mb-3">Game Over</button></Link>
                 </div>
             </div>
+
+            <Rounds room_code={room_code}/>
 
             {/*Answer and Countdown*/}
             <div className="row mb-3">

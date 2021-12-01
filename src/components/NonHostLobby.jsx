@@ -73,7 +73,7 @@ const NonHostLobby = () => {
         })
 
         if (!tokens.includes(token)) {
-            sleep(500)
+            //sleep(500)
             console.log("emitting");
             socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]});
             setTokens([...tokens, token]);

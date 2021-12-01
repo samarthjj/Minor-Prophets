@@ -39,6 +39,8 @@ socket_server = SocketIO(app, cors_allowed_origins="*")
 #                        {"owner": "test",
 #                         "users": {},
 #                         "rounds": 5,
+#                         "current_round": 1,
+#                         "round_counter: 1,
 #                         "genre": "test",
 #                         "answer": {
 #                             "token1" : "1",
@@ -71,6 +73,8 @@ def clear_db():
 @app.route('/api/startGame')
 def gen_questions():
 
+    print("starting!!")
+
     startGameSem.acquire()
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
@@ -82,6 +86,12 @@ def gen_questions():
 
     questions_per_round = 3
     num_questions = num_rounds * questions_per_round
+
+    rooms_user_info[roomcode]['rounds'] = num_rounds
+    rooms_user_info[roomcode]['current_round'] = 1
+    rooms_user_info[roomcode]['round_counter'] = 1
+
+    print("genertating questions", rooms_user_info)
 
     output = ""
 
@@ -110,7 +120,9 @@ def grab_question():
     # Found error, the roomcode is not being saved/the way the request is getting the roomcode is bricked
 
     roomcode = request.args.get('roomcode')
-    # roomcode = 'RUN1' # why was this set ?
+
+    print("question time", roomcode)
+    # roomcode = 'RUN1' # why was this set ? a: testing before get request was set up
 
     # print("The Current Roomcode is " + str(roomcode))
 
@@ -131,6 +143,7 @@ def grab_answer():
     getAnswerSem.acquire()
 
     roomcode = request.args.get('roomcode')
+    token = request.args.get('token')
 
     output = {}
 
@@ -157,6 +170,18 @@ def grab_answer():
         # Can potentially set a flag to not calculate scores for the X amount of people in the lobby, but it's probably okay to do it runtime wise
 
         output = answer
+
+    # updates round related info
+    if token == rooms_user_info[roomcode]['owner']:
+        # this keeps the round we are in up to date
+        if rooms_user_info[roomcode]['round_counter'] >= 3:   # 6 is the number of questions per round x2 because this executes for both q and a
+            rooms_user_info[roomcode]['round_counter'] = 1
+            if rooms_user_info[roomcode]['current_round'] < rooms_user_info[roomcode]['rounds']:
+                print("incrementing")
+                rooms_user_info[roomcode]['current_round'] += 1
+        else:
+            rooms_user_info[roomcode]['round_counter'] += 1
+
 
     getAnswerSem.release()
     return output
@@ -252,7 +277,7 @@ def owner_or_player():
     else:
         output = "Player"
 
-    print(output)
+
     return json.dumps({"response": output})
 
 
@@ -263,8 +288,7 @@ def validate_room():
     room = request.args.get('roomcode')
     token = request.args.get('token')
     # retrieve_username(token)
-    print("Room Code: " + room)
-    print(rooms_user_info)
+
     if room in rooms_user_info and rooms_user_info[room]["started"] == False:   # If the game has started, don't let them in (they can still go to the room code w/ link manually, how to prevent?)
         return json.dumps({"response": "goodRoom"})
     else:
@@ -610,7 +634,7 @@ def test_database():
 #     print(json.dumps(data))
 
     users = [{"username" : i[0], "name" : i[1]} for i in data] # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    print(users)
+
 
 #     for row in data:
 #         print(row)
@@ -679,8 +703,24 @@ def on_leave(info):
 # broadcasts to all players in a room that the host has started the game
 @socket_server.on('question')
 def on_start(info):
-    print("reached python ", info)
+
     emit("question", room=info)
+
+@socket_server.on('rounds')
+def rounds(info):
+
+    print(info)
+
+    roomcode = info['room']
+
+    rounds = rooms_user_info[roomcode]['rounds']
+    current_round = rooms_user_info[roomcode]['current_round']
+
+    print("sending back round info")
+    print(current_round, rounds, rooms_user_info[roomcode]['round_counter'])
+
+    emit("rounds", {'rounds': rounds, 'current_round': current_round})
+
 
 
 @socket_server.on('message')
@@ -694,4 +734,4 @@ def broadcast_message(info):
 
 if __name__ == '__main__':
     clear_db() # Clear the rooms database
-    socket_server.run(app, host="0.0.0.0", port=5000)
+    socket_server.run(app, host="0.0.0.0", port=5000, use_reloader=False)

@@ -3,6 +3,7 @@ import {Link, useParams} from "react-router-dom";
 import {default as axios} from "axios";
 import { SocketContext} from '../socket';
 import Messenger from './Messenger'
+import Rounds from './Rounds'
 
 
 const Question = () => {
@@ -14,6 +15,10 @@ const Question = () => {
     const initialSeconds = 30
 
     const [seconds, setSeconds ] =  useState(initialSeconds)
+
+    const [flag, setFlag] = useState(false)
+
+    const token = document.cookie.split("=")[1]
 
     // useEffect(()=>{
     //     let myInterval = setInterval(() => {
@@ -37,13 +42,18 @@ const Question = () => {
 
     // This queries the API using the Room Code and grabs a Question for it - which is stored in the Database already
     function get_question() {
+
+        console.log("get question called")
+
         axios.get('/api/questionRequest', {
             params: {
-                roomcode: room_code,
+                roomcode: room_code
             }
         }).then(function (response) {
                 //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
                 // console.log(response)
+
+                console.log("question recieved")
 
                 questionstorage = response.data["question"];
                 choice1storage = response.data["choices"][0];
@@ -59,7 +69,6 @@ const Question = () => {
             })
     }
 
-    get_question()
 
     useEffect(() => {
 
@@ -71,8 +80,17 @@ const Question = () => {
             console.log(info);
           })
 
+
         // socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
-      
+
+        // make sure this function is only called once
+        console.log(flag)
+        if (!flag) {
+            get_question()
+            setFlag(true)
+        }
+
+
         return () => {
             //Use this space to clean up any effects.
         }
@@ -109,9 +127,10 @@ const Question = () => {
 
             {/*Button Row*/}
             <div className="row mb-3">
-                <div className="col-8">
 
+                <div className="col-8">
                 </div>
+
                 <div className="col-2">
                     <Link to="/creategame"><button class="btn btn-success btn-md text-dark mb-3">Quit</button></Link>
                 </div>
@@ -119,6 +138,8 @@ const Question = () => {
                     <Link to={`/answer/${room_code}`}><button className="btn btn-primary btn-md text-dark mb-3">Countdown Done</button></Link>
                 </div>
             </div>
+
+            <Rounds room_code={room_code}/>
 
             {/*Question + Timer*/}
             <div className="row mb-3">
