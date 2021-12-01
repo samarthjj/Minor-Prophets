@@ -17,9 +17,16 @@ const GameSetup = () => {
 
     // called when start game is pressed to initialize the questions and tell the other lobbies that the game is starting
     const starting = () => {
-        get_questions();
-        socket.emit('question', room_code);
-        window.location.pathname = "/question/" + room_code;
+
+        if (rounds == ""){
+            alert("You must select the number of rounds.");
+        }
+
+        else {
+            get_questions();
+            socket.emit('question', room_code);
+            window.location.pathname = "/question/" + room_code;
+        }
     }
 
     // tells the backend to generate/retrieve the questions
