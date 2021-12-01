@@ -202,6 +202,11 @@ def update_scores():
             rooms_user_info[room]["score"][username] += 1
             print(username, " got it right!")
 
+            # Update their statistic --> inefficient method of getting things / should have better data storage.
+            for (token, user) in rooms_user_info[room]['users'].items():
+                if user == username:
+                    statistics.incrementTotalPoints(token) # Uses the username of the person who got it right to find their token
+
 
     # answers = rooms_user_info[room]["answer"]
     # correct_answer = rooms_user_info[room]["correct_answer"]

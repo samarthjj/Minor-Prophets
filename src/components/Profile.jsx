@@ -53,7 +53,7 @@ class Profile extends Component {
                         <h3 className="text-light" id = "GamesWon"> </h3>
                     </div>
                     <div className="col-3">
-                        <h3 className="text-light">Total points earned: </h3>
+                        <h3 className="text-light">Number of Questions Correct: </h3>
                     </div>
                     <div className="col-3">
                         <h3 className="text-light" id = "TotalPoints"> </h3>
