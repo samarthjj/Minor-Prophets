@@ -24,6 +24,7 @@ import time
 import statistics
 startGameSem = threading.Semaphore()
 getAnswerSem = threading.Semaphore()
+gameOverSem = threading.Semaphore()
 
 
 # This should load the local .env file properly now that running the flask server locally should be 'python app.py' NOT 'flask run' (won't affect digital-ocean)
@@ -244,6 +245,59 @@ def get_scores():
 
     return json.dumps(scores)
 
+@app.route('/api/gameOver')
+def game_over_statistics():
+
+    gameOverSem.acquire()
+
+    # Brought down from /api/get_scores
+    room = request.args.get('roomcode')
+
+    # End early if we're done early
+    if rooms_user_info[room]["gameover"] == True:
+        gameOverSem.release()
+        return "Someone else ended the game"
+
+    curr_scores = rooms_user_info[room]["score"]
+    scores = {"User": [], "Score": []}
+    # iterate through the keys, create an array, pass that to the front end for rendering properly
+    for user in curr_scores.keys():
+        scores["User"] = scores["User"] + [user]
+        scores["Score"] = scores["Score"] + [rooms_user_info[room]["score"][user]]
+    # This is left out because semaphore usage
+    # rooms_user_info[room]["scores"] = scores
+
+
+    # Save the winner to the database for statistics
+    # First find the highest score
+    top_score = 0
+    for i in scores["Score"]:
+        if i > top_score:
+            top_score = i
+
+    print("The Highest Score is ", top_score)
+
+    # Then find all of the users with that score (there might be a tie)
+    top_users = []
+    for (user, score) in curr_scores.items():
+        if score == top_score:
+            top_users.append(user)
+
+    print("The Winners Are ", top_users)
+
+    # Then get all usernames --> tokens and increment their # games won!
+    for user in top_users:
+        for (token, name) in rooms_user_info[room]['users'].items():
+            if name == user:
+                statistics.incrementGameWinner(token)
+
+    # Update the game to be finished in the game report
+    rooms_user_info[room]["gameover"] = True
+
+    gameOverSem.release()
+
+    return "I ended the game"
+
 # Used to determine different screens for an owner or a player // Specifically for the Answer.jsx file (temporarily so only owner can press "calculate scores" once)
 @app.route('/api/ownerOrPlayer')
 def owner_or_player():
@@ -289,6 +343,7 @@ def on_join(info):
         rooms_user_info[room]["users"] = {}     # Initialize with an empty dict to store people
         rooms_user_info[room]["started"] = False    # Sets the game to "not have started yet"
         rooms_user_info[room]["answer_grabbed"] = False     # Track if the answer has been grabbed yet.. improvement
+        rooms_user_info[room]["gameover"] = False   # Becomes True when the game is over so winners are not calculated multiple times
 
     # Add user to that room
     username = retrieve_username(token)
