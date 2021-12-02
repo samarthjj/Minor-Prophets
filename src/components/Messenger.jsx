@@ -1,4 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
+import InputEmoji from 'react-input-emoji'
 import { SocketContext} from '../socket';
 import "../css/Messenger.css"
 
@@ -28,8 +29,8 @@ const Messenger = ({ room_code }) => {
     
   })
 
-  const onChange = (event) => {
-    setMessage(event.target.value);
+  const reactionHandler = (reaction) => {
+    socket.emit('message', {"room": room_code, "token": token, "message": reaction});
   };
 
   const onClick = () => {
@@ -51,10 +52,22 @@ const Messenger = ({ room_code }) => {
             </li>
           ))}
       </ul>
-    <div className="d-flex">
-      <input className="form-control" placeholder="Type your message here!" type="text" onChange={onChange} value={message}/>
-      <input className="btn btn-primary ms-3" type="button" onClick={onClick} value="Send"/>
-    </div>
+      <div className="reactions">
+        <button className="reactions--button" onClick={() => {reactionHandler("👍")} }>👍</button>
+        <span className="fillers"></span>
+        <button className="reactions--button" onClick={() => {reactionHandler("👎")} }>👎</button>
+        <span className="fillers"></span>
+        <button className="reactions--button" onClick={() => {reactionHandler("👏")} }>👏</button>
+      </div>
+      <div className="d-flex">
+        <InputEmoji
+            value={message}
+            onChange={setMessage}
+            cleanOnEnter
+            onEnter={onClick}
+            placeholder="Type your message here!"
+          />
+      </div>
     </div>
   );
 };

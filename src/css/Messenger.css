@@ -1,12 +1,38 @@
 .Messenger {
-    margin: 20px auto;
+    margin: auto;
     width: 30vw;
-    height: 40vh;
+    height: 65vh;
 
 }
 
 .messages {
-    margin: 20px auto;
+    margin: auto;
     width: 30vw;
     height: 40vh;
 }
+
+.reactions {
+    align-items: center;
+    width: 30vw;
+}
+
+.reactions--button {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    font-size: 50px;
+}
+
+.fillers {
+    padding: 30px;
+}
+
+.react-emoji {
+    width: 30vw;
+}
+
+.react-input-emoji--button svg {
+    fill: #ffffff;
+  }
