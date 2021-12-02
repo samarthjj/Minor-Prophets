@@ -57,6 +57,7 @@ const NonHostLobby = () => {
             if (!names.includes(info['username']) && info['token'] != token) {
                 console.log(info['username']);
                 setNames([...names, info['username']]);
+                console.log(names);
             }
         })
 

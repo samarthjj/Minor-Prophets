@@ -15,6 +15,8 @@ const GameSetup = () => {
 
     const [rounds, setRounds] = useState("");
 
+    const [flag, setFlag] = useState(false);
+
     // called when start game is pressed to initialize the questions and tell the other lobbies that the game is starting
     const starting = () => {
 
@@ -39,7 +41,7 @@ const GameSetup = () => {
                 token: document.cookie.split("=")[1]
             }
         }).then(function (response) {
-            console.log(response)
+
         })
     };
 
@@ -54,7 +56,10 @@ const GameSetup = () => {
             console.log(info);
         })
 
-        socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
+        if (!flag) {
+            socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
+            setFlag(true)
+        }
 
         return () => {
             //Use this space to clean up any effects.
