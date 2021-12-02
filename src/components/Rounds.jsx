@@ -12,7 +12,7 @@ const Rounds = ({room_code}) => {
             document.getElementById("rounds").innerHTML = "Round " + info['current_round'] + " out of " + info['rounds'];
         })
 
-        socket.emit("rounds", {"room": room_code})
+
 
         return () => {
             //Use this space to clean up any effects.

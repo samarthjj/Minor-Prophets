@@ -84,6 +84,7 @@ const Question = () => {
 
         get_question()
 
+        socket.emit("rounds", {"room": room_code})
 
 
         return () => {
