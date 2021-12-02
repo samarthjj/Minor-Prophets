@@ -21,6 +21,7 @@ const NonHostLobby = () => {
     const[initialize, setInitialize] = useState(false);
 
 
+    // todo This has a race condition with loading BEFORE the room is created in the back end. Breaks functionality.
     // runs when the page loads to get the usernames of the players that are already in the room
     const get_existing_players = () =>  {
         axios.get('/api/initialize_table', {
