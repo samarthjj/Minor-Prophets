@@ -391,7 +391,10 @@ def stats():
     token = request.args.get('token')
     data = json.dumps({"GamesWon": "Invalid Login", "TotalPoints": "Invalid Login", "WinRatio": "Invalid Login", "FavoriteGenre": "Invalid Login"})
     if (verify_valid_session(token)):
-        data = json.dumps(data_request.get_stats(token))
+        # data = json.dumps(data_request.get_stats(token))
+        data = data_request.get_stats(token)
+        data["Username"] = retrieve_username(token)
+        data = json.dumps(data)
     return data
 
 
