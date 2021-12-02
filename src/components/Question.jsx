@@ -4,6 +4,7 @@ import {default as axios} from "axios";
 import { SocketContext} from '../socket';
 import Messenger from './Messenger'
 import Rounds from './Rounds'
+import Timer from './Timer'
 
 
 const Question = () => {
@@ -11,25 +12,6 @@ const Question = () => {
     const socket = useContext(SocketContext);
 
     const { room_code } = useParams();
-
-    const initialSeconds = 30
-
-    const [seconds, setSeconds ] =  useState(initialSeconds)
-
-
-    // useEffect(()=>{
-    //     let myInterval = setInterval(() => {
-    //         if (seconds > 0) {
-    //             setSeconds(seconds - 1);
-    //         }
-    //         if (seconds === 0) {
-    //             clearInterval(myInterval)
-    //         }
-    //     }, 1000)
-    //     return ()=> {
-    //         clearInterval(myInterval);
-    //     };
-    // });
 
     var questionstorage = "";
     var choice1storage = "";
@@ -39,9 +21,6 @@ const Question = () => {
 
     // This queries the API using the Room Code and grabs a Question for it - which is stored in the Database already
     function get_question() {
-
-        console.log("get question called")
-
         axios.get('/api/questionRequest', {
             params: {
                 roomcode: room_code
@@ -49,8 +28,6 @@ const Question = () => {
         }).then(function (response) {
                 //https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
                 // console.log(response)
-
-                console.log("question recieved")
 
                 questionstorage = response.data["question"];
                 choice1storage = response.data["choices"][0];
@@ -77,7 +54,6 @@ const Question = () => {
             console.log(info);
           })
 
-
         // socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
 
         // make sure this function is only called once
@@ -94,7 +70,6 @@ const Question = () => {
       })
 
     function save_answer(choice) {
-        console.log(choice1storage);
         axios.get('/api/saveAnswer', {
             params: {
                 answer: choice,
@@ -124,10 +99,9 @@ const Question = () => {
 
             {/*Button Row*/}
             <div className="row mb-3">
-
                 <div className="col-8">
-                </div>
 
+                </div>
                 <div className="col-2">
                     <Link to="/creategame"><button class="btn btn-success btn-md text-dark mb-3">Quit</button></Link>
                 </div>
@@ -143,9 +117,7 @@ const Question = () => {
                 <div className="col">
                     <button className="btn btn-danger btn-lg text-dark mb-3" id="question" disabled></button>
                 </div>
-                <div className="col">
-                    <button className="btn btn-primary btn-md text-dark mb-3" disabled>{seconds} Seconds Remaining</button>
-                </div>
+                <Timer />
             </div>
 
             {/*Answer Choices + Chat*/}
