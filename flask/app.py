@@ -192,7 +192,7 @@ def save_answer():
     answer = request.args.get('answer')
     owner_token = request.args.get('token')
     roomcode = request.args.get('roomcode')
-    # print(answer)
+    print("player answer: ", answer)
 
     # if len(answer) > 1000:
     #     return "nice overflow attempt :)"
@@ -201,7 +201,7 @@ def save_answer():
 
     rooms_user_info[roomcode]['answer'][username] = answer
 
-    print(rooms_user_info[roomcode])
+    print("saved answer", rooms_user_info[roomcode])
 
     return "answered"
 
@@ -717,7 +717,7 @@ def rounds(info):
     current_round = rooms_user_info[roomcode]['current_round']
 
     print("sending back round info")
-    print(current_round, rounds, rooms_user_info[roomcode]['round_counter'])
+    print(rooms_user_info)
 
     emit("rounds", {'rounds': rounds, 'current_round': current_round})
 

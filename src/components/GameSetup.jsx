@@ -33,6 +33,7 @@ const GameSetup = () => {
 
     // tells the backend to generate/retrieve the questions
     const get_questions = () => {
+        console.log("generating question signal")
         axios.get('/api/startGame', {
             params: {
                 // Add event listeners to extract rounds and genre to send to backend.

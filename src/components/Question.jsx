@@ -16,9 +16,6 @@ const Question = () => {
 
     const [seconds, setSeconds ] =  useState(initialSeconds)
 
-    const [flag, setFlag] = useState(false)
-
-    const token = document.cookie.split("=")[1]
 
     // useEffect(()=>{
     //     let myInterval = setInterval(() => {
@@ -84,11 +81,9 @@ const Question = () => {
         // socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
 
         // make sure this function is only called once
-        console.log(flag)
-        if (!flag) {
-            get_question()
-            setFlag(true)
-        }
+
+        get_question()
+
 
 
         return () => {
@@ -98,6 +93,7 @@ const Question = () => {
       })
 
     function save_answer(choice) {
+        console.log(choice1storage);
         axios.get('/api/saveAnswer', {
             params: {
                 answer: choice,
