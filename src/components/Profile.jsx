@@ -49,7 +49,7 @@ class Profile extends Component {
                 {/*Statistics*/}
                 <div className="row mb-3">
                     <div className="col-3">
-                        <h3 className="text-light">Games won: </h3>
+                        <h3 className="text-light">Number of Wins: </h3>
                     </div>
                     <div className="col-3">
                         <h3 className="text-light" id = "GamesWon"> </h3>
