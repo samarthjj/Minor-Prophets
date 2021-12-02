@@ -22,6 +22,8 @@ const NonHostLobby = () => {
 
 
     // todo This has a race condition with loading BEFORE the room is created in the back end. Breaks functionality.
+    const [isLoading, setLoading] = useState(true);
+
     // runs when the page loads to get the usernames of the players that are already in the room
     const get_existing_players = () =>  {
         axios.get('/api/initialize_table', {
@@ -36,6 +38,9 @@ const NonHostLobby = () => {
                     console.log(names);
                 }
             }
+
+            // Then, once this has loaded, use setLoading to change isLoading to false, and the page reloads
+            setLoading(false);
         })
     }
 
@@ -93,6 +98,12 @@ const NonHostLobby = () => {
      })
 
 
+
+    if (isLoading){
+        return (
+            <h2 className="text-light">Loading...</h2>
+        );
+    }
 
     //https://www.youtube.com/watch?v=dYjdzpZv5yc for the dynamic table
     return (

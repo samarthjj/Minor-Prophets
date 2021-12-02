@@ -810,11 +810,14 @@ def get_users():
 
     room = request.args.get('roomcode')
 
+    if room not in rooms_user_info.keys():
+        return json.dumps({"response" : "room not initiated"})
+
     users = []
     for token,user in rooms_user_info[room]['users'].items():
         users.append(user)
 
-    return json.dumps({"users": users})
+    return json.dumps({"users": users, "response" : "room ready"})
 
 '''
 # adds new player to dictionary and gets their username based on token
