@@ -31,18 +31,22 @@ const CreateGame = () => {
     const generate_room_code = () => {
         return(customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz', 8)())
     }
+    //
+    // function refresh() {
+    //     window.location.reload();
+    // }
 
     const handleRoom = () => {
-        if (room_code !== ""){
+        if (room_code !== "") {
             axios.get('/api/validateRoom', {
                 params: {
                     roomcode: room_code,
                     token: document.cookie.split("=")[1]
                 }
             }).then(function (response) {
-                if (response.data["response"] === "goodRoom"){
+                if (response.data["response"] === "goodRoom") {
                     history.push(`/nonhostlobby/${room_code}`)
-                }else{
+                } else {
                     set_room_code("");
                     alert("This is not a valid room code.")
                 }
@@ -72,18 +76,18 @@ const CreateGame = () => {
             <h1 className="title text-light">Minor Prophets</h1>
 
             <div className="landing-logo mb-5">
-                <h3 className="text-dark">This is where the game logo goes.</h3>
+                {/*<h3 className="text-dark">This is where the game logo goes.</h3>*/}
             </div>
 
             {/* Bootstrap Spacing: https://getbootstrap.com/docs/5.1/utilities/spacing/*/}
             {/*Centering content w/ mx-auto (automatic X centering)*/}
             {/*mb-3 == margin bottom by 3*/}
 
-            <div className="container-sm">
-                <h3 className="text-light">Start a new game or enter a code to join an existing game.</h3>
+            <div className="container-sm mb-5">
+                <h3 className="text-light mb-3">Start a new game or enter a code to join an existing game.</h3>
                 <form className="form-group">
 
-                    <div className="form-floating mb-3 mx-5">
+                    <div className="form-floating mb-5 mx-5">
                         <Link to={`/gamesetup/${generate_room_code()}`}><button className="btn btn-lg btn-success text-dark" type="submit">Start New Game</button></Link>
                     </div>
 
@@ -99,6 +103,10 @@ const CreateGame = () => {
 
                 </form>
             </div>
+
+            {/*<div className="row">*/}
+            {/*    <button className="btn btn-lg btn-danger text-dark" type="button" onClick={refresh}>Refresh For New Game</button>*/}
+            {/*</div>*/}
 
         </div>
     );

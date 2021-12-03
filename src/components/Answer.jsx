@@ -182,8 +182,9 @@ const Answer = () => {
 
             {/*Scores and Chat*/}
             <div className="row mb-3">
-                <div className="col">
-                    {/*<h8 className="text-light" id = "scores"> </h8>*/}
+                <div className="col-7">
+                    <div className="row">
+                        {/*<h8 className="text-light" id = "scores"> </h8>*/}
                     <table className="table table-striped table-success">
                         <thead>
                         <tr>
@@ -214,21 +215,28 @@ const Answer = () => {
                         </tr>
                         </tbody>
                     </table>
+                    </div>
+
+                    <div className="row">
+                        <div className="col">
+                            <button onClick={() => calc_score(room_code)} className="btn btn-primary btn-md text-dark mb-3" id="calculate">Calculate Scores</button>
+                        </div>
+                        <div className="col">
+                            <button onClick={() => get_score(room_code)} className="btn btn-primary btn-md text-dark mb-3">Get Scores</button>
+                        </div>
+                    </div>
                 </div>
 
-                <Messenger room_code={room_code}/>
+                <div className="col-5">
+                    <Messenger room_code={room_code}/>
+                </div>
             </div>
 
             <div className="row mb-3">
 
             </div>
 
-            <div className="col-2">
-                    <button onClick={() => calc_score(room_code)} className="btn btn-primary btn-md text-dark mb-3" id="calculate">Calculate Scores [Only 1 person should click this]</button>
-            </div>
-            <div className="col-2">
-                    <button onClick={() => get_score(room_code)} className="btn btn-primary btn-md text-dark mb-3">Get Scores [Everyone should click this after scores are calculated]</button>
-            </div>
+
 
         </div>
         );
@@ -265,8 +273,9 @@ const Answer = () => {
 
             {/*Scores and Chat*/}
             <div className="row mb-3">
-                <div className="col">
-                    {/*<h8 className="text-light" id = "scores"> </h8>*/}
+                <div className="col-7">
+                    <div classname="row">
+                        {/*<h8 className="text-light" id = "scores"> </h8>*/}
                     <table className="table table-striped table-success">
                         <thead>
                         <tr>
@@ -297,12 +306,19 @@ const Answer = () => {
                         </tr>
                         </tbody>
                     </table>
+                    </div>
+
+                    <div className="row">
+                        {/*<div className="col-2">*/}
+                            <button onClick={() => get_score(room_code)} className="btn btn-primary btn-md text-dark mb-3">Get Scores </button>
+                        {/*</div>*/}
+                    </div>
+
                 </div>
 
 
                 {/*https://getbootstrap.com/docs/5.1/forms/form-control/#readonly-plain-text*/}
-                <div className="col">
-
+                <div className="col-5">
                     <Messenger room_code={room_code}/>
                 </div>
             </div>
@@ -314,9 +330,7 @@ const Answer = () => {
             {/*<div className="col-2">*/}
             {/*        <button onClick={() => calc_score(room_code)} className="btn btn-primary btn-md text-dark mb-3" id="calculate">Calculate Scores [Only 1 person should click this]</button>*/}
             {/*</div>*/}
-            <div className="col-2">
-                    <button onClick={() => get_score(room_code)} className="btn btn-primary btn-md text-dark mb-3">Get Scores [Everyone should click this after scores are calculated]</button>
-            </div>
+
 
         </div>
         );

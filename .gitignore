@@ -30,3 +30,4 @@ flask/.env
 flask/__pycache__
 /venv/
 .env
+/flask/__pycache__
