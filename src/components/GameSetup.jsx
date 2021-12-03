@@ -15,6 +15,8 @@ const GameSetup = () => {
 
     // called when start game is pressed to initialize the questions and tell the other lobbies that the game is starting
     const starting = () => {
+
+        // This function / API call also is responsible for updating the "Number of Games" (ratio column) by 1
         get_questions();
         socket.emit('question', room_code);
     }
