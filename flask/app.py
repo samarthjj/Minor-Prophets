@@ -78,20 +78,17 @@ def gen_questions():
     startGameSem.acquire()
 
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    num_rounds = int(request.args.get('rounds'))
-    print(num_rounds)
+
     roomcode = request.args.get('roomcode')
-    owner_token = request.args.get('token')
     genre = "" # TBD
 
+
+    # calculate the number of questions to generate
+    num_rounds = rooms_user_info[roomcode]['rounds']
     questions_per_round = 3
     num_questions = num_rounds * questions_per_round
 
-    rooms_user_info[roomcode]['rounds'] = num_rounds
-    rooms_user_info[roomcode]['current_round'] = 1
-    rooms_user_info[roomcode]['round_counter'] = 1
-
-    print("genertating questions", rooms_user_info)
+    print("generating questions", rooms_user_info)
 
     output = ""
 
@@ -111,7 +108,8 @@ def gen_questions():
         output = "done"
 
     startGameSem.release()
-    return json.dumps(output)
+    print("ending question generation")
+    return json.dumps({"response": output})
 
 # Ask for a question for the game
 @app.route('/api/questionRequest')
@@ -652,62 +650,7 @@ def attempt_signup():
         # If the sign up username is invalid (already taken), return INVALID token to signal not to setToken
         return json.dumps({})
 
-'''
-@app.route('/api/startGame')
-def gen_questions():
 
-    # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
-    rounds = int(request.args.get('rounds'))
-
-    #roomcode = request.args.get('roomcode')
-    roomcode = request.args.get('roomcode')
-
-
-    data_request.get_existing_questions(rounds, roomcode)
-
-
-    
-    f = open("questions.json")
-    questions = appcode.generate_questions(int(rounds))
-    f.close()
-
-    random.shuffle(questions)
-
-    with open('store.json', 'w') as j:
-        json.dump(questions, j)
-
-
-    return json.dumps("done")
-    
-
-
-@app.route('/api/questionRequest')
-def grab_question():
-
-    roomcode = request.args.get('roomcode')
-
-    
-    f = open("store.json")
-    questions = json.loads(f.read())
-    question = random.choice(questions)
-
-    with open('temp_question_storage.json', 'w') as j:
-        json.dump(question, j)
-
-
-    question = data_request.get_question(roomcode)
-
-    return json.dumps(question)
-
-@app.route('/api/answerRequest')
-def grab_answer():
-   
-    with open("temp_question_storage.json", 'r') as f:
-        question = json.loads(f.read())
-
-    return data_request.get_answer()
-    
-'''
 
 @app.route('/api/time')
 def get_current_time():
@@ -776,66 +719,44 @@ def get_users():
 
     return json.dumps({"users": users})
 
-'''
-# adds new player to dictionary and gets their username based on token
-@socket_server.on('join_room')
-def on_join(info):
-    room = info['room']
-    token = info["token"]
-    # Register room & owner
-    if not room in rooms_user_info:
-        rooms_user_info[room] = {}
-        rooms_user_info[room]["owner"] = token
 
-    print("in join ")
 
-    # Add user to that room
-    username = retrieve_username(token)
-    rooms_user_info[room][token] = username
+@app.route('/api/initializeRounds')
+def set_rounds():
 
-    print(rooms_user_info)
+    roomcode = request.args.get('roomcode')
+    rounds = request.args.get('rounds')
 
-    join_room(room)
-    emit("join_room", username + ' has joined the game.', room=room)
+    rooms_user_info[roomcode]['rounds'] = int(rounds)
+    rooms_user_info[roomcode]['current_round'] = 1
+    rooms_user_info[roomcode]['round_counter'] = 1
 
-    dic = json.dumps({'username': username, 'token': token})
+    return {'rounds': rounds}
 
-    emit('join_room', dic, room=room)
-    
 
-@socket_server.on('leave_room')
-def on_leave(info):
-    room = info['room']
-    token = info["token"]
-    username = rooms_user_info[room][token]
+@app.route('/api/rounds')
+def rounds():
 
-    rooms_user_info[room].pop(token, None)
-    leave_room(room)
-    # print(rooms_user_info[room])
-    emit('leave_room', username, room=room)
-'''
+
+    roomcode = request.args.get('roomcode')
+
+    rounds = rooms_user_info[roomcode]['rounds']
+    current_round = rooms_user_info[roomcode]['current_round']
+
+    print("sending back round info")
+    round_info = {'rounds': rounds, 'current_round': current_round}
+    print(round_info)
+
+    return json.dumps(round_info)
+
+
+
 
 # broadcasts to all players in a room that the host has started the game
 @socket_server.on('question')
 def on_start(info):
 
     emit("question", room=info)
-
-@socket_server.on('rounds')
-def rounds(info):
-
-    print(info)
-
-    roomcode = info['room']
-
-    rounds = rooms_user_info[roomcode]['rounds']
-    current_round = rooms_user_info[roomcode]['current_round']
-
-    print("sending back round info")
-    print(rooms_user_info)
-
-    emit("rounds", {'rounds': rounds, 'current_round': current_round})
-
 
 
 @socket_server.on('message')

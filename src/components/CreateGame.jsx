@@ -43,12 +43,14 @@ const CreateGame = () => {
                     token: document.cookie.split("=")[1]
                 }
             }).then(function (response) {
+
                 if (response.data["response"] === "goodRoom"){
-                    console.log("good")
-                    history.push(`/nonhostlobby/${room_code}`)
-                }else{
+                    console.log("good");
+                    history.push(`/nonhostlobby/${room_code}`);
+                }
+
+                else{
                     set_room_code("");
-                    window.location.pathname = "/creategame";
                     alert("This is not a valid room code.")
                 }
             })
@@ -99,7 +101,7 @@ const CreateGame = () => {
                     </div>
 
                     <div className="form-floating mb-3 mx-5">
-                        <Link to={`/nonhostlobby/${room_code}`}><button className="btn btn-lg btn-primary text-dark" type="button" onClick={handleRoom}>Join Game</button></Link>
+                        <button className="btn btn-lg btn-primary text-dark" type="button" onClick={handleRoom}>Join Game</button>
                     </div>
 
                 </form>

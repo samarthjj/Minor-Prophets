@@ -1,23 +1,6 @@
-import React, {useEffect, useContext} from "react";
-import { SocketContext} from '../socket';
+import React from "react";
 
-const Rounds = ({room_code}) => {
-
-    const socket = useContext(SocketContext);
-
-    useEffect(() => {
-
-        socket.on('rounds', (info) => {
-            console.log(info)
-            document.getElementById("rounds").innerHTML = "Round " + info['current_round'] + " out of " + info['rounds'];
-        })
-
-
-
-        return () => {
-            //Use this space to clean up any effects.
-        }
-    });
+const Rounds = ({current_round, rounds}) => {
 
     return (
 
@@ -26,7 +9,7 @@ const Rounds = ({room_code}) => {
             {/*Rounds*/}
             <div className="row mb-3">
                 <div className="col-7">
-                    <h1 className="text-light" id = "rounds"></h1>
+                    <h1 className="text-light" id = "rounds">{`Round ${current_round} out of ${rounds}`}</h1>
                 </div>
             </div>
 

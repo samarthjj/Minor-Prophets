@@ -14,6 +14,9 @@ const Answer = () => {
 
     const token = document.cookie.split("=")[1]
 
+    const [current_round, setCurrentRound] = useState("");
+    const [rounds, setRounds] = useState("");
+
     function get_answer() {
         // Disable this as soon as possible
         document.getElementById("answer").disabled = true;
@@ -29,6 +32,27 @@ const Answer = () => {
                 // console.log("yoot")
                 document.getElementById("answer").innerHTML = "The Answer Was: " + response.data["answer"];
         })
+    }
+
+    function get_rounds() {
+
+        console.log("getting rounds");
+
+        axios.get('/api/rounds', {
+            params: {
+                roomcode: room_code
+            }
+        }).then(function (response) {
+
+                console.log("rounds recieved");
+
+                setCurrentRound(response.data["current_round"]);
+                setRounds(response.data["rounds"]);
+
+                console.log(current_round);
+                console.log(rounds);
+            }
+        )
     }
 
     // Idea for this :: have it so every time you press a button or refresh, you can see the scores all fill in
@@ -123,6 +147,8 @@ const Answer = () => {
 
         // socket.emit("join_room", {"room": room_code, "token": document.cookie.split("=")[1]})
 
+        get_rounds();
+
         return () => {
             //Use this space to clean up any effects.
         }
@@ -176,7 +202,7 @@ const Answer = () => {
             </div>
 
 
-            <Rounds room_code={room_code}/>
+            <Rounds current_round={current_round} rounds={rounds}/>
 
 
             {/*Answer and Countdown*/}
@@ -267,7 +293,7 @@ const Answer = () => {
                 </div>
             </div>
 
-            <Rounds room_code={room_code}/>
+                <Rounds current_round={current_round} rounds={rounds}/>
 
             {/*Answer and Countdown*/}
             <div className="row mb-3">

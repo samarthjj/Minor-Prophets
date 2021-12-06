@@ -17,6 +17,16 @@ const GameSetup = () => {
 
     const [flag, setFlag] = useState(false);
 
+
+    //https://www.sitepoint.com/delay-sleep-pause-wait/
+    const sleep = (milliseconds) => {
+        const date = Date.now();
+        let currentDate = null;
+        do {
+            currentDate = Date.now();
+        } while (currentDate - date < milliseconds);
+    }
+
     // called when start game is pressed to initialize the questions and tell the other lobbies that the game is starting
     const starting = () => {
 
@@ -27,22 +37,38 @@ const GameSetup = () => {
         else {
             get_questions();
             socket.emit('question', room_code);
+            // get request doesn't get response unless you wait
+            sleep(1000);
             window.location.pathname = "/question/" + room_code;
         }
     }
 
     // tells the backend to generate/retrieve the questions
-    const get_questions = () => {
+    function get_questions() {
         console.log("generating question signal")
         axios.get('/api/startGame', {
             params: {
                 // Add event listeners to extract rounds and genre to send to backend.
+                roomcode: room_code
+            },
+            headers: {'Content-Type': 'application/json'}
+        }).then(function (response) {
+            console.log("questions were generated")
+        })
+    };
+
+    // sends the backend the number of round every time a round button is pressed
+    const send_rounds = (rounds) => {
+        setRounds(rounds);
+        console.log("sending rounds");
+        axios.get('/api/initializeRounds', {
+            params: {
+                // Add event listeners to extract rounds and genre to send to backend.
                 rounds: rounds,
                 roomcode: room_code,
-                token: document.cookie.split("=")[1]
             }
         }).then(function (response) {
-
+            console.log("rounds were set")
         })
     };
 
@@ -104,19 +130,19 @@ const GameSetup = () => {
 
                             {/*https://getbootstrap.com/docs/5.0/components/button-group/*/}
                             <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                <input type="radio" className="btn-check" value = "1" name="btnradio" id="btnradio1" autoComplete="off" onChange={(event) => {setRounds(event.target.value)}}/>
+                                <input type="radio" className="btn-check" value = "1" name="btnradio" id="btnradio1" autoComplete="off" onChange={(event) => {send_rounds(event.target.value)}}/>
                                 <label className="btn btn-success text-dark" htmlFor="btnradio1">1</label>
 
-                                <input type="radio" className="btn-check" value = "2" name="btnradio" id="btnradio2" autoComplete="off" onChange={(event) => {setRounds(event.target.value)}} />
+                                <input type="radio" className="btn-check" value = "2" name="btnradio" id="btnradio2" autoComplete="off" onChange={(event) => {send_rounds(event.target.value)}} />
                                 <label className="btn btn-success text-dark" htmlFor="btnradio2">2</label>
 
-                                <input type="radio" className="btn-check" value = "3" name="btnradio" id="btnradio3" autoComplete="off" onChange={(event) => {setRounds(event.target.value)}}/>
+                                <input type="radio" className="btn-check" value = "3" name="btnradio" id="btnradio3" autoComplete="off" onChange={(event) => {send_rounds(event.target.value)}}/>
                                 <label className="btn btn-success text-dark" htmlFor="btnradio3">3</label>
 
-                                <input type="radio" className="btn-check" value = "4" name="btnradio" id="btnradio4" autoComplete="off" onChange={(event) => {setRounds(event.target.value)}}/>
+                                <input type="radio" className="btn-check" value = "4" name="btnradio" id="btnradio4" autoComplete="off" onChange={(event) => {send_rounds(event.target.value)}}/>
                                 <label className="btn btn-success text-dark" htmlFor="btnradio4">4</label>
 
-                                <input type="radio" className="btn-check" value = "5" name="btnradio" id="btnradio5" autoComplete="off" onChange={(event) => {setRounds(event.target.value)}}/>
+                                <input type="radio" className="btn-check" value = "5" name="btnradio" id="btnradio5" autoComplete="off" onChange={(event) => {send_rounds(event.target.value)}}/>
                                 <label className="btn btn-success text-dark" htmlFor="btnradio5">5</label>
                             </div>
 
