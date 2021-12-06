@@ -40,6 +40,19 @@ const Gameover = () => {
 
     get_score();
 
+    function game_over() {
+        axios.get('/api/gameOver', {
+            params: {
+                roomcode: room_code
+            }
+        })
+            .then(function (response) {
+                console.log(response.data);
+        })
+    }
+
+    game_over();
+
     useEffect(() => {
 
         socket.on('join_room', (info) => {

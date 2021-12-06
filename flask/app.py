@@ -21,8 +21,10 @@ from logout import invalidate_session
 from database_utils import retrieve_username
 import threading
 import time
+import statistics
 startGameSem = threading.Semaphore()
 getAnswerSem = threading.Semaphore()
+gameOverSem = threading.Semaphore()
 
 
 # This should load the local .env file properly now that running the flask server locally should be 'python app.py' NOT 'flask run' (won't affect digital-ocean)
@@ -37,7 +39,7 @@ socket_server = SocketIO(app, cors_allowed_origins="*")
 # Each room info will also contain keys for "owner", "rounds", "genre", "answer", "correct_answer", "score"
 # rooms_user_info = {"TEST":
 #                        {"owner": "test",
-#                         "users": {},
+#                         "users": {<token> : <username>},
 #                         "rounds": 5,
 #                         "current_round": 1,
 #                         "round_counter: 1,
@@ -105,6 +107,11 @@ def gen_questions():
         # Start the game
         rooms_user_info[roomcode]["started"] = True
 
+        # Increment the "# of games" statistic for the players in the lobby
+            # I don't believe the tokens are checked for validity before attempting to add them to a room... But I think the server would error if that occurs anyway?
+        for token in rooms_user_info[roomcode]["users"].keys():
+            statistics.incrementGamesPlayed(token)
+
         output = "done"
 
     startGameSem.release()
@@ -118,9 +125,7 @@ def grab_question():
     # Found error, the roomcode is not being saved/the way the request is getting the roomcode is bricked
 
     roomcode = request.args.get('roomcode')
-
-    print("question time", roomcode)
-    # roomcode = 'RUN1' # why was this set ? a: testing before get request was set up
+    # roomcode = 'RUN1' # why was this set ?
 
     # print("The Current Roomcode is " + str(roomcode))
 
@@ -161,7 +166,7 @@ def grab_answer():
         # Save the answer for calculation
         rooms_user_info[roomcode]["correct_answer"] = answer["answer"]
 
-        print(rooms_user_info[roomcode])
+        # print(rooms_user_info[roomcode])
 
         # todo Calculate the scores here? --> Then users can press the button to "reveal" the scores as well
         # Then, a hidden button will appear to view the scores! This is really good!
@@ -223,6 +228,11 @@ def update_scores():
             rooms_user_info[room]["score"][username] += 1
             print(username, " got it right!")
 
+            # Update their statistic --> inefficient method of getting things / should have better data storage.
+            for (token, user) in rooms_user_info[room]['users'].items():
+                if user == username:
+                    statistics.incrementTotalPoints(token) # Uses the username of the person who got it right to find their token
+
 
     # answers = rooms_user_info[room]["answer"]
     # correct_answer = rooms_user_info[room]["correct_answer"]
@@ -260,6 +270,59 @@ def get_scores():
 
     return json.dumps(scores)
 
+@app.route('/api/gameOver')
+def game_over_statistics():
+
+    gameOverSem.acquire()
+
+    # Brought down from /api/get_scores
+    room = request.args.get('roomcode')
+
+    # End early if we're done early
+    if rooms_user_info[room]["gameover"] == True:
+        gameOverSem.release()
+        return "Someone else ended the game"
+
+    curr_scores = rooms_user_info[room]["score"]
+    scores = {"User": [], "Score": []}
+    # iterate through the keys, create an array, pass that to the front end for rendering properly
+    for user in curr_scores.keys():
+        scores["User"] = scores["User"] + [user]
+        scores["Score"] = scores["Score"] + [rooms_user_info[room]["score"][user]]
+    # This is left out because semaphore usage
+    # rooms_user_info[room]["scores"] = scores
+
+
+    # Save the winner to the database for statistics
+    # First find the highest score
+    top_score = 0
+    for i in scores["Score"]:
+        if i > top_score:
+            top_score = i
+
+    print("The Highest Score is ", top_score)
+
+    # Then find all of the users with that score (there might be a tie)
+    top_users = []
+    for (user, score) in curr_scores.items():
+        if score == top_score:
+            top_users.append(user)
+
+    print("The Winners Are ", top_users)
+
+    # Then get all usernames --> tokens and increment their # games won!
+    for user in top_users:
+        for (token, name) in rooms_user_info[room]['users'].items():
+            if name == user:
+                statistics.incrementGameWinner(token)
+
+    # Update the game to be finished in the game report
+    rooms_user_info[room]["gameover"] = True
+
+    gameOverSem.release()
+
+    return "I ended the game"
+
 # Used to determine different screens for an owner or a player // Specifically for the Answer.jsx file (temporarily so only owner can press "calculate scores" once)
 @app.route('/api/ownerOrPlayer')
 def owner_or_player():
@@ -275,7 +338,7 @@ def owner_or_player():
     else:
         output = "Player"
 
-
+    print(output)
     return json.dumps({"response": output})
 
 
@@ -286,7 +349,7 @@ def validate_room():
     room = request.args.get('roomcode')
     token = request.args.get('token')
     # retrieve_username(token)
-
+    # print("Room Code: " + room)
     if room in rooms_user_info and rooms_user_info[room]["started"] == False:   # If the game has started, don't let them in (they can still go to the room code w/ link manually, how to prevent?)
         return json.dumps({"response": "goodRoom"})
     else:
@@ -305,6 +368,7 @@ def on_join(info):
         rooms_user_info[room]["users"] = {}     # Initialize with an empty dict to store people
         rooms_user_info[room]["started"] = False    # Sets the game to "not have started yet"
         rooms_user_info[room]["answer_grabbed"] = False     # Track if the answer has been grabbed yet.. improvement
+        rooms_user_info[room]["gameover"] = False   # Becomes True when the game is over so winners are not calculated multiple times
 
     # Add user to that room
     username = retrieve_username(token)
@@ -352,7 +416,10 @@ def stats():
     token = request.args.get('token')
     data = json.dumps({"GamesWon": "Invalid Login", "TotalPoints": "Invalid Login", "WinRatio": "Invalid Login", "FavoriteGenre": "Invalid Login"})
     if (verify_valid_session(token)):
-        data = json.dumps(data_request.get_stats(token))
+        # data = json.dumps(data_request.get_stats(token))
+        data = data_request.get_stats(token)
+        data["Username"] = retrieve_username(token)
+        data = json.dumps(data)
     return data
 
 
@@ -487,7 +554,7 @@ def attempt_login():
     # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
     username_login = request.json['username']
     password_login = request.json['password']
-    print(request.json)
+    # print(request.json)
 
     if username_login == 0 or password_login == 0:
         return json.dumps({})
@@ -692,7 +759,7 @@ def test_database():
 #     print(json.dumps(data))
 
     users = [{"username" : i[0], "name" : i[1]} for i in data] # https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-
+    print(users)
 
 #     for row in data:
 #         print(row)
@@ -713,11 +780,14 @@ def get_users():
 
     room = request.args.get('roomcode')
 
+    if room not in rooms_user_info.keys():
+        return json.dumps({"response" : "room not initiated"})
+
     users = []
     for token,user in rooms_user_info[room]['users'].items():
         users.append(user)
 
-    return json.dumps({"users": users})
+    return json.dumps({"users": users, "response" : "room ready"})
 
 
 
