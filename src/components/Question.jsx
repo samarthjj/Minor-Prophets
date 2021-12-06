@@ -4,6 +4,7 @@ import {default as axios} from "axios";
 import { SocketContext} from '../socket';
 import Messenger from './Messenger'
 import Rounds from './Rounds'
+import Timer from './Timer'
 
 
 const Question = () => {
@@ -155,10 +156,7 @@ const Question = () => {
                     <div className="col">
                         <button className="btn btn-danger btn-lg text-dark mb-3" id="question" disabled></button>
                     </div>
-                    <div className="col">
-                        <button className="btn btn-primary btn-md text-dark mb-3" disabled>{seconds} Seconds Remaining
-                        </button>
-                    </div>
+                    <Timer />
                 </div>
 
                 {/*Answer Choices + Chat*/}

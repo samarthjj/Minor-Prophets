@@ -9,6 +9,7 @@ const Timer = () => {
     // Timer code adapted from this tutorial
     //https://upmostly.com/tutorials/build-a-react-timer-component-using-hooks
     useEffect(()=>{
+        console.log(seconds);
         let myInterval = setInterval(() => {
             if (seconds > 0) {
                 setSeconds(seconds - 1);
