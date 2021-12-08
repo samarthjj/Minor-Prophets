@@ -116,10 +116,10 @@ function Login({setToken}) {
         <div class="text-center">
             <h1 class="title text-light">Minor Prophets</h1>
 
-            <div class="landing-logo mb-5">
-                <h3 class="text-dark">This is where the game logo goes.</h3>
-                <h3 className="text-light">Please login or sign up below.</h3>
-                <h6 className="text-light" >Note: You will not be redirected if you use invalid login credentials or attempt to sign up with a username that is already in use.</h6>
+            <div class="landing-logo mb-3">
+                {/*<h3 class="text-dark">This is where the game logo goes.</h3>*/}
+                <h3 className="text-light">Please login, sign up, or continue as guest below.</h3>
+                {/*<h6 className="text-light" >Note: You will not be redirected if you use invalid login credentials or attempt to sign up with a username that is already in use.</h6>*/}
             </div>
 
             {/* Bootstrap Spacing: https://getbootstrap.com/docs/5.1/utilities/spacing/*/}

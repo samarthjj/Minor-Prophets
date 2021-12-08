@@ -183,49 +183,49 @@ const GameSetup = () => {
                     {/*    </table>*/}
                     {/*</div>*/}
 
-                    <div className="col-9">
-                        <div class="row">
-                            <h2 className="text-light">Select Genre</h2>
-                        </div>
+                    {/*<div className="col-9">*/}
+                    {/*    <div class="row">*/}
+                    {/*        <h2 className="text-light">Select Genre</h2>*/}
+                    {/*    </div>*/}
 
-                        {/*https://getbootstrap.com/docs/5.0/forms/checks-radios/#radio-toggle-buttons*/}
+                    {/*    /!*https://getbootstrap.com/docs/5.0/forms/checks-radios/#radio-toggle-buttons*!/*/}
 
-                        <div class="row">
-                            <div class="col">
-                                <input type="radio" className="btn-check mb-3" name="options" id="option1" autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option1">Metal</label>
-                            </div>
-                            <div className="col">
-                                <input type="radio" className="btn-check btn-lg mb-3" name="options" id="option2" autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option2">Rap & Hip Hop</label>
-                            </div>
-                            <div className="col">
-                                <input type="radio" className="btn-check" name="options" id="option3" autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option3">Country</label>
-                            </div>
-                            <div className="col">
-                                <input type="radio" className="btn-check" name="options" id="option4" autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option4">Pop</label>
-                            </div>
-                            <div className="col">
-                                <input type="radio" className="btn-check" name="options" id="option5" autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option5">Indie</label>
-                            </div>
-                            <div className="col">
-                                <input type="radio" className="btn-check" name="options" id="option6" autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option6">Jazz</label>
-                            </div>
-                            <div className="col">
-                                <input type="radio" className="btn-check" name="options" id="option7" autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option7">Classic Rock</label>
-                            </div>
-                            <div className="col">
-                                <input type="radio" className="btn-check" name="options" id="option8" autoComplete="off"/>
-                                <label className="btn btn-primary" htmlFor="option8">Electronic</label>
-                            </div>
-                        </div>
+                    {/*    <div class="row">*/}
+                    {/*        <div class="col">*/}
+                    {/*            <input type="radio" className="btn-check mb-3" name="options" id="option1" autoComplete="off"/>*/}
+                    {/*            <label className="btn btn-primary" htmlFor="option1">Metal</label>*/}
+                    {/*        </div>*/}
+                    {/*        <div className="col">*/}
+                    {/*            <input type="radio" className="btn-check btn-lg mb-3" name="options" id="option2" autoComplete="off"/>*/}
+                    {/*            <label className="btn btn-primary" htmlFor="option2">Rap & Hip Hop</label>*/}
+                    {/*        </div>*/}
+                    {/*        <div className="col">*/}
+                    {/*            <input type="radio" className="btn-check" name="options" id="option3" autoComplete="off"/>*/}
+                    {/*            <label className="btn btn-primary" htmlFor="option3">Country</label>*/}
+                    {/*        </div>*/}
+                    {/*        <div className="col">*/}
+                    {/*            <input type="radio" className="btn-check" name="options" id="option4" autoComplete="off"/>*/}
+                    {/*            <label className="btn btn-primary" htmlFor="option4">Pop</label>*/}
+                    {/*        </div>*/}
+                    {/*        <div className="col">*/}
+                    {/*            <input type="radio" className="btn-check" name="options" id="option5" autoComplete="off"/>*/}
+                    {/*            <label className="btn btn-primary" htmlFor="option5">Indie</label>*/}
+                    {/*        </div>*/}
+                    {/*        <div className="col">*/}
+                    {/*            <input type="radio" className="btn-check" name="options" id="option6" autoComplete="off"/>*/}
+                    {/*            <label className="btn btn-primary" htmlFor="option6">Jazz</label>*/}
+                    {/*        </div>*/}
+                    {/*        <div className="col">*/}
+                    {/*            <input type="radio" className="btn-check" name="options" id="option7" autoComplete="off"/>*/}
+                    {/*            <label className="btn btn-primary" htmlFor="option7">Classic Rock</label>*/}
+                    {/*        </div>*/}
+                    {/*        <div className="col">*/}
+                    {/*            <input type="radio" className="btn-check" name="options" id="option8" autoComplete="off"/>*/}
+                    {/*            <label className="btn btn-primary" htmlFor="option8">Electronic</label>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
 
-                    </div>
+                    {/*</div>*/}
                 </div>
 
 
