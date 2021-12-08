@@ -42,29 +42,25 @@ class Profile extends Component {
                 </div>
 
                 {/*Username (and icon?)*/}
-                <div className="row mb-3">
+                <div className="row mb-5">
                     <h2 className="text-light" id="username"> </h2>
                 </div>
 
                 {/*Statistics*/}
                 <div className="row mb-3">
-                    <div className="col-3">
-                        <h3 className="text-light">Number of Wins: </h3>
-                    </div>
-                    <div className="col-3">
-                        <h3 className="text-light" id = "GamesWon"> </h3>
-                    </div>
-                    <div className="col-3">
-                        <h3 className="text-light">Number of Questions Correct: </h3>
-                    </div>
-                    <div className="col-3">
-                        <h3 className="text-light" id = "TotalPoints"> </h3>
-                    </div>
-                    <div className="col-3">
+                    <div className="col">
                         <h3 className="text-light">Number of Games Played: </h3>
                     </div>
-                    <div className="col-3">
+                    <div className="col">
                         <h3 className="text-light" id = "Ratio"> </h3>
+                    </div>
+                </div>
+                <div className="row mb-3">
+                    <div className="col">
+                        <h3 className="text-light">Number of Questions Correct: </h3>
+                    </div>
+                    <div className="col">
+                        <h3 className="text-light" id = "TotalPoints"> </h3>
                     </div>
                     {/*<div className="col-3">*/}
                     {/*    <h3 className="text-light">Favorite genre: </h3>*/}
@@ -72,6 +68,14 @@ class Profile extends Component {
                     {/*<div className="col-3">*/}
                     {/*    <h3 className="text-light" id = "Genre"> </h3>*/}
                     {/*</div>*/}
+                </div>
+                <div className="row mb-3">
+                    <div className="col">
+                        <h3 className="text-light">Number of Wins: </h3>
+                    </div>
+                    <div className="col">
+                        <h3 className="text-light" id = "GamesWon"> </h3>
+                    </div>
                 </div>
 
                 {/*Your Songs and Link Spotify/Apple Music*/}

@@ -31,6 +31,20 @@ const NonHostLobby = () => {
                 roomcode: room_code
             }
         }).then(function (response) {
+
+            // todo This might not be necessary anymore, but it won't hurt!
+            console.log("PRINTING THE DATA FROM THE RESPONSE");
+            console.log(Object(response.data));
+            console.log("END PRINTING");
+
+            // If "users" is not included, refresh the page --> i.e., if the backend has not finished setting up the game lobby yet, things are loading out of order!
+            if (!Object.keys(response.data).includes("users")) {
+                console.log("REFRESHING THE PAGE!!!!");
+                window.location.reload(); //https://www.w3schools.com/jsref/obj_location.asp
+                // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
+                // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+            }
+
             console.log(response.data["users"]);
             for (let name of response.data["users"]){
                 if (!names.includes(name)) {
