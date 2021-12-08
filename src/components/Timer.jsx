@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom"
 
 const Timer = ({room_code}) => {
 
-    const initialSeconds = 30
+    const initialSeconds = 15
 
     const [seconds, setSeconds ] =  useState(initialSeconds)
 
