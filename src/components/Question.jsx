@@ -142,11 +142,6 @@ const Question = () => {
                             <button class="btn btn-success btn-md text-dark mb-3">Quit</button>
                         </Link>
                     </div>
-                    <div className="col-2">
-                        <Link to={`/answer/${room_code}`}>
-                            <button className="btn btn-primary btn-md text-dark mb-3">Countdown Done</button>
-                        </Link>
-                    </div>
                 </div>
 
                 <Rounds current_round={current_round} rounds={rounds}/>
