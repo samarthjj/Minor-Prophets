@@ -156,7 +156,7 @@ const Question = () => {
                     <div className="col">
                         <button className="btn btn-danger btn-lg text-dark mb-3" id="question" disabled></button>
                     </div>
-                    <Timer />
+                    <Timer room_code={room_code}/>
                 </div>
 
                 {/*Answer Choices + Chat*/}
